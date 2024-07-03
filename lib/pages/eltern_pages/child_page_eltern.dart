@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -7,11 +9,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:socialmediaapp/database/firestore_child.dart';
 import 'package:socialmediaapp/pages/eltern_pages/images_page_eltern.dart';
-import '../../components/my_image_upload_button_profile.dart';
+import '../../components/my_progressindicator.dart';
+import '../../components/notification_controller.dart';
+import '../../old/my_image_upload_button_profile.dart';
 import '../../components/my_image_viewer_profile.dart';
 import '../../helper/helper_functions.dart';
 import '../chat_page.dart';
 import '../../old/einwilligungen_kind_page_eltern.dart';
+import 'addkind_page_eltern.dart';
 import 'infos_kind_page_eltern.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -40,8 +45,23 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
 
-  var optionsAbholzeit = [
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
+
+ var optionsAbholzeit = [
     '07:00',
     '07:30',
     '08:00',
@@ -91,19 +111,15 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   }
 
 
-
-
-
-
   void showRaportDialogAbsenz(String childcode) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Absenz bis:"),
         content: TextField (
-          maxLength: 5,
+          //maxLength: 5,
           autofocus: true,
-          keyboardType: TextInputType.number,
+          //keyboardType: TextInputType.number,
           controller: _raportTextController,
           decoration: InputDecoration(hintText: "TT.MM"),
         ),
@@ -161,9 +177,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        // Text Eingabe
         content: DropdownButtonFormField<String>(
-
           isDense: true,
           isExpanded: false,
 
@@ -247,44 +261,37 @@ class _ChildPageElternState extends State<ChildPageEltern> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             !snapshot.hasData) {
-          return const CircularProgressIndicator();
+          return const Text("");
         }
-        return Container(
-          height: mediaQuery.size.height * 0.15,
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: snapshot.data!.length,
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 6,
-              childAspectRatio: 1.0,
-              mainAxisSpacing: 4.0,
-              crossAxisSpacing: 4.0,
-            ),
-            itemBuilder: (context, index) => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ImagesPageEltern(
-                    childcode: childcode, date: formattedDate,
-                  )),
-                );
-              },
-              child: Image.network(
-                snapshot.data![index],
-                fit: BoxFit.fitHeight,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child; Text("");
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+          child: Container(
+           height: mediaQuery.size.height * 0.075,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: snapshot.data!.length,
+              shrinkWrap: false,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+                childAspectRatio: 1.0,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
+              ),
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ImagesPageEltern(
+                      childcode: childcode, date: formattedDate,
+                    )),
                   );
                 },
+                child: CachedNetworkImage(
+                  imageUrl: snapshot.data![index],
+                  fit: BoxFit.fitHeight,
+                  placeholder: (context, url) => ProgressWithIcon(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
             ),
           ),
@@ -377,12 +384,13 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     final mediaQuery = MediaQuery.of(context);
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
             child: Container(
               color: Colors.black,
-              height: 2.0,
+              height: 1.0,
             ),
           ),
           title: Text("Tagesraport",
@@ -392,22 +400,20 @@ class _ChildPageElternState extends State<ChildPageEltern> {
             showButtons(),
           ],
         ),
-      
-        body: SingleChildScrollView (
-    child:
-        StreamBuilder<DocumentSnapshot>(
+
+        body: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection("Users")
           .doc(currentUser?.email)
           .snapshots(),
-      builder: (context, snapshot) {
+              builder: (context, snapshot) {
         if (snapshot.hasData) {
           final userData = snapshot.data?.data() as Map<String, dynamic>;
           final childcode = userData["childcode"];
           if (snapshot.hasData && childcode != "") {
             getKitaEmail(userData["childcode"]);
             return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
                 const SizedBox(height: 10),
@@ -418,14 +424,13 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                       onTap: _incrementCounterMinus,
                       child: Container(
                         width: 50,
-                        height: 20,
+                        height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        child: Icon(Icons.arrow_back,
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          size: 12,
+                        child: Icon(Icons.arrow_back_ios_rounded,
+                          //color: Theme.of(context).colorScheme.primary,
+                          size: 40,
                         ),
                       ),
                     ),
@@ -436,19 +441,12 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Stack(
-                              children: [
-                                ImageViewerProfile(childcode: childcode),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ImageUploadProfile(childcode: childcode),
-                                  ],
-                                ),
-                              ],
-                            ),
+                            ImageViewerProfile(childcode: childcode),
                             const SizedBox(height: 10),
-                            Text(formattedDate),
+                            Text(formattedDate,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Goli',),
+                            ),
                           ],
                         ),
                       ],
@@ -457,14 +455,13 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                       onTap: _incrementCounterPlus,
                       child: Container(
                         width: 50,
-                        height: 20,
+                        height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        child: Icon(Icons.arrow_forward,
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          size: 12,
+                        child: Icon(Icons.arrow_forward_ios_rounded,
+                          //color: Theme.of(context).colorScheme.primary,
+                          size: 40,
                         ),
                       ),
                     ),
@@ -495,32 +492,45 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.all(6.0),
+                                          padding: const EdgeInsets.all(3.0),
                                           child: Container(
-                                            padding: EdgeInsets.all(5),
+                                          padding: EdgeInsets.only(top: 6, bottom: 6, left: 15,),
+                                          decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.secondary,
+                                          borderRadius: BorderRadius.circular(10),
+                                          ),
                                             width: mediaQuery.size.width * 0.9,
-                                            color: Colors.pinkAccent.withOpacity(0.3),
                                             child: Column(
                                               children: [
                                                 Row(
                                                   children: [
                                                     Text(
                                                         raport['Uhrzeit'],
-                                                        style: TextStyle(fontWeight: FontWeight.bold)
+                                                        style: TextStyle(fontWeight: FontWeight.bold,
+                                                        fontSize: 12,
+                                                        )
                                                     ),
                                                     const SizedBox(width: 10),
                                                     Text(
-                                                        raport['RaportTitle']),
+                                                        raport['RaportTitle'],
+                                                      style: TextStyle(fontWeight: FontWeight.bold,
+                                                      fontSize: 12,
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 const SizedBox(height: 5),
                                                 Row(
                                                   children: [
                                                     Container(
-                                                        width: mediaQuery.size.width * 0.85,
+                                                        width: mediaQuery.size.width * 0.80,
                                                         child: Text(
                                                             textAlign: TextAlign.left,
-                                                            raport['RaportText'])),
+                                                            raport['RaportText'],
+                                                          style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                        )),
                                                   ],
                                                 ),
                                               ],
@@ -533,8 +543,8 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                     raportWidgets.add(raportWidget);
                                     Text(raport['RaportText']);
                                   }
-
                                 }
+
                                 return
                                   ListView(
                                     children: raportWidgets,
@@ -553,29 +563,49 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
                 buildGallery(childcode),
 
-                const SizedBox(height: 10),
 
                 /// Datum wählen
               ],
             );
           }
         }
-        return const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        if (snapshot.connectionState != ConnectionState.waiting)
+
+          return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 71),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Bitte Kind hinzufügen",
-                  style: TextStyle(fontSize: 20),
+                Column(
+                  children: [
+                    Text("Bitte Kind hinzufügen",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: 20),
+                    IconButton(
+                      icon: const Icon(Icons.add_reaction_outlined,
+                        size: 60,
+                      ), onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            AddKindPageEltern(),
+                        ),
+                      );
+                    },
+                    ),
+                  ],
                 ),
               ],
             ),
           ],
         );
-      }
-        ),
+                else
+                return
+                Text("");
+              }
         ),
         ),
     );

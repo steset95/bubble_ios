@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialmediaapp/components/my_button.dart';
 import 'package:socialmediaapp/components/my_textfield.dart';
+import 'package:socialmediaapp/pages/agb_page.dart';
 
 import '../helper/helper_functions.dart';
 
@@ -38,14 +39,20 @@ class _RegisterPageState extends State<RegisterPage> {
   ];
   var _currentItemSelected = "Eltern";
   var rool = "Eltern";
-  String adress = "Noch nicht angegeben...";
-  String adress2 = "Noch nicht angegeben...";
-  String tel = "Noch nicht angegeben...";
+  String adress = "";
+  String adress2 = "";
+  String tel = "";
   String childcode = "";
-
+  String iban = "";
+  int guthaben = 0;
+  String gruppe1 = "Gruppe 1";
+  String gruppe2 = "Gruppe 2";
+  String gruppe3 = "Gruppe 3";
+  String shownotification = "0";
 
   bool showProgress = false;
   bool visible = false;
+  bool checkedValue = false;
 
 
 
@@ -69,6 +76,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
     }
+    else if (checkedValue == false)
+    {
+      Navigator.pop(context);
+      // Fehlermeldung für Benutzer
+      displayMessageToUser("ABGs wurden nicht akzeptiert.", context);
+    }
+
     // wenn Passwörter übereinstimmen
     else {
       // Benutzer erstellen
@@ -118,6 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'tel': tel,
         'childcode': "",
         "kitamail": "",
+        "shownotification": shownotification,
         'timestamp': Timestamp.now(),
       });
     }
@@ -133,11 +148,24 @@ class _RegisterPageState extends State<RegisterPage> {
         'adress': adress,
         'adress2': adress2,
         'tel': tel,
+        'iban': iban,
+        'guthaben': guthaben,
+        'gruppe1': gruppe1,
+        'gruppe2': gruppe2,
+        'gruppe3': gruppe3,
+        "shownotification": shownotification,
       });
     }
   }
 
+  bool _obscureText = true;
 
+  // Toggles the password show status
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Theme.of(context).colorScheme.background,
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
+
         child: Padding(
           padding: const EdgeInsets.all(25.0),
           child: Column(
@@ -172,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // Username textfield
 
               MyTextField(
-                hinText: "Name",
+                hintText: "Name",
                 obscureText: false,
                 controller: usernameController,
               ),
@@ -182,7 +211,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // Email textfield
 
               MyTextField(
-                hinText: "Email",
+                hintText: "Email",
                 obscureText: false,
                 controller: emailController,
 
@@ -192,27 +221,61 @@ class _RegisterPageState extends State<RegisterPage> {
 
               // password textfield
 
-              MyTextField(
-                hinText: "Password",
-                obscureText: true, // Text nicht anzeigen
-                controller: passwordController,
 
+              Container(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        style: TextStyle(color: Colors.black),
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: _toggle,
+                            icon: const Icon(Icons.remove_red_eye,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          hintText: "Passwort",
+                        ),
+                        obscureText: _obscureText,
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
 
               const SizedBox(height: 10),
 
               // password confirm
 
-              MyTextField(
-                hinText: "Password bestätigen",
-                obscureText: true, // Text nicht anzeigen
-                controller: confirmPwController,
 
+              Container(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        style: TextStyle(color: Colors.black),
+                        controller: confirmPwController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          hintText: "Passwort bestätigen",
+                        ),
+                        obscureText: _obscureText,
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
 
 
-
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
 
 
               DropdownButton<String>(
@@ -238,20 +301,37 @@ class _RegisterPageState extends State<RegisterPage> {
                 value: _currentItemSelected,
               ),
 
+
+
               const SizedBox(height: 10),
-            /*if (_currentItemSelected == "Eltern")
-
-
-              MyTextField(
-                hinText: "Aktivierungscode",
-                obscureText: false,
-                controller: childcodeController,
-              ),
-
-              */
-              const SizedBox(height: 30),
 
               //Register in button
+              CheckboxListTile(
+                title: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            AGBPage()),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Text("AGBs Akzeptieren"),
+                        const SizedBox(width: 5,),
+                        Icon(
+                          Icons.read_more,
+                        ),
+                      ],
+                    )),
+                value: checkedValue,
+                onChanged: (newValue) {
+                  setState(() {
+                    checkedValue = newValue!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+              ),
 
               MyButton(
                 text: "Registrieren",

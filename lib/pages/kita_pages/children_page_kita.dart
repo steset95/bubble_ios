@@ -1,8 +1,15 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialmediaapp/database/firestore_child.dart';
+import 'package:socialmediaapp/old/change_group_page_kita.dart';
+import 'package:socialmediaapp/pages/chat_page.dart';
 import 'package:socialmediaapp/pages/kita_pages/child_overview_page_kita.dart';
 import 'package:socialmediaapp/pages/kita_pages/raport_page.dart';
+
+import '../../components/notification_controller.dart';
 
 
 class ChildrenPageKita extends StatefulWidget {
@@ -23,6 +30,12 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
 
   final TextEditingController textController = TextEditingController();
 
+
+  final usersCollection = FirebaseFirestore
+      .instance
+      .collection("Users"
+  );
+
   // Gruppen
   var options = [
     '1',
@@ -36,6 +49,24 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
 
   bool showProgress = false;
   bool visible = false;
+  final currentUser = FirebaseAuth.instance.currentUser;
+
+
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
 
   /// Kind hinzufügen Altert Dialog
 
@@ -51,6 +82,11 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
           autofocus: true,
         ),
         actions: [
+          TextButton(
+            child: const Text("Abbrechen",
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
           // Speicher Button
           TextButton(
             onPressed: () {
@@ -79,7 +115,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
               firestoreDatabaseChild.deleteChild(docID!);
               Navigator.pop(context);
             },
-            child: Text("Löschen bestätigen"),
+            child: Text("Löschen"),
           ),
           TextButton(
             onPressed: () {
@@ -158,6 +194,62 @@ bool isVisible = false;
 
 var buttons = '1';
 
+
+
+
+  Future<void> editField(String field, String titel, String text) async {
+    String newValue = "";
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          "$titel",
+          //"Edit $field",
+        ),
+        content: TextField(
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: text,
+          ),
+          maxLength: 12,
+          onChanged: (value){
+            newValue = value;
+          },
+        ),
+        actions: [
+          // Cancel Button
+          TextButton(
+            child: const Text("Abbrechen",
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          //Save Button
+          TextButton(
+            child: const Text("Speichern",
+            ),
+            onPressed: () => Navigator.of(context).pop(newValue),
+          ),
+        ],
+      ),
+    );
+
+    // prüfen ob etwas geschrieben
+    if (newValue.trim().length > 0) {
+      // In Firestore updaten
+      await usersCollection.doc(currentUser!.email).update({field: newValue});
+    }
+  }
+
+
+  void notificationNullKind(String docID) {
+    FirebaseFirestore.instance
+        .collection("Kinder")
+        .doc(docID)
+        .update({"shownotification": "0"});
+  }
+
+
+
 /// Start Widget
 
 
@@ -169,7 +261,7 @@ var buttons = '1';
           preferredSize: const Size.fromHeight(4.0),
           child: Container(
             color: Colors.black,
-            height: 2.0,
+            height: 1.0,
           ),
         ),
         title: Text("Kinder",
@@ -182,144 +274,194 @@ var buttons = '1';
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
       onPressed: openChildBoxNew,
-        child: const Icon(Icons.child_care),
+        child: const Icon(Icons.add_reaction_outlined),
       ),
       /// Anzeige 3 Gruppen
 
       body:
-      SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20,),
-          child: Column(
-            children: [
-              if (buttons == '1')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          selectedOption = optiona();
-                        });
-                        buttons = '1';
-                      },
+      StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection("Users")
+              .doc(currentUser?.email)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              // Entsprechende Daten extrahieren
+              final userData = snapshot.data?.data() as Map<String, dynamic>;
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20,),
+                  child: Column(
+                    children: [
+                      if (buttons == '1')
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optiona();
+                                  });
+                                  buttons = '1';
+                                },
 
-                      child: optionCards("Gruppe 1", "assets/icons/recycle.png", context, "1", Colors.grey)
+                                child: optionCards(
+                                        userData["gruppe1"],
+                                        "assets/icons/recycle.png", context, "1",
+                                        Colors.blueAccent),
+                                ),
+
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optionb();
+                                  });
+                                  buttons = '2';
+                                },
+                                child: optionCards(
+                                    userData["gruppe2"], "assets/icons/tools.png",
+                                    context, "2", Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary)
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optionc();
+                                  });
+                                  buttons = '3';
+                                },
+                                child: optionCards(
+                                    userData["gruppe3"], "assets/icons/file.png",
+                                    context, "3", Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary)
+                            ),
+                          ],
+                        ),
+
+
+                      if (buttons == '2')
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optiona();
+                                  });
+                                  buttons = '1';
+                                },
+
+                                child: optionCards(
+                                    userData["gruppe1"], "assets/icons/recycle.png",
+                                    context, "1", Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary)
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optionb();
+                                  });
+                                  buttons = '2';
+                                },
+                                child: optionCards(
+                                    userData["gruppe2"], "assets/icons/tools.png",
+                                    context, "2", Colors.blueAccent)
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optionc();
+                                  });
+                                  buttons = '3';
+                                },
+                                child: optionCards(
+                                    userData["gruppe3"], "assets/icons/file.png",
+                                    context, "3", Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary)
+                            ),
+                          ],
+                        ),
+
+
+                      if (buttons == '3')
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optiona();
+                                  });
+                                  buttons = '1';
+                                },
+
+                                child: optionCards(
+                                    userData["gruppe1"], "assets/icons/recycle.png",
+                                    context, "1", Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary)
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optionb();
+                                  });
+                                  buttons = '2';
+                                },
+                                child: optionCards(
+                                    userData["gruppe2"], "assets/icons/tools.png",
+                                    context, "2", Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary)
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optionc();
+                                  });
+                                  buttons = '3';
+                                },
+                                child: optionCards(
+                                    userData["gruppe3"], "assets/icons/file.png",
+                                    context, "3", Colors.blueAccent)
+                            ),
+                          ],
+                        ),
+
+
+                      // options
+                      if(selectedOption != null) selectedOption!
+                      else
+                        optiona(),
+                    ],
                   ),
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          selectedOption = optionb();
-                        });
-                        buttons = '2';
-                      },
-                      child: optionCards("Gruppe 2", "assets/icons/tools.png", context, "2", Theme.of(context).colorScheme.primary)
-                  ),
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          selectedOption = optionc();
-                        });
-                        buttons = '3';
-                      },
-                      child: optionCards("Gruppe 3", "assets/icons/file.png", context, "3", Theme.of(context).colorScheme.primary)
-                  ),
-                ],
-              ),
-
-
-              if (buttons == '2')
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            selectedOption = optiona();
-                          });
-                          buttons = '1';
-                        },
-
-                        child: optionCards("Gruppe 1", "assets/icons/recycle.png", context, "1", Theme.of(context).colorScheme.primary)
-                    ),
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            selectedOption = optionb();
-                          });
-                          buttons = '2';
-                        },
-                        child: optionCards("Gruppe 2", "assets/icons/tools.png", context, "2", Colors.grey)
-                    ),
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            selectedOption = optionc();
-                          });
-                          buttons = '3';
-                        },
-                        child: optionCards("Gruppe 3", "assets/icons/file.png", context, "3", Theme.of(context).colorScheme.primary)
-                    ),
-                  ],
                 ),
-
-
-
-
-              if (buttons == '3')
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            selectedOption = optiona();
-                          });
-                          buttons = '1';
-                        },
-
-                        child: optionCards("Gruppe 1", "assets/icons/recycle.png", context, "1", Theme.of(context).colorScheme.primary)
-                    ),
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            selectedOption = optionb();
-                          });
-                          buttons = '2';
-                        },
-                        child: optionCards("Gruppe 2", "assets/icons/tools.png", context, "2", Theme.of(context).colorScheme.primary)
-                    ),
-                    InkWell(
-                        onTap: (){
-                          setState(() {
-                            selectedOption = optionc();
-                          });
-                          buttons = '3';
-                        },
-                        child: optionCards("Gruppe 3", "assets/icons/file.png", context, "3", Colors.grey)
-                    ),
-                  ],
-                ),
-
-
-
-
-              // options
-              if(selectedOption != null) selectedOption!
-              else optiona(),
-            ],
-          ),
-        ),
+              );
+            }
+            return Text("");
+          }
       ),
+
     );
+
   }
 
   /// Funktion 3 Gruppen
 
   Widget optionCards(
-      String text, String assetImage, BuildContext context, String cardId, var color) {
-      return
-        Container(
+      String text, String assetImage, BuildContext context, String cardId, var color,) {
+    return
+      Container(
         width: 100,
         height: 100,
         decoration: BoxDecoration(
@@ -327,52 +469,49 @@ var buttons = '1';
           borderRadius: BorderRadius.circular(15),
         ),
         child: SingleChildScrollView(
-          child: Column(
+          child: Stack(
             children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 13),
-                  child: IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.group,
-                      color: Colors.white,
-                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                      onPressed: () => editField('gruppe$cardId', "Name anpassen", text),
+                      icon: Icon(Icons.edit,
+                        color: Colors.white,
+                        size: 12.0,
+                      )),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 35.0),
+                        child: Icon(Icons.group,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        text,
+                        style: TextStyle(color: Colors.white,
+                        fontSize: 10
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Text(
-                  text,
-                  style: TextStyle(color: Colors.white),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 13),
-                  child: IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.group,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Text(
-                  text,
-                  style: TextStyle(color: Colors.white),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 13),
-                  child: IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.group,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Text(
-                  text,
-                  style: TextStyle(color: Colors.white),
-                ),
+                ],
+              ),
+
+
+
             ],
           ),
         ),
       );
-    }
+  }
 
 
   /// 3 Gruppen
@@ -411,6 +550,8 @@ var buttons = '1';
                           document.data() as Map<String, dynamic>;
                           String childText = data['child'];
                           String anmeldungText = data['anmeldung'];
+                          String elternmail = data['eltern'];
+                          String shownotification = data['shownotification'];
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
 
@@ -449,6 +590,20 @@ var buttons = '1';
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
 
+                                    if(shownotification == "1")
+                                      IconButton(
+                                        onPressed: () {
+                                          notificationNullKind(docID);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => ChatPage(
+                                              receiverID: elternmail, childcode: docID,
+                                            )),
+                                          );
+                                        },
+                                        color: Theme.of(context).colorScheme.inversePrimary,
+                                        icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                      ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),

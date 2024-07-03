@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
-  final String hinText;
+  final String hintText;
   final bool obscureText;
   final TextEditingController controller;
 
 
   const MyTextField({
     super.key,
-    required this.hinText,
+    required this.hintText,
     required this.obscureText,
     required this.controller
 });
@@ -24,7 +24,7 @@ class MyTextField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
                   ),
-      hintText: hinText,
+      hintText: hintText,
       ),
       obscureText: obscureText,
     );

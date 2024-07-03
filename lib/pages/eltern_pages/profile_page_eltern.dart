@@ -1,12 +1,17 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pay/pay.dart';
+import 'package:socialmediaapp/components/my_image_upload_button.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
-import '../../assets/payment_configurations.dart';
+
+import '../../components/notification_controller.dart';
+import '../../helper/payment_configurations.dart';
 
 
 // Pay Package
@@ -52,6 +57,21 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
 
   ///////// Pay Package
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
 
 
 
@@ -69,7 +89,7 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
 
 
 // Bearbeitungsfeld
-  Future<void> editField(String field, String title) async {
+  Future<void> editField(String field, String title, String text) async {
     String newValue = "";
     await showDialog(
       context: context,
@@ -78,11 +98,9 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
           "$title",
           //"Edit $field",
         ),
-        content: TextField(
+        content: TextFormField(
+          initialValue: text,
           autofocus: true,
-          decoration: InputDecoration(
-            hintText: "Bearbeiten...",
-          ),
           onChanged: (value){
             newValue = value;
           },
@@ -126,7 +144,7 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
             preferredSize: const Size.fromHeight(4.0),
             child: Container(
               color: Colors.black,
-              height: 2.0,
+              height: 1.0,
             ),
           ),
           title: Text("Profil",
@@ -176,34 +194,34 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
                       ProfileData(
                         text: userData["username"],
                         sectionName: "Name",
-                        onPressed: () => editField("username", "Name"),
+                        onPressed: () => editField("username", "Name", userData["username"]),
                       ),
           
                       ProfileData(
                         text: userData["email"],
                         sectionName: "Email-Adresse",
-                        onPressed: () => editField("email", "Email-Adresse"),
+                        onPressed: () => editField("email", "Email-Adresse", userData["email"]),
                       ),
                       ProfileData(
                         text: userData["adress"],
                         sectionName: "Strasse und Hausnummer",
-                        onPressed: () => editField("adress", "Strasse und Hausnummer"),
+                        onPressed: () => editField("adress", "Strasse und Hausnummer", userData["adress"]),
                       ),
           
                       ProfileData(
                         text: userData["adress2"],
                         sectionName: "PLZ und Ort",
-                        onPressed: () => editField("adress2", "PLZ und Ort"),
+                        onPressed: () => editField("adress2", "PLZ und Ort", userData["adress2"]),
                       ),
           
                       ProfileData(
                         text: userData["tel"],
                         sectionName: "Telefonnummer",
-                        onPressed: () => editField("tel", "Telefonnummer"),
+                        onPressed: () => editField("tel", "Telefonnummer", userData["tel"]),
                       ),
           
                       SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
           
           
@@ -213,11 +231,11 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
                       Container(
                         child: Text(
                           "Monatsabo kaufen",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 15),
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       FutureBuilder<PaymentConfiguration>(
                           future: _googlePayConfigFuture,

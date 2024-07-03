@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:socialmediaapp/components/my_list_tile_feed_kita.dart';
 import 'package:socialmediaapp/database/firestore_feed.dart';
 import 'package:intl/intl.dart';
 
+import '../../components/notification_controller.dart';
 import '../../helper/helper_functions.dart';
 
 
@@ -26,6 +29,23 @@ class _FeedPageKitaState extends State<FeedPageKita> {
   // Text Controller
   final TextEditingController newPostControllerTitel = TextEditingController();
   final TextEditingController newPostControllerInhalt = TextEditingController();
+
+
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
 
   // Methode: Nachricht Posten Extern
   void postMessageExt(){
@@ -76,17 +96,23 @@ bool externPost = false;
                       decoration: InputDecoration(hintText: "Titel"),
                     ),
                     const SizedBox(height: 10,),
-                    TextField(
+                    SingleChildScrollView(
+                        child: Container(
+                          height: mediaQuery.size.height * 0.25,
+                          child: TextField(
 
-                      keyboardType: TextInputType.multiline,
-                      minLines: 5,
-                      maxLines: 20,
+                            keyboardType: TextInputType.multiline,
+                            minLines: 5,
+                            maxLines: 20,
 
-                      controller: newPostControllerInhalt,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Inhalt...",
-                      ),
+                            controller: newPostControllerInhalt,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Inhalt...",
+
+                            ),
+                          ),
+                        ),
                     ),
                   ],
                 ),
@@ -162,11 +188,10 @@ bool externPost = false;
           preferredSize: const Size.fromHeight(4.0),
           child: Container(
             color: Colors.black,
-            height: 2.0,
+            height: 1.0,
           ),
         ),
         title: Text("Kita",
-          style: TextStyle(color:Colors.black),
         ),
         actions: [
           showButtons(),
@@ -194,6 +219,7 @@ bool externPost = false;
                     "Externer Feed",
                     style: TextStyle(fontSize: 25,
                     color: Colors.black,
+                        fontFamily: 'Goli',
                     ),
                   ),
 
@@ -270,6 +296,7 @@ bool externPost = false;
                     "Interner Feed",
                     style: TextStyle(fontSize: 25,
                       color: Colors.black,
+                      fontFamily: 'Goli',
                     ),
                   ),
 

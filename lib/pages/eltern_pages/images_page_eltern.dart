@@ -1,9 +1,14 @@
 
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../components/my_progressindicator.dart';
+import '../../components/notification_controller.dart';
 import '../../database/firestore_images.dart';
 
 
@@ -27,6 +32,22 @@ class ImagesPageEltern extends StatefulWidget {
 
 class _ImagesPageElternState extends State<ImagesPageEltern> {
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
+
   Future<List<String>> getImagePath(String childcode, String date) async {
     ListResult result =
     await FirebaseStorage.instance.ref('/images/$date/$childcode').listAll();
@@ -45,35 +66,30 @@ class _ImagesPageElternState extends State<ImagesPageEltern> {
             !snapshot.hasData) {
           return const CircularProgressIndicator();
         }
-        return Container(
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
 
-          child: GridView.builder(
-            scrollDirection: Axis.vertical,
-            physics: const PageScrollPhysics(),
-            itemCount: snapshot.data!.length,
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              //childAspectRatio: 100,
-              mainAxisExtent: 300,
-              //mainAxisSpacing: 10,
-              //crossAxisSpacing: 10,
-            ),
-            itemBuilder: (context, index) => Image.network(
-              snapshot.data![index],
-              fit: BoxFit.fitWidth,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) return child; Text("");
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
-                );
-              },
+            child: GridView.builder(
+              scrollDirection: Axis.vertical,
+              physics: const PageScrollPhysics(),
+              itemCount: snapshot.data!.length,
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                //childAspectRatio: 100,
+                mainAxisExtent: 300,
+                mainAxisSpacing: 10,
+                //crossAxisSpacing: 10,
+              ),
+              itemBuilder: (context, index) => GestureDetector(
+                child: CachedNetworkImage(
+                  imageUrl: snapshot.data![index],
+                    placeholder: (context, url) => ProgressWithIcon(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  fit: BoxFit.fitHeight
+                ),
+              ),
             ),
           ),
         );
@@ -86,17 +102,14 @@ class _ImagesPageElternState extends State<ImagesPageEltern> {
 
   @override
   Widget build(BuildContext context) {
-    final Storage storage = Storage();
     return SafeArea(
-
       child: Scaffold(
-
           appBar: AppBar(
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(4.0),
               child: Container(
                 color: Colors.black,
-                height: 2.0,
+                height: 1.0,
               ),
             ),
             title: Text("Bilder",
@@ -110,8 +123,6 @@ class _ImagesPageElternState extends State<ImagesPageEltern> {
               buildGallery(widget.childcode, widget.date)
             ],
           ),
-
-
     )
       )
             );

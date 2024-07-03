@@ -1,18 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/*
-
-Diese Datenbank speichert Posts von User die Sie auf dem App veröffentlicht haben.
-Sie werden in einer Kollektion namens "Posts" in Firebase abgespeichert.
-
-Jeder Post beinhaltet:
-
-- eine Nachricht
-- Email von User
-- Zeitstempfel
-
- */
 
 
 

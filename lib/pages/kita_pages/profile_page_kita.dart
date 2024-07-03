@@ -1,12 +1,15 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pay/pay.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
-import '../../assets/payment_configurations.dart';
+
+import '../../components/notification_controller.dart';
+
 
 class ProfilePageKita extends StatefulWidget {
   ProfilePageKita({super.key});
@@ -31,10 +34,25 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
 
 
 // Bearbeitungsfeld
-  Future<void> editField(String field, String titel) async {
+  Future<void> editField(String field, String titel, String text) async {
     String newValue = "";
     await showDialog(
       context: context,
@@ -43,11 +61,9 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
           "$titel",
           //"Edit $field",
         ),
-        content: TextField(
+        content: TextFormField(
+          initialValue: text,
           autofocus: true,
-          decoration: InputDecoration(
-            hintText: "Bearbeiten...",
-          ),
           onChanged: (value){
             newValue = value;
           },
@@ -91,7 +107,7 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
             preferredSize: const Size.fromHeight(4.0),
             child: Container(
               color: Colors.black,
-              height: 2.0,
+              height: 1.0,
             ),
           ),
           title: Text("Profil",
@@ -141,34 +157,68 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
                       ProfileData(
                         text: userData["username"],
                         sectionName: "Name",
-                        onPressed: () => editField("username", "Name"),
+                        onPressed: () => editField("username", "Name", userData["username"]),
                       ),
           
                       ProfileData(
                         text: userData["email"],
                         sectionName: "Email-Adresse",
-                        onPressed: () => editField("email", "Email-Adresse"),
+                        onPressed: () => editField("email", "Email-Adresse", userData["email"]),
                       ),
                       ProfileData(
                         text: userData["adress"],
                         sectionName: "Strasse und Hausnummer",
-                        onPressed: () => editField("adress", "Strasse und Hausnummer"),
+                        onPressed: () => editField("adress", "Strasse und Hausnummer", userData["adress"]),
                       ),
           
                       ProfileData(
                         text: userData["adress2"],
                         sectionName: "PLZ und Ort",
-                        onPressed: () => editField("adress2", "PLZ und Ort"),
+                        onPressed: () => editField("adress2", "PLZ und Ort", userData["adress2"]),
                       ),
           
                       ProfileData(
                         text: userData["tel"],
                         sectionName: "Telefonnummer",
-                        onPressed: () => editField("tel", "Telefonnummer"),
+                        onPressed: () => editField("tel", "Telefonnummer", userData["tel"]),
+                      ),
+
+                      ProfileData(
+                        text: userData["iban"],
+                        sectionName: "IBAN",
+                        onPressed: () => editField("iban", "IBAN", userData["iban"]),
                       ),
           
                       SizedBox(
                         height: 30,
+                      ),
+                      Text("Guthaben"),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(100))
+                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text (userData["guthaben"].toString()),
+                              ],
+                            ),
+                          ],
+                        )
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
 
                     ],

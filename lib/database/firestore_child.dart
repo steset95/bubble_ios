@@ -27,7 +27,7 @@ class FirestoreDatabaseChild {
       'timeStamp': Timestamp.now(),
       'kita': currentUser?.email,
       'abholzeit': "",
-      'geschlecht': "",
+      'geschlecht': "keine Angabe",
       'geburtstag': "",
       'personen': "",
       'alergien': "",
@@ -46,6 +46,7 @@ class FirestoreDatabaseChild {
       'sonnencreme': "nicht erlaubt",
       'fremdkoerper': "nicht erlaubt",
       'homoeopathie': "nicht erlaubt",
+      'shownotification': "0",
     });
 
 

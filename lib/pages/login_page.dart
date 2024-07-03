@@ -50,11 +50,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
+
+  bool _obscureText = true;
+
+  // Toggles the password show status
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
+        reverse: true,
         child: Padding(
           padding: const EdgeInsets.all(25.0),
           child: Column(
@@ -80,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               // Email textfield
 
               MyTextField(
-                hinText: "Email",
+                hintText: "Email",
                 obscureText: false,
                 controller: emailController,
 
@@ -90,12 +103,34 @@ class _LoginPageState extends State<LoginPage> {
 
               // password textfield
 
-              MyTextField(
-                hinText: "Password",
-                obscureText: true, // Text nicht anzeigen
-                controller: passwordController,
 
+              Container(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        style: TextStyle(color: Colors.black),
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: _toggle,
+                            icon: const Icon(Icons.remove_red_eye,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          hintText: "Passwort",
+                        ),
+                        obscureText: _obscureText,
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
+
+
 
               const SizedBox(height: 10),
 

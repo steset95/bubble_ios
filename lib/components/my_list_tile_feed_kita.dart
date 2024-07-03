@@ -89,7 +89,7 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        width: mediaQuery.size.width * 0.85,
+                        width: mediaQuery.size.width * 0.80,
                         child: Text(
                           style: TextStyle(fontSize: 12,
                           ),
@@ -114,8 +114,7 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
                     },
                     icon: Icon(
                       Icons.delete,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 25.0,
+                      size: 15.0,
                     ),
                   ),
                   ],

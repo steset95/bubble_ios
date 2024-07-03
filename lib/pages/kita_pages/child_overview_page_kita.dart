@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socialmediaapp/pages/chat_page.dart';
 import 'package:socialmediaapp/pages/kita_pages/raport_page.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../components/notification_controller.dart';
 import 'einwilligungen_kind_page_kita.dart';
 import 'images_page_kita.dart';
 import 'infos_eltern_page_kita.dart';
@@ -28,7 +31,20 @@ class ChildOverviewPageKita extends StatefulWidget {
 class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
 
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
 
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
 
 
   /// Aktivierungsschlüssel
@@ -78,6 +94,14 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
     });
   }
 
+  void notificationNullKind(String docID) {
+    FirebaseFirestore.instance
+        .collection("Kinder")
+        .doc(docID)
+        .update({"shownotification": "0"});
+  }
+
+
 
 
   @override
@@ -92,7 +116,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
               preferredSize: const Size.fromHeight(4.0),
               child: Container(
                 color: Colors.black,
-                height: 2.0,
+                height: 1.0,
               ),
             ),
             title: Text("Übersicht",
@@ -133,7 +157,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                 Text(
 
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 25, color: Colors.black,),
+                                    style: TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold,),
                                     snapshot.data!['child']),
                               ],
                             );
@@ -156,8 +180,9 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                               Text(
                                 textAlign: TextAlign.center,
                                 'Abholzeit: $abholzeit',
-                                style: TextStyle(color:Colors.black),
-
+                                style: TextStyle(color:Colors.black,
+                                    fontFamily: 'Goli',
+                                ),
                               ),
                             ],
                           );
@@ -194,6 +219,9 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+
+                              const Icon(Icons.check),
+                              const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -228,6 +256,8 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              const Icon(Icons.camera_alt),
+                              const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -251,6 +281,28 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                               .snapshots(),
                           builder: (context, snapshot)
                           {
+                            if (snapshot.connectionState == ConnectionState.waiting)
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                height: 100,
+                                child: const Column(
+
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.chat),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text("Chat"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
                             // ladekreis
                             if (snapshot.hasData) {
                               // Entsprechende Daten extrahieren
@@ -258,13 +310,14 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
 
 
                               final elternmail = userData["eltern"];
-
-                              return GestureDetector(
+                              String shownotification = userData['shownotification'];
+                              if(shownotification == "0") {
+                                return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => ChatPage(
-                                      receiverID: elternmail,
+                                      receiverID: elternmail, childcode: widget.docID,
                                     )),
                                   );
                                 },
@@ -277,6 +330,8 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                   child: const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
+                                      const Icon(Icons.chat),
+                                      const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
@@ -287,6 +342,41 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                   ),
                                 ),
                               );
+                              }
+                              if(shownotification == "1") {
+                                return GestureDetector(
+                                  onTap: () {
+                                    notificationNullKind(widget.docID);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ChatPage(
+                                        receiverID: elternmail, childcode: widget.docID,
+                                      )),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    height: 100,
+                                    child: const Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                        const SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text("Chat"),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+
                             }
                             return Text("");
                           }
@@ -323,6 +413,8 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                         child: const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            const Icon(Icons.library_books_outlined),
+                            const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -357,6 +449,8 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              const Icon(Icons.check),
+                              const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -391,6 +485,8 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                         child: const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            const Icon(Icons.family_restroom),
+                            const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -428,12 +524,15 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(6.0),
+                                padding: const EdgeInsets.all(3.0),
                                 child: Container(
-                                  padding: EdgeInsets.all(5),
-
+                                  padding: EdgeInsets.only(top: 6, bottom: 6, left: 15,),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                   width: mediaQuery.size.width * 0.9,
-                                  color: Colors.pinkAccent.withOpacity(0.3),
+
                                   child: Column(
                                     children: [
                                       Row(
@@ -444,7 +543,9 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                              raport['RaportTitle']),
+                                              raport['RaportTitle'],
+                                              style: TextStyle(fontWeight: FontWeight.bold)
+                                              ),
                                         ],
                                       ),
                                     const SizedBox(height: 5),

@@ -27,9 +27,6 @@ class _RoolSwitcherState extends State<RoolSwitcher> {
   );
 
 
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,18 +1,27 @@
+
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socialmediaapp/database/firestore_feed.dart';
 import 'package:intl/intl.dart';
-
 import '../../components/my_list_tile_feed_eltern.dart';
 import '../../components/my_profile_data_read_only.dart';
+import '../../components/notification_controller.dart';
 import '../chat_page.dart';
+import 'addkind_page_eltern.dart';
 import 'infos_kita_page_eltern.dart';
+
+
+
+
+
 
 
 class FeedPageEltern extends StatefulWidget {
   FeedPageEltern({super.key});
+
 
 
   @override
@@ -27,76 +36,89 @@ class _FeedPageElternState extends State<FeedPageEltern> {
   final currentUser = FirebaseAuth.instance.currentUser;
 
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
+
 
   void getKitaInfos() {
-    final mediaQuery = MediaQuery.of(context);
     FirebaseFirestore.instance
         .collection("Users")
         .doc(currentUser?.email)
         .get()
         .then((DocumentSnapshot document) {
       final kitamail = document["kitamail"];
-      if (document["kitamail"] != "")
-      {
+      if (document["kitamail"] != "") {
         return showDialog(
 
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text(
-              "Kita Infos",
-              textAlign: TextAlign.center,
-            ),
-            content: StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("Users")
-                  .doc(kitamail)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final username = snapshot.data!['username'];
-                  final adress = snapshot.data!['adress'];
-                  final adress2 = snapshot.data!['adress2'];
-                  final tel = snapshot.data!['tel'];
-
-                  return
-                    SingleChildScrollView(
-                      child: Column(
-                      children: [
-                        ProfileDataReadOnly(
-                          text: username,
-                          sectionName: "Name",
-                        ),
-                        ProfileDataReadOnly(
-                          text: adress,
-                          sectionName: "Adresse",
-                        ),
-                        ProfileDataReadOnly(
-                          text: adress2,
-                          sectionName: "Ort",
-                        ),
-                        ProfileDataReadOnly(
-                          text: tel,
-                          sectionName: "Telefonnummer",
-                        ),
-                      ],
-                                            ),
-                    );
-                };
-                return const Text("");
-              },
-            ),
-            actions: [
-              // Cancel Button
-              TextButton(
-                child: const Text("Schliessen",
+          builder: (context) =>
+              AlertDialog(
+                title: const Text(
+                  "Kita Infos",
+                  textAlign: TextAlign.center,
                 ),
-                onPressed: () => Navigator.pop(context),
+                content: StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("Users")
+                      .doc(kitamail)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final username = snapshot.data!['username'];
+                      final adress = snapshot.data!['adress'];
+                      final adress2 = snapshot.data!['adress2'];
+                      final tel = snapshot.data!['tel'];
+
+                      return
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ProfileDataReadOnly(
+                                text: username,
+                                sectionName: "Name",
+                              ),
+                              ProfileDataReadOnly(
+                                text: adress,
+                                sectionName: "Adresse",
+                              ),
+                              ProfileDataReadOnly(
+                                text: adress2,
+                                sectionName: "Ort",
+                              ),
+                              ProfileDataReadOnly(
+                                text: tel,
+                                sectionName: "Telefonnummer",
+                              ),
+                            ],
+                          ),
+                        );
+                    };
+                    return const Text("");
+                  },
+                ),
+                actions: [
+                  // Cancel Button
+                  TextButton(
+                    child: const Text("Schliessen",
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-            ],
-          ),
 
         );
-
       } else {
         return Text("Noch kein Kind registriert...");
       }
@@ -107,84 +129,104 @@ class _FeedPageElternState extends State<FeedPageEltern> {
 
 
 
+  void notificationNullEltern() {
+    FirebaseFirestore.instance
+        .collection("Users")
+        .doc(currentUser?.email)
+        .update({"shownotification": "0"});
 
-Widget showButtons () {
+
+  }
+
+
+
+  Widget showButtons() {
     return
       StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection("Users")
               .doc(currentUser?.email)
               .snapshots(),
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        final userData = snapshot.data?.data() as Map<String, dynamic>;
-        if (userData["kitamail"] == "") {
-          return Text("");
-        }
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final userData = snapshot.data?.data() as Map<String, dynamic>;
+              final kitamail = userData["kitamail"];
+              final childcode = userData["childcode"];
+              final shownotification = userData["shownotification"];
+              if (kitamail != "") {
+                return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            InfosKitaPageEltern(
+                              kitamail: kitamail,
+                            )),
+                      );
+                    },
+                    icon: const Icon(Icons.info,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  if (shownotification == "0")
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            ChatPage(
+                              receiverID: kitamail, childcode: childcode,
+                            )),
+                      );
+                    },
+                    icon: const Icon(Icons.chat_bubble,
+                    ),
+                  ),
+                  if (shownotification == "1")
+                    IconButton(
+                      onPressed: () {
 
-        else {
-          final kitamail = userData["kitamail"];
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                        InfosKitaPageEltern(
-                          kitamail: kitamail,
-                        )),
-                  );
-                },
-                icon: const Icon(Icons.info,
-                ),
-              ),
-              const SizedBox(width: 15),
-
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                        ChatPage(
-                          receiverID: kitamail,
-                        )),
-                  );
-                },
-                icon: const Icon(Icons.chat_bubble,
-                ),
-              ),
-              const SizedBox(width: 20),
-            ],
+                        notificationNullEltern();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              ChatPage(
+                                receiverID: kitamail, childcode: childcode,
+                              )),
+                        );
+                      },
+                      icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  const SizedBox(width: 20),
+                ],
+              );
+              }
+            }
+            return Text("");
+          }
           );
-        }
-      }
-      return Text("");
-    }
-  );
-
-}
-
-
+  }
 
 
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
           child: Container(
             color: Colors.black,
-            height: 2.0,
+            height: 1.0,
           ),
         ),
         title: Text("Kita",
-          style: TextStyle(color:Colors.black),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
           showButtons(),
@@ -210,12 +252,14 @@ Widget showButtons () {
     final userData = snapshot.data?.data() as Map<String, dynamic>;
     if (userData["kitamail"] == "")
     {
+
       return Text("");
     }
 
     else {
 
     final kitamail = userData["kitamail"];
+
     return
 
     ///Kita name ausgeben
@@ -228,15 +272,17 @@ Widget showButtons () {
     builder: (context, snapshot) {
     if (snapshot.hasData) {
     final username = snapshot.data!['username'];
+
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
 
         Text(
             username,
-          textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 25,),
-        ),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+            ),
               ],
     );
     };
@@ -324,25 +370,25 @@ Widget showButtons () {
                         }
                         else Text("Noch kein Kind registriert...");
                       }
-                      return Column(
+
+                      if (snapshot.connectionState != ConnectionState.waiting)
+
+                      return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Bitte Kind hinzufügen",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
+                          Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Text("Noch keine Einträge vorhanden..."
+
+                              )
                           ),
                         ],
                       );
+                      else
+                        return
+                          Text("");
                     }
                 ),
-
-
-
-
 
               ],
             ),

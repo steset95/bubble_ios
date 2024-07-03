@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +10,7 @@ import 'package:pay/pay.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
 
 import '../../components/my_profile_data_read_only.dart';
+import '../../components/notification_controller.dart';
 import '../../database/firestore_child.dart';
 
 
@@ -37,7 +40,20 @@ class _EinwilligungenKindPageKitaState extends State<EinwilligungenKindPageKita>
       .collection("Kinder"
   );
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
 
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +65,7 @@ class _EinwilligungenKindPageKitaState extends State<EinwilligungenKindPageKita>
               preferredSize: const Size.fromHeight(4.0),
               child: Container(
                 color: Colors.black,
-                height: 2.0,
+                height: 1.0,
               ),
             ),
             title: Text("Einwilligungen",

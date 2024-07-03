@@ -61,7 +61,7 @@ class _MyListTileFeedElternState extends State<MyListTileFeedEltern> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    width: mediaQuery.size.width * 0.85,
+                    width: mediaQuery.size.width * 0.80,
                     child: Text(
                       style: TextStyle(fontSize: 12,
                       ),

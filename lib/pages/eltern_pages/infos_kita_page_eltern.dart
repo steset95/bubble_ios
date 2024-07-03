@@ -1,10 +1,13 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../components/my_profile_data_read_only.dart';
+import '../../components/notification_controller.dart';
 
 
 
@@ -38,7 +41,20 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
       .collection("Kinder"
   );
 
+  /// Notification
+  Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+  }
 
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+  /// Notification
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +66,7 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
               preferredSize: const Size.fromHeight(4.0),
               child: Container(
                 color: Colors.black,
-                height: 2.0,
+                height: 1.0,
               ),
             ),
             title: Text("Infos Kita",
@@ -97,6 +113,8 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
               };
               return const Text("");
             },
+
+
           ),
     )
       )

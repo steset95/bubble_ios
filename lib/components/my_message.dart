@@ -8,6 +8,7 @@ final String senderEmail;
 final String receiverID;
 final String message;
 final Timestamp timestamp;
+final String uhrzeit;
 
 Message({
   required this.senderID,
@@ -15,6 +16,7 @@ Message({
   required this.receiverID,
   required this.message,
   required this.timestamp,
+  required this.uhrzeit,
 });
 
 
@@ -27,6 +29,7 @@ return{
   'receiverID': receiverID,
   'message': message,
   'timestamp': timestamp,
+  'uhrzeit': uhrzeit,
 };
 }
 }

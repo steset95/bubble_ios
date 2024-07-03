@@ -37,11 +37,13 @@ class _ForgotPasswordPage extends State<ForgotPasswordPage> {
 
             children: [
               // logo
+              const SizedBox(height: 50,),
+              // logo
               Icon(
                 Icons.person,
                 size: 80,
-                color: Theme.of(context).colorScheme.inversePrimary,
               ),
+              // app name
 
               const Text(
                 "Passwort vergessen",
@@ -52,19 +54,21 @@ class _ForgotPasswordPage extends State<ForgotPasswordPage> {
               const SizedBox(height: 80),
 
               // Email textfield
+              const Text(
+                "Email für Widerherstellungslink eintragen:",
+                style: TextStyle(fontSize: 12),
 
+              ),
+              const SizedBox(height: 10),
               MyTextField(
-                hinText: "Email",
+                hintText: "Email",
                 obscureText: false,
                 controller: emailController,
 
               ),
 
-              const SizedBox(height: 45),
+              const SizedBox(height: 40),
 
-              // password textfield
-
-              const SizedBox(height: 10),
 
 
               //sing in button
