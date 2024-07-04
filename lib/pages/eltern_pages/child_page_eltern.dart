@@ -201,6 +201,15 @@ class _ChildPageElternState extends State<ChildPageEltern> {
         },
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              // Textfeld schliessen
+              Navigator.pop(context);
+              //Textfeld leeren
+              _raportTextController.clear();
+            },
+            child: Text("Abbrechen"),
+          ),
           // Speicher Button
           TextButton(
             onPressed: () {
@@ -218,7 +227,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
               Navigator.pop(context);
               return displayMessageToUser("Abholzeit wurde eingetragen.", context);
             },
-            child: Text("Abholzeit bestätigen"),
+            child: Text("Speichern"),
           )
         ],
       ),
