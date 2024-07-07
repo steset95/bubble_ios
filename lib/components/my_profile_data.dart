@@ -21,6 +21,14 @@ class ProfileData extends StatelessWidget {
         decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+            color: Colors.grey,
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(2, 4),
+          ),
+          ],
         ),
       padding: const EdgeInsets.only(left: 15, bottom: 15),
       margin: EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -37,7 +45,7 @@ class ProfileData extends StatelessWidget {
               IconButton(
                 onPressed: onPressed,
                 icon: Icon(
-                  Icons.edit,
+                  Icons.edit_outlined,
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
               ),

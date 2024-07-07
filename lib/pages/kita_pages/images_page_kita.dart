@@ -74,7 +74,8 @@ class _ImagesPageKitaState extends State<ImagesPageKita> {
         mainAxisSpacing: 5.0,
         ),
             itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) => CachedNetworkImage(
+            itemBuilder: (context, index) =>
+                CachedNetworkImage(
               imageUrl: snapshot.data![index],
               fit: BoxFit.fitHeight,
               placeholder: (context, url) => ProgressWithIcon(),

@@ -93,6 +93,11 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        title: Text("Geschlecht",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         // Text Eingabe
         content: DropdownButtonFormField<String>(
           isDense: true,
@@ -162,6 +167,9 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
           AlertDialog(
             title: Text(
               "$title",
+              style: TextStyle(color: Colors.black,
+                fontSize: 20,
+              ),
               //"Edit $field",
             ),
             content: TextFormField(

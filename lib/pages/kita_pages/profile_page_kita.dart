@@ -59,6 +59,9 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
       builder: (context) => AlertDialog(
         title: Text(
           "$titel",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
           //"Edit $field",
         ),
         content: TextFormField(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'my_delete_button.dart';
+
 
 
 class MyListTileFeedEltern extends StatefulWidget {
@@ -47,6 +47,15 @@ class _MyListTileFeedElternState extends State<MyListTileFeedEltern> {
             borderRadius: BorderRadius.circular(12),
             //border: Border.all(color: Colors.black),
           color: Theme.of(context).colorScheme.secondary,
+
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(2, 4),
+            ),
+          ],
         ),
         child:
         ListTile(

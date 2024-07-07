@@ -20,6 +20,14 @@ class ProfileDataReadOnly extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(2, 4),
+          ),
+        ],
           //border: Border.all(color: Colors.black)
       ),
       padding: const EdgeInsets.only(left: 15, bottom: 15, right: 15, top: 15),

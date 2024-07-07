@@ -11,6 +11,7 @@ class ProfileDataSwitch extends StatefulWidget {
 
 
 
+
  ProfileDataSwitch({
     super.key,
     required this.text,
@@ -30,7 +31,8 @@ class ProfileDataSwitch extends StatefulWidget {
 
 class _ProfileDataSwitchState extends State<ProfileDataSwitch> {
 
-bool isSwitched  = false;
+bool isSwitchedfalse  = false;
+bool isSwitchedtrue  = true;
 
 
 void updateEinwilligungen (String childcode, bool isSwitched, String field) async {
@@ -87,15 +89,26 @@ void updateEinwilligungen (String childcode, bool isSwitched, String field) asyn
 
                 Column(
                   children: [
+                    if (widget.text == "erlaubt")
                     Switch(
-                        value: isSwitched,
+                        value: isSwitchedtrue,
                         onChanged: (value)  {
                           updateEinwilligungen(widget.childcode, value, widget.field);
-                          isSwitched = value;
+                          isSwitchedtrue = value;
                           setState(() {
                           });
                         }
                     ),
+                    if (widget.text == "nicht erlaubt")
+                      Switch(
+                          value: isSwitchedfalse,
+                          onChanged: (value)  {
+                            updateEinwilligungen(widget.childcode, value, widget.field);
+                            isSwitchedfalse = value;
+                            setState(() {
+                            });
+                          }
+                      ),
                   ],
                 )
               ],

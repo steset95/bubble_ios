@@ -167,7 +167,7 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                             )),
                       );
                     },
-                    icon: const Icon(Icons.info,
+                    icon: const Icon(Icons.perm_contact_cal_outlined,
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -182,7 +182,7 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                             )),
                       );
                     },
-                    icon: const Icon(Icons.chat_bubble,
+                    icon: const Icon(Icons.chat_bubble_outline,
                     ),
                   ),
                   if (shownotification == "1")

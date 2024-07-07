@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:socialmediaapp/pages/chat_page.dart';
 import 'package:socialmediaapp/pages/kita_pages/raport_page.dart';
@@ -62,6 +63,9 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
 
             title: const Text(
               "Schlüssel",
+              style: TextStyle(color: Colors.black,
+                fontSize: 20,
+              ),
             ),
             content: Row(
               children: [
@@ -214,13 +218,21 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           height: 100,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
 
-                              const Icon(Icons.check),
+                              const Icon(Icons.key),
                               const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -235,8 +247,8 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                     ),
 
                     const SizedBox(width: 10),
-
-                    Expanded(
+                    if (kIsWeb == false)
+                      Expanded(
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {
@@ -251,12 +263,20 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: Offset(2, 4),
+                            ),
+                            ],
                           ),
                           height: 100,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.camera_alt),
+                              const Icon(Icons.camera_alt_outlined ),
                               const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -281,18 +301,26 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                               .snapshots(),
                           builder: (context, snapshot)
                           {
-                            if (snapshot.connectionState == ConnectionState.waiting)
+                            if (snapshot.connectionState == ConnectionState.waiting) {
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.primary,
                                   borderRadius: BorderRadius.circular(15),
+                                  boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: Offset(2, 4),
+                                  ),
+                                  ],
                                 ),
                                 height: 100,
                                 child: const Column(
 
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.chat),
+                                    const Icon(Icons.chat_outlined),
                                     const SizedBox(height: 5),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -303,6 +331,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                   ],
                                 ),
                               );
+                            }
                             // ladekreis
                             if (snapshot.hasData) {
                               // Entsprechende Daten extrahieren
@@ -325,12 +354,20 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                   decoration: BoxDecoration(
                                     color: Theme.of(context).colorScheme.primary,
                                     borderRadius: BorderRadius.circular(15),
+                                    boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: Offset(2, 4),
+                                    ),
+                                    ],
                                   ),
                                   height: 100,
                                   child: const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.chat),
+                                      const Icon(Icons.chat_outlined),
                                       const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -358,6 +395,14 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).colorScheme.secondary,
                                       borderRadius: BorderRadius.circular(15),
+                                      boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.grey,
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: Offset(2, 4),
+                                      ),
+                                      ],
                                     ),
                                     height: 100,
                                     child: const Column(
@@ -408,6 +453,14 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(15),
+                          boxShadow: const [
+                          BoxShadow(
+                            color: Colors.grey,
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: Offset(2, 4),
+                          ),
+                          ],
                         ),
                         height: 100,
                         child: const Column(
@@ -444,6 +497,14 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: Offset(2, 4),
+                            ),
+                            ],
                           ),
                           height: 100,
                           child: const Column(
@@ -480,12 +541,20 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: Offset(2, 4),
+                            ),
+                            ],
                           ),
                         height: 100,
                         child: const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.family_restroom),
+                            const Icon(Icons.family_restroom_outlined),
                             const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -501,6 +570,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

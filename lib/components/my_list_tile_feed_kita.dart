@@ -38,7 +38,11 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Eintrag löschen?"),
+        title: const Text("Eintrag löschen?",
+          style: TextStyle(color: Colors.black,
+          fontSize: 20,
+        ),
+        ),
         actions: [
           //Cancel Button
           TextButton(
@@ -73,8 +77,17 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.black)
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.black),
+          boxShadow: const [
+        BoxShadow(
+        color: Colors.grey,
+          spreadRadius: 1,
+          blurRadius: 3,
+          offset: Offset(2, 4),
+        ),
+        ],
         ),
         child:
             ListTile(

@@ -115,7 +115,11 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Absenz bis:"),
+        title: Text("Absenz bis:",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         content: TextField (
           //maxLength: 5,
           autofocus: true,
@@ -177,6 +181,11 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        title: Text("Abholzeit",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         content: DropdownButtonFormField<String>(
           isDense: true,
           isExpanded: false,
@@ -357,7 +366,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
             /// Abholzeit
             IconButton(
               onPressed: () => openChildBoxAbholzeit(childcode: childcode),
-              icon: const Icon(Icons.timer,
+              icon: const Icon(Icons.watch_later_outlined,
               ),
             ),
             const SizedBox(width: 15),
@@ -366,7 +375,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
             IconButton(
               onPressed: () => showRaportDialogAbsenz(childcode),
-              icon: const Icon(Icons.sick_outlined,
+              icon: const Icon(Icons.beach_access_outlined,
               ),
             ),
             const SizedBox(width: 20),
@@ -388,8 +397,8 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
   @override
   Widget build(BuildContext context)  {
-    String currentDate = DateTime.now().subtract(Duration(days:_counter)).toString(); // Aktuelles Datum als String
-    String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
+    final String currentDate = DateTime.now().subtract(Duration(days:_counter)).toString(); // Aktuelles Datum als String
+    final String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
     final mediaQuery = MediaQuery.of(context);
     return SafeArea(
       child: Scaffold(
@@ -452,6 +461,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                           children: [
                             ImageViewerProfile(childcode: childcode),
                             const SizedBox(height: 10),
+
                             Text(formattedDate,
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Goli',),

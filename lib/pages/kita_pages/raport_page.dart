@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../components/my_image_upload_button.dart';
@@ -92,6 +93,9 @@ class _RaportPageState extends State<RaportPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Kind Anmelden?",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
         ),
 
         actions: [
@@ -137,7 +141,11 @@ class _RaportPageState extends State<RaportPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Essen hinzufügen"),
+        title: Text("Essen hinzufügen",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         content: TextField (
           keyboardType: TextInputType.multiline,
           minLines: 1,
@@ -191,7 +199,11 @@ class _RaportPageState extends State<RaportPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Schlaf"),
+        title: Text("Schlaf",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         //insetPadding: EdgeInsets.symmetric(horizontal: 100),
         content: TextField (
           keyboardType: TextInputType.multiline,
@@ -248,7 +260,11 @@ class _RaportPageState extends State<RaportPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Aktivität hinzufügen"),
+        title: Text("Aktivität hinzufügen",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         //insetPadding: EdgeInsets.symmetric(horizontal: 100),
         content: TextField (
           keyboardType: TextInputType.multiline,
@@ -303,7 +319,11 @@ class _RaportPageState extends State<RaportPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Diverses hinzufügen"),
+        title: Text("Diverses hinzufügen",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         //insetPadding: EdgeInsets.symmetric(horizontal: 100),
         content: TextField (
           keyboardType: TextInputType.multiline,
@@ -360,9 +380,11 @@ class _RaportPageState extends State<RaportPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-
-        title: Text("Kind Abmelden?"),
-
+        title: Text("Kind Abmelden?",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         actions: [
           // cancel Button
           TextButton(
@@ -434,11 +456,19 @@ class _RaportPageState extends State<RaportPage> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.door_back_door),
+                              Icon(Icons.door_back_door_outlined ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -460,12 +490,20 @@ class _RaportPageState extends State<RaportPage> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           height: 140,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.local_pizza),
+                              Icon(Icons.local_pizza_outlined),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -494,12 +532,20 @@ class _RaportPageState extends State<RaportPage> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           height: 140,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.bed),
+                              Icon(Icons.bed_outlined),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -522,6 +568,14 @@ class _RaportPageState extends State<RaportPage> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           height: 140,
                           child: const Column(
@@ -555,12 +609,20 @@ class _RaportPageState extends State<RaportPage> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           height: 140,
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.note_add),
+                              Icon(Icons.note_add_outlined),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -583,6 +645,14 @@ class _RaportPageState extends State<RaportPage> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                              ),
+                            ],
                           ),
                           height: 140,
                           child: const Column(
@@ -604,7 +674,8 @@ class _RaportPageState extends State<RaportPage> {
                   ],
                 ),
               ),
-      Padding(
+              if (kIsWeb == false)
+                Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [

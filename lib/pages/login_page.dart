@@ -105,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
               Container(
+
                 child: Row(
                   children: [
                     Flexible(

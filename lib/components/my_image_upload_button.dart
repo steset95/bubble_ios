@@ -1,14 +1,10 @@
 
 
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:socialmediaapp/database/firestore_images.dart';
-
 import '../helper/helper_functions.dart';
 
 
@@ -46,6 +42,7 @@ class _ImageUploadState extends State<ImageUpload> {
       child:
         GestureDetector(
             onTap: () async {
+
               final results = await FilePicker.platform.pickFiles(
                 allowMultiple: true,
                 type: FileType.custom,
@@ -78,12 +75,20 @@ class _ImageUploadState extends State<ImageUpload> {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(15),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.grey,
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                  offset: Offset(2, 4),
+                ),
+              ],
             ),
             height: 80,
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.photo_camera),
+                Icon(Icons.photo_camera_outlined),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -74,6 +74,11 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        title: Text("Kind hinzufügen",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         // Text Eingabe
         content: TextField(
           decoration: InputDecoration(hintText: "Vorname, Nachname"),
@@ -96,7 +101,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
               //Box schliessen
               Navigator.pop(context);
             },
-            child: Text("Kind hinzufügen"),
+            child: Text("Hinzufügen"),
           )
         ],
       ),
@@ -107,7 +112,10 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          title: Text("Löschen bestätigen?"
+          title: Text("Löschen bestätigen?",
+            style: TextStyle(color: Colors.black,
+              fontSize: 20,
+            ),
           ),
         actions: [
           TextButton(
@@ -137,6 +145,11 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
+          title: Text("Gruppe ändern",
+            style: TextStyle(color: Colors.black,
+              fontSize: 20,
+            ),
+          ),
       // Text Eingabe
       content: DropdownButtonFormField<String>(
         //dropdownColor: Colors.blue[900],
@@ -204,6 +217,9 @@ var buttons = '1';
       builder: (context) => AlertDialog(
         title: Text(
           "$titel",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
           //"Edit $field",
         ),
         content: TextField(
@@ -320,10 +336,7 @@ var buttons = '1';
                                 },
                                 child: optionCards(
                                     userData["gruppe2"], "assets/icons/tools.png",
-                                    context, "2", Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary)
+                                    context, "2", Colors.blueAccent.shade100)
                             ),
                             InkWell(
                                 onTap: () {
@@ -334,10 +347,7 @@ var buttons = '1';
                                 },
                                 child: optionCards(
                                     userData["gruppe3"], "assets/icons/file.png",
-                                    context, "3", Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary)
+                                    context, "3", Colors.blueAccent.shade100)
                             ),
                           ],
                         ),
@@ -357,10 +367,7 @@ var buttons = '1';
 
                                 child: optionCards(
                                     userData["gruppe1"], "assets/icons/recycle.png",
-                                    context, "1", Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary)
+                                    context, "1", Colors.blueAccent.shade100)
                             ),
                             InkWell(
                                 onTap: () {
@@ -382,10 +389,7 @@ var buttons = '1';
                                 },
                                 child: optionCards(
                                     userData["gruppe3"], "assets/icons/file.png",
-                                    context, "3", Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary)
+                                    context, "3", Colors.blueAccent.shade100)
                             ),
                           ],
                         ),
@@ -405,10 +409,7 @@ var buttons = '1';
 
                                 child: optionCards(
                                     userData["gruppe1"], "assets/icons/recycle.png",
-                                    context, "1", Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary)
+                                    context, "1", Colors.blueAccent.shade100)
                             ),
                             InkWell(
                                 onTap: () {
@@ -419,10 +420,7 @@ var buttons = '1';
                                 },
                                 child: optionCards(
                                     userData["gruppe2"], "assets/icons/tools.png",
-                                    context, "2", Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary)
+                                    context, "2", Colors.blueAccent.shade100)
                             ),
                             InkWell(
                                 onTap: () {
@@ -467,6 +465,14 @@ var buttons = '1';
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(2, 4),
+            ),
+          ],
         ),
         child: SingleChildScrollView(
           child: Stack(
@@ -570,14 +576,17 @@ var buttons = '1';
                               decoration: BoxDecoration(
                                 color: color,
                                 borderRadius: BorderRadius.circular(12),
-
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: Offset(2, 4),
+                                  ),
+                                ],
                               ),
                               padding: const EdgeInsets.only(left: 10,),
                               margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-
-
-
-
 
                               child: ListTile(
                                   title: Text(childText,
@@ -669,6 +678,8 @@ var buttons = '1';
                           document.data() as Map<String, dynamic>;
                           String childText = data['child'];
                           String anmeldungText = data['anmeldung'];
+                          String elternmail = data['eltern'];
+                          String shownotification = data['shownotification'];
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
 
@@ -687,10 +698,18 @@ var buttons = '1';
                               decoration: BoxDecoration(
                                 color: color,
                                 borderRadius: BorderRadius.circular(12),
-
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: Offset(2, 4),
+                                  ),
+                                ],
                               ),
                               padding: const EdgeInsets.only(left: 10,),
                               margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+
                               child: ListTile(
                                   title: Text(childText,
                                   ),
@@ -702,6 +721,20 @@ var buttons = '1';
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
 
+                                      if(shownotification == "1")
+                                        IconButton(
+                                          onPressed: () {
+                                            notificationNullKind(docID);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => ChatPage(
+                                                receiverID: elternmail, childcode: docID,
+                                              )),
+                                            );
+                                          },
+                                          color: Theme.of(context).colorScheme.inversePrimary,
+                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                        ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),
@@ -767,6 +800,8 @@ var buttons = '1';
                           document.data() as Map<String, dynamic>;
                           String childText = data['child'];
                           String anmeldungText = data['anmeldung'];
+                          String elternmail = data['eltern'];
+                          String shownotification = data['shownotification'];
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
 
@@ -785,14 +820,17 @@ var buttons = '1';
                               decoration: BoxDecoration(
                                 color: color,
                                 borderRadius: BorderRadius.circular(12),
-
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: Offset(2, 4),
+                                  ),
+                                ],
                               ),
                               padding: const EdgeInsets.only(left: 10,),
                               margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-
-
-
-
 
                               child: ListTile(
                                   title: Text(childText,
@@ -805,6 +843,20 @@ var buttons = '1';
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
 
+                                      if(shownotification == "1")
+                                        IconButton(
+                                          onPressed: () {
+                                            notificationNullKind(docID);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => ChatPage(
+                                                receiverID: elternmail, childcode: docID,
+                                              )),
+                                            );
+                                          },
+                                          color: Theme.of(context).colorScheme.inversePrimary,
+                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                        ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),

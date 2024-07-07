@@ -84,10 +84,13 @@ bool externPost = false;
         builder: (context) =>
             AlertDialog(
               title: Text("Neuer Post",
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black,
+                  fontSize: 20,
+                ),
               ),
               content: Container(
                 width: mediaQuery.size.width * 0.8,
+
                 child: Column(
                   children: [
                     TextField(
@@ -169,7 +172,7 @@ bool externPost = false;
             children: [
               Text("Feed wechseln"),
               const SizedBox(width: 10),
-              Icon(Icons.change_circle),
+              Icon(Icons.change_circle_outlined),
               const SizedBox(width: 15),
             ],
           ),

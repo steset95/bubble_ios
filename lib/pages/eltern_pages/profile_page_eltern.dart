@@ -96,6 +96,9 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
       builder: (context) => AlertDialog(
         title: Text(
           "$title",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
           //"Edit $field",
         ),
         content: TextFormField(
