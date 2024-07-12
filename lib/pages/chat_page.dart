@@ -37,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
   void sendMessage() async {
     //if there is something inside the Textfield
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(widget.receiverID, _messageController.text, widget.childcode);
+      _chatService.sendMessage(widget.receiverID, _messageController.text, widget.childcode);
 
     _messageController.clear();
   }
@@ -61,6 +61,16 @@ class _ChatPageState extends State<ChatPage> {
             .collection("Users")
             .doc(currentUser?.email)
             .update({"shownotification": "0"});
+
+
+        FirebaseFirestore.instance
+        .collection("Users")
+          .doc(currentUser?.email)
+          .collection("notifications")
+          .doc("notification")
+          .update({"notification": 0});
+
+
       }
           if (rool == "Kita") {
 

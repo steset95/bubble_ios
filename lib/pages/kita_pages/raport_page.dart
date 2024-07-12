@@ -150,10 +150,12 @@ class _RaportPageState extends State<RaportPage> {
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 20,
-          maxLength: 200,
+          maxLength: 150,
           controller: _raportTextController,
           autofocus: true,
-          decoration: InputDecoration(hintText: "Essen..."),
+          decoration: InputDecoration(hintText: "Essen...",
+              counterText: "",
+          ),
         ),
         actions: [
           // cancel Button
@@ -209,10 +211,12 @@ class _RaportPageState extends State<RaportPage> {
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 20,
-          maxLength: 200,
+          maxLength: 150,
           controller: _raportTextController,
           autofocus: true,
-          decoration: InputDecoration(hintText: "Schlaf..."),
+          decoration: InputDecoration(hintText: "Schlaf...",
+            counterText: "",
+          ),
         ),
         actions: [
           // cancel Button
@@ -270,10 +274,12 @@ class _RaportPageState extends State<RaportPage> {
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 20,
-          maxLength: 200,
+          maxLength: 150,
           controller: _raportTextController,
           autofocus: true,
-          decoration: InputDecoration(hintText: "Aktivität..."),
+          decoration: InputDecoration(hintText: "Aktivität...",
+            counterText: "",
+          ),
         ),
         actions: [
           // cancel Button
@@ -329,10 +335,12 @@ class _RaportPageState extends State<RaportPage> {
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 20,
-          maxLength: 200,
+          maxLength: 150,
           controller: _raportTextController,
           autofocus: true,
-          decoration: InputDecoration(hintText: "Diverses..."),
+          decoration: InputDecoration(hintText: "Diverses...",
+            counterText: "",
+          ),
         ),
         actions: [
           // cancel Button

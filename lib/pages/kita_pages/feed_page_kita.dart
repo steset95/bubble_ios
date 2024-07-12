@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:socialmediaapp/components/my_list_tile_feed_kita.dart';
 import 'package:socialmediaapp/database/firestore_feed.dart';
 import 'package:intl/intl.dart';
+import 'package:socialmediaapp/pages/kita_pages/post_page_kita.dart';
 
 import '../../components/notification_controller.dart';
 import '../../helper/helper_functions.dart';
@@ -77,92 +78,6 @@ class _FeedPageKitaState extends State<FeedPageKita> {
 bool externPost = false;
 
 
-  void newPost() {
-    final mediaQuery = MediaQuery.of(context);
-      showDialog(
-        context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: Text("Neuer Post",
-                style: TextStyle(color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-              content: Container(
-                width: mediaQuery.size.width * 0.8,
-
-                child: Column(
-                  children: [
-                    TextField(
-                      autofocus: true,
-                      controller: newPostControllerTitel,
-                      decoration: InputDecoration(hintText: "Titel"),
-                    ),
-                    const SizedBox(height: 10,),
-                    SingleChildScrollView(
-                        child: Container(
-                          height: mediaQuery.size.height * 0.25,
-                          child: TextField(
-
-                            keyboardType: TextInputType.multiline,
-                            minLines: 5,
-                            maxLines: 20,
-
-                            controller: newPostControllerInhalt,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Inhalt...",
-
-                            ),
-                          ),
-                        ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                // cancel Button
-                TextButton(
-                  onPressed: () {
-                    // Textfeld schliessen
-                    Navigator.pop(context);
-                    //Textfeld leeren
-                    newPostControllerTitel.clear();
-                    newPostControllerInhalt.clear();
-                  },
-                  child: Text("Abbrechen"),
-                ),
-
-                // save Button
-                TextButton(
-                  onPressed: () {
-    if (newPostControllerInhalt.text.isNotEmpty  && newPostControllerTitel.text.isNotEmpty) {
-    if (externPost) {
-    // Raport hinzufügen
-    postMessageExt();
-    }
-    else{
-    postMessageInt();
-    // Textfeld schliessen
-    }
-    Navigator.pop(context);
-    //Textfeld leeren
-    newPostControllerTitel.clear();
-    newPostControllerInhalt.clear();
-    }
-    else {
-      return displayMessageToUser("Bitte Titel und Inhalt eingeben", context);
-    }
-    },
-                  child: Text("Speichern"),
-                ),
-              ],
-            ),
-      );
-    }
-
-
-
   Widget showButtons () {
     return
       GestureDetector(
@@ -202,7 +117,21 @@ bool externPost = false;
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        onPressed: newPost,
+        onPressed:  () {
+          if (externPost == true) {
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>
+                PostPageKita(externPost: externPost, umgebung: "extern")),
+          );
+          }
+          else
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+              PostPageKita(externPost: externPost, umgebung: "intern")),
+            );
+        },
         child: const Icon(
             Icons.message,
           color: Colors.white

@@ -17,6 +17,7 @@ import '../../helper/helper_functions.dart';
 import '../chat_page.dart';
 import '../../old/einwilligungen_kind_page_eltern.dart';
 import 'addkind_page_eltern.dart';
+import 'bezahlung_page_eltern.dart';
 import 'infos_kind_page_eltern.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -120,27 +121,32 @@ class _ChildPageElternState extends State<ChildPageEltern> {
             fontSize: 20,
           ),
         ),
-        content: TextField (
+        content: TextFormField (
+          maxLength: 20,
           //maxLength: 5,
           autofocus: true,
           //keyboardType: TextInputType.number,
           controller: _raportTextController,
-          decoration: InputDecoration(hintText: "TT.MM"),
+          decoration: InputDecoration(hintText: "TT.MM",
+            counterText: "",
+          ),
         ),
         actions: [
           // cancel Button
           TextButton(
+            child: Text("Abbrechen"),
             onPressed: () {
               // Textfeld schliessen
               Navigator.pop(context);
               //Textfeld leeren
               _raportTextController.clear();
             },
-            child: Text("Abbrechen"),
+
           ),
 
           // save Button
           TextButton(
+            child: Text("Speichern"),
             onPressed: () {
               final value = _raportTextController.text;
               // Raport hinzufügen
@@ -151,7 +157,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
               //Textfeld leeren
               _raportTextController.clear();
             },
-            child: Text("Speichern"),
+
           ),
         ],
       ),
@@ -428,64 +434,68 @@ class _ChildPageElternState extends State<ChildPageEltern> {
         if (snapshot.hasData) {
           final userData = snapshot.data?.data() as Map<String, dynamic>;
           final childcode = userData["childcode"];
-          if (snapshot.hasData && childcode != "") {
-            getKitaEmail(userData["childcode"]);
-            return Column(
+
+          /// PaymentCheck
+
+
+          if (userData["aboBis"].toDate().isBefore(DateTime.now())){
+            return
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
               children: [
-                const SizedBox(height: 10),
+                const SizedBox(height: 71),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: _incrementCounterMinus,
-                      child: Container(
-                        width: 50,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Icon(Icons.arrow_back_ios_rounded,
-                          //color: Theme.of(context).colorScheme.primary,
-                          size: 40,
-                        ),
-                      ),
-                    ),
-                    /// Profilbild
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ImageViewerProfile(childcode: childcode),
-                            const SizedBox(height: 10),
-
-                            Text(formattedDate,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Goli',),
+                      onTap:  () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              BezahlungPage(),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Text("Bitte Abonnement erneuern",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Icon(Icons.credit_card_outlined,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 60,
+                                ),
+                                Icon(
+                                    Icons.arrow_forward,
+                                    color: Theme.of(context).colorScheme.primary,
+                                    size: 30
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: _incrementCounterPlus,
-                      child: Container(
-                        width: 50,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Icon(Icons.arrow_forward_ios_rounded,
-                          //color: Theme.of(context).colorScheme.primary,
-                          size: 40,
-                        ),
+                        ],
                       ),
                     ),
                   ],
                 ),
+              ],
+            );
+          }
+
+          /// PaymentCheck
+
+          if (snapshot.hasData && childcode != "") {
+            getKitaEmail(userData["childcode"]);
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+
                 const SizedBox(height: 10),
                 Column(
                   children: [
@@ -493,7 +503,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          height: mediaQuery.size.height * 0.50,
+                          height: mediaQuery.size.height * 0.55,
                           width: mediaQuery.size.width * 1,
                           child: StreamBuilder<QuerySnapshot>(
                               stream:  FirebaseFirestore.instance
@@ -513,7 +523,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
                                           child: Container(
-                                          padding: EdgeInsets.only(top: 6, bottom: 6, left: 15,),
+                                          padding: EdgeInsets.only(top: 8, bottom: 8, left: 15,),
                                           decoration: BoxDecoration(
                                           color: Theme.of(context).colorScheme.secondary,
                                           borderRadius: BorderRadius.circular(10),
@@ -560,14 +570,24 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                       ],
                                     );
                                     raportWidgets.add(raportWidget);
-                                    Text(raport['RaportText']);
+                                   // Text(raport['RaportText']);
                                   }
                                 }
-
-                                return
+                                if (raportWidgets.isNotEmpty) {
+                                  return
                                   ListView(
                                     children: raportWidgets,
                                   );
+                                }
+                                else {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Noch keine Einträge..."
+                                      ),
+                                    ],
+                                  );
+                                }
                               }
                           ),
                         ),
@@ -582,14 +602,55 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
                 buildGallery(childcode),
 
-
-                /// Datum wählen
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: _incrementCounterMinus,
+                            child: Container(
+                              width: 50,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Icon(Icons.arrow_back_ios_rounded,
+                                //color: Theme.of(context).colorScheme.primary,
+                                size: 40,
+                              ),
+                            ),
+                          ),
+                          Text(formattedDate,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Goli',),
+                          ),
+                          GestureDetector(
+                            onTap: _incrementCounterPlus,
+                            child: Container(
+                              width: 50,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Icon(Icons.arrow_forward_ios_rounded,
+                                //color: Theme.of(context).colorScheme.primary,
+                                size: 40,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             );
           }
         }
-        if (snapshot.connectionState != ConnectionState.waiting)
-
+        if (snapshot.connectionState != ConnectionState.waiting) {
           return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -604,8 +665,9 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                     ),
                     const SizedBox(height: 20),
                     IconButton(
-                      icon: const Icon(Icons.add_reaction_outlined,
+                      icon:  Icon(Icons.add_reaction_outlined,
                         size: 60,
+                        color: Theme.of(context).colorScheme.primary,
                       ), onPressed: () {
                       Navigator.push(
                         context,
@@ -621,7 +683,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
             ),
           ],
         );
-                else
+        } else
                 return
                 Text("");
               }

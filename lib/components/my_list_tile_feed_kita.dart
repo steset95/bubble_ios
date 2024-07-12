@@ -102,7 +102,7 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        width: mediaQuery.size.width * 0.80,
+                        width: mediaQuery.size.width * 0.82,
                         child: Text(
                           style: TextStyle(fontSize: 12,
                           ),

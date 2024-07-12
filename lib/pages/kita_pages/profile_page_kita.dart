@@ -7,8 +7,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
+import 'package:socialmediaapp/components/my_profile_data_read_only.dart';
+import 'package:socialmediaapp/pages/impressum_page.dart';
+import 'package:socialmediaapp/pages/kita_pages/provision_page_kita.dart';
 
 import '../../components/notification_controller.dart';
+import '../agb_page.dart';
 
 
 class ProfilePageKita extends StatefulWidget {
@@ -65,6 +69,10 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
           //"Edit $field",
         ),
         content: TextFormField(
+          decoration: InputDecoration(
+            counterText: "",
+          ),
+          maxLength: 100,
           initialValue: text,
           autofocus: true,
           onChanged: (value){
@@ -100,6 +108,50 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
     await _firebaseAuth.signOut();
   }
 
+  Widget showButtons () {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  /// Abholzeit
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            ImpressumPage()),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Text("Über die App",
+                         style: TextStyle(fontFamily: 'Goli'),
+                        ),
+                        const SizedBox(width: 15),
+                        Container(
+                          color: Colors.black,
+                          height: 25.0,
+                          width: 1.0,
+                        ),
+                      ],
+                    )
+                  ),
+
+                  const SizedBox(width: 15),
+
+                  /// Absenzmeldung
+
+                  IconButton(
+                    onPressed: logOut,
+                    icon: const Icon(Icons.logout),
+                  ),
+                  const SizedBox(width: 20),
+                ],
+              );
+}
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,11 +169,7 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
             style: TextStyle(color:Colors.black),
           ),
           actions: [
-            IconButton(
-              onPressed: logOut,
-              icon: const Icon(Icons.logout),
-            ),
-            const SizedBox(width: 20),
+            showButtons ()
           ],
         ),
 
@@ -163,10 +211,9 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
                         onPressed: () => editField("username", "Name", userData["username"]),
                       ),
           
-                      ProfileData(
+                      ProfileDataReadOnly(
                         text: userData["email"],
                         sectionName: "Email-Adresse",
-                        onPressed: () => editField("email", "Email-Adresse", userData["email"]),
                       ),
                       ProfileData(
                         text: userData["adress"],
@@ -195,31 +242,46 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
                       SizedBox(
                         height: 30,
                       ),
-                      Text("Guthaben"),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(100))
-                          ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      GestureDetector(
+                        onTap:  () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                ProvisionPageKita()),
+                          );
+                        },
+                        child: Column(
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text (userData["guthaben"].toString()),
-                              ],
+                            Text("Provision"),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.all(Radius.circular(100))
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text (userData["guthaben"].toString()),
+                                      ],
+                                    ),
+                                  ],
+                                )
                             ),
                           ],
-                        )
+                        ),
                       ),
+
+
                       SizedBox(
                         height: 20,
                       ),

@@ -81,7 +81,10 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
         ),
         // Text Eingabe
         content: TextField(
-          decoration: InputDecoration(hintText: "Vorname, Nachname"),
+          maxLength: 40,
+          decoration: InputDecoration(hintText: "Vorname, Nachname",
+            counterText: "",
+          ),
           //Abfrage Inhalt Textfeld - oben definiert
           controller: textController,
           autofocus: true,

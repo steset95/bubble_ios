@@ -1,21 +1,19 @@
 
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:socialmediaapp/components/my_button.dart';
-import 'package:socialmediaapp/components/my_textfield.dart';
-import 'package:socialmediaapp/helper/helper_functions.dart';
 
 
-class AGBPage extends StatefulWidget {
+class ImpressumPage extends StatefulWidget {
 
 
-  const AGBPage({super.key});
+  const ImpressumPage({super.key});
 
   @override
-  State<AGBPage> createState() => AGBPageState();
+  State<ImpressumPage> createState() => ImpressumPageState();
 }
 
-class AGBPageState extends State<AGBPage> {
+class ImpressumPageState extends State<ImpressumPage> {
+
 
 
 
@@ -23,10 +21,18 @@ class AGBPageState extends State<AGBPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        elevation: 0,
-      ),
+    appBar: AppBar(
+    bottom: PreferredSize(
+    preferredSize: const Size.fromHeight(4.0),
+    child: Container(
+    color: Colors.black,
+    height: 1.0,
+    ),
+    ),
+    title: Text("Impressum",
+    style: TextStyle(color:Colors.black),
+    ),
+    ),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         child: Padding(

@@ -30,7 +30,7 @@ class ProfileData extends StatelessWidget {
           ),
           ],
         ),
-      padding: const EdgeInsets.only(left: 15, bottom: 15),
+      padding: const EdgeInsets.only(left: 15, bottom: 15, right: 10),
       margin: EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

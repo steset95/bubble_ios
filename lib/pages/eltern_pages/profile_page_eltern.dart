@@ -7,23 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pay/pay.dart';
-import 'package:socialmediaapp/components/my_image_upload_button.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
+import 'package:socialmediaapp/components/my_profile_data_read_only.dart';
+import 'package:socialmediaapp/pages/eltern_pages/bezahlung_page_eltern.dart';
 
 import '../../components/notification_controller.dart';
 import '../../helper/payment_configurations.dart';
-
-
-// Pay Package
-const _paymentItems = [
-  PaymentItem(
-    label: 'Total',
-    amount: '99.99',
-    status: PaymentItemStatus.final_price,
-  )
-];
-///////// Pay Package
-
+import '../agb_page.dart';
+import '../impressum_page.dart';
 
 
 class ProfilePageEltern extends StatefulWidget {
@@ -37,25 +28,7 @@ class ProfilePageEltern extends StatefulWidget {
 
 class _ProfilePageElternState extends State<ProfilePageEltern> {
 
-  ///////// Pay Package
-  final Future<PaymentConfiguration> _googlePayConfigFuture =
-  PaymentConfiguration.fromAsset('google_pay_config.json');
 
-
-  final Future<PaymentConfiguration> _applePayConfigFuture =
-  PaymentConfiguration.fromAsset('apple_pay_config.json');
-
-
-  void onGooglePayResult(paymentResult) {
-    debugPrint(paymentResult.toString());
-  }
-
-  void onApplePayResult(paymentResult) {
-    debugPrint(paymentResult.toString());
-  }
-
-
-  ///////// Pay Package
 
   /// Notification
   Timer? timer;
@@ -102,6 +75,10 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
           //"Edit $field",
         ),
         content: TextFormField(
+          decoration: InputDecoration(
+            counterText: "",
+          ),
+          maxLength: 100,
           initialValue: text,
           autofocus: true,
           onChanged: (value){
@@ -138,6 +115,50 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
   }
 
 
+  Widget showButtons () {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        /// Abholzeit
+        GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>
+                    ImpressumPage()),
+              );
+            },
+            child: Row(
+              children: [
+                Text("Über die App",
+                  style: TextStyle(fontFamily: 'Goli'),
+                ),
+                const SizedBox(width: 15),
+                Container(
+                  color: Colors.black,
+                  height: 25.0,
+                  width: 1.0,
+                ),
+              ],
+            )
+        ),
+
+        const SizedBox(width: 15),
+
+        /// Absenzmeldung
+
+        IconButton(
+          onPressed: logOut,
+          icon: const Icon(Icons.logout),
+        ),
+        const SizedBox(width: 20),
+      ],
+    );
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -154,11 +175,7 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
             style: TextStyle(color:Colors.black),
           ),
           actions: [
-            IconButton(
-              onPressed: logOut,
-              icon: const Icon(Icons.logout),
-            ),
-            const SizedBox(width: 20),
+            showButtons (),
           ],
         ),
 
@@ -185,9 +202,16 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
               else if (snapshot.hasData) {
                 // Entsprechende Daten extrahieren
                 final userData = snapshot.data?.data() as Map<String, dynamic>;
-          
-                // Inhalt Daten
-          
+
+
+                final aboBis = userData["aboBis"].toDate();
+
+
+
+                String currentDate = aboBis.toString(); // Aktuelles Datum als String
+                String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
+
+
                 return
                   Column(
                     children: [
@@ -200,10 +224,10 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
                         onPressed: () => editField("username", "Name", userData["username"]),
                       ),
           
-                      ProfileData(
+                      ProfileDataReadOnly(
                         text: userData["email"],
                         sectionName: "Email-Adresse",
-                        onPressed: () => editField("email", "Email-Adresse", userData["email"]),
+
                       ),
                       ProfileData(
                         text: userData["adress"],
@@ -229,57 +253,81 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
           
           
                       /// Payment
-          
-          
-                      Container(
-                        child: Text(
-                          "Monatsabo kaufen",
-                          style: TextStyle(fontSize: 15),
+
+
+                      GestureDetector(
+                        onTap:  () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                BezahlungPage()),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Text("Abonnement:",
+                        style: TextStyle(color: Colors.black,
+                          fontSize: 20,
+                        ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+
+                                Row(
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text (userData["abo"]),
+                                        Row(
+                                          children: [
+                                            Text ('Aktiv bis: '),
+                                            Text (formattedDate,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Icon(
+                                                Icons.payment_outlined,
+                                              color: Theme.of(context).colorScheme.primary,
+                                            ),
+                                            Icon(
+                                                Icons.arrow_forward,
+                                                color: Theme.of(context).colorScheme.primary,
+                                                size: 15
+                                            ),
+                                          ],
+                                        ),
+
+                                      ],
+                                    ),
+
+
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(
                         height: 15,
                       ),
-                      FutureBuilder<PaymentConfiguration>(
-                          future: _googlePayConfigFuture,
-                          builder: (context, snapshot) => snapshot.hasData
-                              ? GooglePayButton(
-                            paymentConfiguration: snapshot.data!,
-                            paymentItems: _paymentItems,
-                            type: GooglePayButtonType.buy,
-                            margin: const EdgeInsets.only(top: 15.0),
-                            onPaymentResult: onGooglePayResult,
-                            loadingIndicator: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                              : const SizedBox.shrink()),
-                      GooglePayButton(
-                        paymentConfiguration: PaymentConfiguration.fromJsonString(defaultGooglePay),
-                        paymentItems: _paymentItems,
-                      ),
-          
-                      FutureBuilder<PaymentConfiguration>(
-                          future: _applePayConfigFuture,
-                          builder: (context, snapshot) => snapshot.hasData
-                              ? ApplePayButton(
-                            paymentConfiguration: snapshot.data!,
-                            paymentItems: _paymentItems,
-                            type: ApplePayButtonType.buy,
-                            margin: const EdgeInsets.only(top: 15.0),
-                            onPaymentResult: onApplePayResult,
-                            loadingIndicator: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                              : const SizedBox.shrink()),
-                      ApplePayButton(
-                        paymentConfiguration: PaymentConfiguration.fromJsonString(defaultApplePay),
-                        paymentItems: _paymentItems,
-                      )
-          
-                      /// Payment
-          
+
                     ],
                   );
                 // Fehlermeldung wenn nichts vorhanden ist

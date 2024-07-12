@@ -49,6 +49,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String gruppe2 = "Gruppe 2";
   String gruppe3 = "Gruppe 3";
   String shownotification = "0";
+  String abo = "Probewochen";
+  DateTime aboBis = DateTime.now().add(const Duration(days:14));
+
 
   bool showProgress = false;
   bool visible = false;
@@ -133,7 +136,9 @@ class _RegisterPageState extends State<RegisterPage> {
         'childcode': "",
         "kitamail": "",
         "shownotification": shownotification,
-        'timestamp': Timestamp.now(),
+        "abo": abo,
+        "aboBis": aboBis,
+        'date': DateTime.now(),
       });
     }
     else if (userCredential != null && userCredential.user != null && _currentItemSelected == "Kita") // prüfen ob Felder leer und ob Kita

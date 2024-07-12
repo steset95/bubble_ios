@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,23 +35,25 @@ class _ProfileDataSwitchState extends State<ProfileDataSwitch> {
 
 bool isSwitchedfalse  = false;
 bool isSwitchedtrue  = true;
+bool isSwitched  = false;
 
 
-void updateEinwilligungen (String childcode, bool isSwitched, String field) async {
+
+
+Future <void> updateEinwilligungen (String childcode, bool isSwitched, String field) async {
     final FirestoreDatabaseChild firestoreDatabaseChild = FirestoreDatabaseChild();
     if (isSwitched == true) {
       firestoreDatabaseChild.updateChildEinwilligungen(
         childcode, field, "erlaubt",);
-      isSwitched = true;
+
     }
-    else {
+    else  {
       firestoreDatabaseChild.updateChildEinwilligungen(
         childcode, field, "nicht erlaubt",);
-      isSwitched = false;
+
+
     }
   }
-
-
 
 
 
@@ -71,7 +75,7 @@ void updateEinwilligungen (String childcode, bool isSwitched, String field) asyn
               .secondary,
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.only(left: 15,),
+        padding: const EdgeInsets.only(left: 15, right: 5),
         margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,26 +91,28 @@ void updateEinwilligungen (String childcode, bool isSwitched, String field) asyn
                         .inversePrimary,),
                 ),
 
+
+
                 Column(
                   children: [
                     if (widget.text == "erlaubt")
-                    Switch(
+                    Switch (
                         value: isSwitchedtrue,
-                        onChanged: (value)  {
-                          updateEinwilligungen(widget.childcode, value, widget.field);
-                          isSwitchedtrue = value;
-                          setState(() {
-                          });
+                        onChanged: (value) async {
+                          await updateEinwilligungen(widget.childcode, value, widget.field);
+
+                          isSwitched = value;
+                          setState(()  {});
                         }
                     ),
                     if (widget.text == "nicht erlaubt")
                       Switch(
                           value: isSwitchedfalse,
-                          onChanged: (value)  {
-                            updateEinwilligungen(widget.childcode, value, widget.field);
-                            isSwitchedfalse = value;
-                            setState(() {
-                            });
+                          onChanged: (value) async {
+                            await updateEinwilligungen(widget.childcode, value, widget.field);
+
+                            isSwitched = value;
+                            setState(()  {});
                           }
                       ),
                   ],

@@ -81,6 +81,7 @@ class _ImageViewerProfileState extends State<ImageViewerProfile> {
                               child: CachedNetworkImage(
                                 imageUrl: snapshot.data!,
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) => CircularProgressIndicator(),
                               ),
                             ),
                           ),
@@ -91,6 +92,8 @@ class _ImageViewerProfileState extends State<ImageViewerProfile> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(
                       height: 100,
+                      width: 100,
+                      child: CircularProgressIndicator(),
                     );
                   }
                   return

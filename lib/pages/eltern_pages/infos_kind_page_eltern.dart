@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pay/pay.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
+import 'package:socialmediaapp/pages/eltern_pages/bezahlung_page_eltern.dart';
 
+import '../../components/my_image_viewer_profile.dart';
 import '../../components/my_profile_data_switch.dart';
 import '../../components/notification_controller.dart';
 import '../../database/firestore_child.dart';
@@ -173,10 +175,14 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
               //"Edit $field",
             ),
             content: TextFormField(
+              decoration: InputDecoration(
+                counterText: "",
+              ),
+              maxLength: 150,
               initialValue: value,
               keyboardType: TextInputType.multiline,
               minLines: 1,
-              maxLines: 20,
+              maxLines: 10,
               autofocus: true,
 
               onChanged: (value) {
@@ -208,6 +214,7 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
   }
 
   Widget showData () {
+
       return SingleChildScrollView(
           child:
           StreamBuilder(
@@ -219,6 +226,66 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
       if (snapshot.hasData) {
         final userData = snapshot.data?.data() as Map<String, dynamic>;
         final childcode = userData["childcode"];
+
+
+        /// PaymentCheck
+
+
+        if (userData["aboBis"].toDate().isBefore(DateTime.now())){
+          return
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 71),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap:  () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              BezahlungPage(),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Text("Bitte Abonnement erneuern",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(Icons.credit_card_outlined,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 60,
+                              ),
+                              Icon(
+                                  Icons.arrow_forward,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 30
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+        }
+
+        /// PaymentCheck
+
+
+
+
+
         if (snapshot.hasData && childcode != "") {
           return StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
@@ -241,6 +308,18 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
                 // Entsprechende Daten extrahieren
                 final userData = snapshot.data?.data() as Map<String, dynamic>;
 
+
+
+
+
+
+
+
+
+
+
+
+
                 // Inhalt Daten
 
                 return
@@ -249,13 +328,32 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
                       SizedBox(
                         height: 15,
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                  height: 100,
+                                  child: ImageViewerProfile(childcode: childcode)),
+                              const SizedBox(height: 10),
 
-                      ProfileData(
-                        text: userData["child"],
-                        sectionName: "Name",
-                        onPressed: () => editFieldInfos("Name", "child", childcode, userData["child"]),
+                              GestureDetector(
+                              onTap: () => editFieldInfos("Name", "child", childcode, userData["child"]),
+                                child: Text(userData["child"],
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                        ],
                       ),
-
+                      SizedBox(
+                        height: 10,
+                      ),
                       ProfileData(
                         text: userData["geschlecht"],
                         sectionName: "Geschlecht",
@@ -424,8 +522,9 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
                   ),
                   const SizedBox(height: 20),
                   IconButton(
-                    icon: const Icon(Icons.add_reaction_outlined,
+                    icon:  Icon(Icons.add_reaction_outlined,
                       size: 60,
+                      color: Theme.of(context).colorScheme.primary,
                     ), onPressed: () {
                     Navigator.push(
                       context,

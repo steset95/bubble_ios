@@ -4,13 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:socialmediaapp/database/firestore_feed.dart';
 import 'package:intl/intl.dart';
 import '../../components/my_list_tile_feed_eltern.dart';
 import '../../components/my_profile_data_read_only.dart';
 import '../../components/notification_controller.dart';
+import '../../components/payment_controller.dart';
 import '../chat_page.dart';
 import 'addkind_page_eltern.dart';
+import 'bezahlung_page_eltern.dart';
 import 'infos_kita_page_eltern.dart';
 
 
@@ -42,6 +45,7 @@ class _FeedPageElternState extends State<FeedPageEltern> {
   void initState() {
     super.initState();
     timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+    timer = Timer.periodic(Duration(seconds: 3), (Timer t) => PaymentController());
   }
 
   @override
@@ -223,6 +227,7 @@ class _FeedPageElternState extends State<FeedPageEltern> {
           child: Container(
             color: Colors.black,
             height: 1.0,
+
           ),
         ),
         title: Text("Kita",
@@ -250,7 +255,11 @@ class _FeedPageElternState extends State<FeedPageEltern> {
     builder: (context, snapshot) {
       if (snapshot.hasData) {
     final userData = snapshot.data?.data() as Map<String, dynamic>;
-    if (userData["kitamail"] == "")
+
+
+
+
+        if (userData["kitamail"] == "")
     {
 
       return Text("");
@@ -321,6 +330,63 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                                     child: CircularProgressIndicator(),
                                   );
                                 }
+
+
+                                /// PaymentCheck
+
+
+                                if (userData["aboBis"].toDate().isBefore(DateTime.now())){
+                                  return
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 71),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            GestureDetector(
+                                              onTap:  () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) =>
+                                                      BezahlungPage(),
+                                                  ),
+                                                );
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Text("Bitte Abonnement erneuern",
+                                                    style: TextStyle(fontSize: 20),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Icon(Icons.credit_card_outlined,
+                                                        color: Theme.of(context).colorScheme.primary,
+                                                        size: 60,
+                                                      ),
+                                                      Icon(
+                                                          Icons.arrow_forward,
+                                                          color: Theme.of(context).colorScheme.primary,
+                                                          size: 30
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                }
+
+                                /// PaymentCheck
+
+
                                 // get all Posts
                                 final posts = snapshot.data!.docs;
 
@@ -333,6 +399,7 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                                     ),
                                   );
                                 }
+
                                 // Als Liste zurückgeben
                                 return Expanded(
                                     child: ListView.builder(
