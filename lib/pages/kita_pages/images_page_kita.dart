@@ -130,7 +130,9 @@ class _ImagesPageKitaState extends State<ImagesPageKita> {
             children: [
               Text("Bilder löschen"),
               const SizedBox(width: 10),
-              Icon(Icons.delete),
+              Icon(Icons.delete,
+              color: Colors.black,
+              ),
               const SizedBox(width: 15),
             ],
           ),
@@ -149,15 +151,9 @@ class _ImagesPageKitaState extends State<ImagesPageKita> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(4.0),
-              child: Container(
-                color: Colors.black,
-                height: 1.0,
-              ),
-            ),
-            title: Text("Bilder heute",
-              style: TextStyle(color:Colors.black),
+            scrolledUnderElevation: 0.0,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            title: Text("Bilder",
             ),
             actions: [
               showButtons(),

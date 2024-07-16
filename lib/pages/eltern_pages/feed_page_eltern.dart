@@ -159,7 +159,9 @@ class _FeedPageElternState extends State<FeedPageEltern> {
               final shownotification = userData["shownotification"];
               if (kitamail != "") {
                 return Row(
+                  mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                 children: [
                   IconButton(
                     onPressed: () {
@@ -172,9 +174,10 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                       );
                     },
                     icon: const Icon(Icons.perm_contact_cal_outlined,
+                      color: Colors.black,
                     ),
                   ),
-                  const SizedBox(width: 15),
+                  const SizedBox(width: 10),
                   if (shownotification == "0")
                   IconButton(
                     onPressed: () {
@@ -187,6 +190,7 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                       );
                     },
                     icon: const Icon(Icons.chat_bubble_outline,
+                      color: Colors.black,
                     ),
                   ),
                   if (shownotification == "1")
@@ -202,13 +206,13 @@ class _FeedPageElternState extends State<FeedPageEltern> {
                               )),
                         );
                       },
-                      icon: const Icon(Icons.mark_unread_chat_alt_outlined,
-                        color: Colors.orange,
+                      icon:  Icon(Icons.mark_unread_chat_alt_outlined,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 15),
                 ],
-              );
+                              );
               }
             }
             return Text("");
@@ -222,20 +226,14 @@ class _FeedPageElternState extends State<FeedPageEltern> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
-          child: Container(
-            color: Colors.black,
-            height: 1.0,
-
-          ),
-        ),
+        scrolledUnderElevation: 0.0,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text("Kita",
-          style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
           showButtons(),
         ],
+
       ),
       body:
       Stack(

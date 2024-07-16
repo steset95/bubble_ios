@@ -100,15 +100,9 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
-          child: Container(
-            color: Colors.black,
-            height: 1.0,
-          ),
-        ),
+        scrolledUnderElevation: 0.0,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text("Chat",
-          style: TextStyle(color:Colors.black),
         ),
       ),
             body: Column(

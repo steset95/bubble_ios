@@ -47,6 +47,7 @@ class FirestoreDatabaseChild {
       'fremdkoerper': "nicht erlaubt",
       'homoeopathie': "nicht erlaubt",
       'shownotification': "0",
+      'registrierungen': 0,
     });
 
 

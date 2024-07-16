@@ -35,6 +35,7 @@ class NotificationController {
         .doc("notification")
         .get()
         .then((DocumentSnapshot document) {
+          if (document.exists){
       var notification = document["notification"];
       int not = notification;
 
@@ -66,8 +67,9 @@ class NotificationController {
         };
       }
       );
-    });
+    }});
     }
+
 
 
 

@@ -149,7 +149,9 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
 
         IconButton(
           onPressed: logOut,
-          icon: const Icon(Icons.logout),
+          icon: const Icon(Icons.logout,
+            color: Colors.black,
+          ),
         ),
         const SizedBox(width: 20),
       ],
@@ -164,15 +166,9 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-            child: Container(
-              color: Colors.black,
-              height: 1.0,
-            ),
-          ),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: Text("Profil",
-            style: TextStyle(color:Colors.black),
           ),
           actions: [
             showButtons (),
@@ -202,14 +198,6 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
               else if (snapshot.hasData) {
                 // Entsprechende Daten extrahieren
                 final userData = snapshot.data?.data() as Map<String, dynamic>;
-
-
-                final aboBis = userData["aboBis"].toDate();
-
-
-
-                String currentDate = aboBis.toString(); // Aktuelles Datum als String
-                String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
 
 
                 return
@@ -279,44 +267,21 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
 
                                 Row(
                                   children: [
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text (userData["abo"]),
-                                        Row(
-                                          children: [
-                                            Text ('Aktiv bis: '),
-                                            Text (formattedDate,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Icon(
-                                                Icons.payment_outlined,
-                                              color: Theme.of(context).colorScheme.primary,
-                                            ),
-                                            Icon(
-                                                Icons.arrow_forward,
-                                                color: Theme.of(context).colorScheme.primary,
-                                                size: 15
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
+                                    SizedBox(
+                                      width: 5,
                                     ),
+                                    Icon(
+                                        Icons.payment_outlined,
 
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                        Icons.arrow_forward,
 
+                                        size: 15
+                                    ),
                                   ],
                                 ),
                               ],

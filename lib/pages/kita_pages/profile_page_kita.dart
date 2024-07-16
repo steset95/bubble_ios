@@ -142,7 +142,9 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
 
                   IconButton(
                     onPressed: logOut,
-                    icon: const Icon(Icons.logout),
+                    icon: const Icon(Icons.logout,
+                      color: Colors.black,
+                    ),
                   ),
                   const SizedBox(width: 20),
                 ],
@@ -158,15 +160,9 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-            child: Container(
-              color: Colors.black,
-              height: 1.0,
-            ),
-          ),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: Text("Profil",
-            style: TextStyle(color:Colors.black),
           ),
           actions: [
             showButtons ()
@@ -252,16 +248,20 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
                         },
                         child: Column(
                           children: [
-                            Text("Provision"),
+                            Text("Provision",
+                            style: TextStyle(
+                              fontSize: 15,
+                            color: Theme.of(context).colorScheme.primary,),
+                            ),
                             SizedBox(
-                              height: 20,
+                              height: 15,
                             ),
                             Container(
                                 width: 80,
                                 height: 80,
                                 decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Colors.black,
+                                      color: Theme.of(context).colorScheme.primary,
                                     ),
                                     borderRadius: BorderRadius.all(Radius.circular(100))
                                 ),

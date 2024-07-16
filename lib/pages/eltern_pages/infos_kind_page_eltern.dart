@@ -569,7 +569,9 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
             children: [
               Text("Kind wechseln"),
               const SizedBox(width: 10),
-              Icon(Icons.child_care),
+              Icon(Icons.child_care,
+                color: Colors.black,
+              ),
               const SizedBox(width: 15),
             ],
           ),
@@ -583,15 +585,9 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-            child: Container(
-              color: Colors.black,
-              height: 1.0,
-            ),
-          ),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: Text("Infos Kind",
-            style: TextStyle(color:Colors.black),
           ),
           actions: [
             showButtons(),

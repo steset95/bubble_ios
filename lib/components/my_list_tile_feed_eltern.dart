@@ -44,9 +44,9 @@ class _MyListTileFeedElternState extends State<MyListTileFeedEltern> {
       child: Container(
 
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
             //border: Border.all(color: Colors.black),
-          color: Theme.of(context).colorScheme.secondary,
+          color: Colors.white,
 
           boxShadow: const [
             BoxShadow(
@@ -90,6 +90,7 @@ class _MyListTileFeedElternState extends State<MyListTileFeedEltern> {
                   Text(widget.subTitle,
                     style: TextStyle(
                       fontSize: 8,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],

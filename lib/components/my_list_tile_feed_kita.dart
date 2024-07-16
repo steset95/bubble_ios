@@ -78,11 +78,11 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.black),
-          boxShadow: const [
+          borderRadius: BorderRadius.circular(5),
+            //border: Border.all(color: Colors.black),
+          boxShadow:  [
         BoxShadow(
-        color: Colors.grey,
+          color: Colors.grey.withOpacity(0.5),
           spreadRadius: 1,
           blurRadius: 3,
           offset: Offset(2, 4),
@@ -119,6 +119,7 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
                   Text(widget.subTitle,
                   style: TextStyle(
                       fontSize: 8,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   ),
                   IconButton(
@@ -128,6 +129,7 @@ class _MyListTileFeedKitaState extends State<MyListTileFeedKita> {
                     icon: Icon(
                       Icons.delete,
                       size: 15.0,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   ],

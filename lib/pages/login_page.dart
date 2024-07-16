@@ -74,21 +74,18 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
 
             children: [
-              const SizedBox(height: 50,),
+              const SizedBox(height: 70,),
               // logo
-              Icon(
-                Icons.person,
-                size: 80,
-              ),
+              Image.asset("assets/images/Logo_1.png", width: 140, height:100),
               // app name
-
+              const SizedBox(height: 40),
               const Text(
                 "Login",
                 style: TextStyle(fontSize: 20),
 
               ),
 
-              const SizedBox(height: 80),
+              const SizedBox(height: 20),
 
               // Email textfield
 

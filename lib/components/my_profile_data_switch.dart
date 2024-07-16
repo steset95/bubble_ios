@@ -69,12 +69,17 @@ Future <void> updateEinwilligungen (String childcode, bool isSwitched, String fi
       return new Container(
         width: mediaQuery.size.width * 1,
         decoration: BoxDecoration(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .secondary,
-          borderRadius: BorderRadius.circular(12),
-        ),
+          color: Theme.of(context).colorScheme.inversePrimary,
+      borderRadius: BorderRadius.circular(5),
+      boxShadow: [
+      BoxShadow(
+      color: Colors.grey,
+      spreadRadius: 1,
+      blurRadius: 3,
+      offset: Offset(2, 4),
+      ),
+      ],
+      ),
         padding: const EdgeInsets.only(left: 15, right: 5),
         margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
         child: Column(
@@ -88,7 +93,7 @@ Future <void> updateEinwilligungen (String childcode, bool isSwitched, String fi
                     color: Theme
                         .of(context)
                         .colorScheme
-                        .inversePrimary,),
+                        .primary,),
                 ),
 
 
@@ -103,7 +108,8 @@ Future <void> updateEinwilligungen (String childcode, bool isSwitched, String fi
 
                           isSwitched = value;
                           setState(()  {});
-                        }
+                        },
+                        activeColor: Theme.of(context).colorScheme.primary,
                     ),
                     if (widget.text == "nicht erlaubt")
                       Switch(
@@ -113,7 +119,8 @@ Future <void> updateEinwilligungen (String childcode, bool isSwitched, String fi
 
                             isSwitched = value;
                             setState(()  {});
-                          }
+                          },
+                        activeColor: Theme.of(context).colorScheme.primary,
                       ),
                   ],
                 )

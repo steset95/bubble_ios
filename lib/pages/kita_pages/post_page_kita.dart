@@ -91,13 +91,8 @@ class _PostPageKitaState extends State<PostPageKita> {
     return SafeArea(
       child: Scaffold(
       appBar: AppBar(
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
-          child: Container(
-            color: Colors.black,
-            height: 1.0,
-          ),
-        ),
+        scrolledUnderElevation: 0.0,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title:
         Text('Neuer Post $umgebung',
         ),
@@ -116,8 +111,8 @@ class _PostPageKitaState extends State<PostPageKita> {
                     maxLength: 30,
                     //autofocus: true,
                     controller: newPostControllerTitel,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(hintText: "Titel",
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(hintText: "Titel...",
 
                     ),
 

@@ -61,15 +61,9 @@ class _EinwilligungenKindPageKitaState extends State<EinwilligungenKindPageKita>
       child: Scaffold(
 
           appBar: AppBar(
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(4.0),
-              child: Container(
-                color: Colors.black,
-                height: 1.0,
-              ),
-            ),
+            scrolledUnderElevation: 0.0,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             title: Text("Einwilligungen",
-              style: TextStyle(color:Colors.black),
             ),
           ),
         body: SingleChildScrollView(

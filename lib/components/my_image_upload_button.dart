@@ -74,7 +74,7 @@ class _ImageUploadState extends State<ImageUpload> {
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(10),
               boxShadow: const [
                 BoxShadow(
                   color: Colors.grey,
@@ -85,15 +85,20 @@ class _ImageUploadState extends State<ImageUpload> {
               ],
             ),
             height: 80,
-            child: const Column(
+            child:  Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.photo_camera_outlined),
+                Icon(Icons.photo_camera_outlined,
+                color: Theme.of(context).colorScheme.inversePrimary,
+                ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Bilder"),
+                    Text("Bilder",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.inversePrimary,),
+                    ),
                   ],
                 ),
               ],

@@ -18,8 +18,8 @@ class ProfileDataReadOnly extends StatelessWidget {
     return  Container(
       width: mediaQuery.size.width * 1,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
-        borderRadius: BorderRadius.circular(12),
+        color: Theme.of(context).colorScheme.inversePrimary,
+        borderRadius: BorderRadius.circular(5),
         boxShadow: const [
           BoxShadow(
             color: Colors.grey,
@@ -41,7 +41,7 @@ class ProfileDataReadOnly extends StatelessWidget {
             children: [
               Text(sectionName,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary,),
+                  color: Theme.of(context).colorScheme.primary,),
               ),
             ],
           ),

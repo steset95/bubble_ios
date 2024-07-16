@@ -1,5 +1,7 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
 
@@ -19,7 +21,11 @@ const _paymentItems = [
 class BezahlungPage extends StatefulWidget {
 
 
-  const BezahlungPage({super.key});
+  const BezahlungPage({
+    super.key,
+
+  });
+
 
   @override
   State<BezahlungPage> createState() => BezahlungPageState();
@@ -48,20 +54,16 @@ class BezahlungPageState extends State<BezahlungPage> {
 
   ///////// Pay Package
 
+  final currentUser = FirebaseAuth.instance.currentUser;
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
-    bottom: PreferredSize(
-    preferredSize: const Size.fromHeight(4.0),
-    child: Container(
-    color: Colors.black,
-    height: 1.0,
-    ),
-    ),
+      scrolledUnderElevation: 0.0,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
     title: Text("Abonnement",
-    style: TextStyle(color:Colors.black),
     ),
     ),
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -79,13 +81,44 @@ class BezahlungPageState extends State<BezahlungPage> {
                     children: [
                       /// Payment
 
+    StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance
+        .collection("Users")
+        .doc(currentUser?.email)
+        .snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        // Entsprechende Daten extrahieren
+        final userData = snapshot.data?.data() as Map<String, dynamic>;
+        final aboBis = userData["aboBis"].toDate();
+        final abo = userData["abo"];
 
-                      Container(
-                        child: Text(
-                          "Test",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                      ),
+
+        String currentDate = aboBis.toString(); // Aktuelles Datum als String
+        String formattedDate = currentDate.substring(
+            0, 10); // Nur das Datum extrahieren
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(abo),
+            Row(
+              children: [
+                Text('Aktiv bis: '),
+                Text(formattedDate,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold
+                  ),
+                )
+              ],
+            ),
+          ],
+        );
+      }
+      return Text("");
+    }),
+
+
                       SizedBox(
                         height: 15,
                       ),

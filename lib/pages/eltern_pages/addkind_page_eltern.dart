@@ -28,12 +28,31 @@ class _AddKindPageElternState extends State<AddKindPageEltern> {
   final currentUser = FirebaseAuth.instance.currentUser;
   final TextEditingController textController = TextEditingController();
 
-  void addChildCode(String childcode) {
+  void addChildCode(String childcode) async{
+
+    await FirebaseFirestore.instance
+        .collection("Kinder")
+        .doc(childcode)
+        .get()
+        .then((DocumentSnapshot document) {
+      if (document["registrierungen"] > 3) {
+
+        return displayMessageToUser("Zu viele verschiedene Mail-Adressen verwendet.", context);
+      }
+      else {
     FirebaseFirestore.instance
         .collection("Users")
         .doc(currentUser?.email)
         .update({
-      "childcode" : childcode,
+      "childcode": childcode,
+    });
+    }
+      var registrierungen = document["registrierungen"];
+      int reg = (registrierungen + 1);
+      FirebaseFirestore.instance
+          .collection("Kinder")
+          .doc(childcode)
+          .update({"registrierungen": reg});
     });
   }
 
@@ -56,15 +75,9 @@ class _AddKindPageElternState extends State<AddKindPageEltern> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(4.0),
-              child: Container(
-                color: Colors.black,
-                height: 1.0,
-              ),
-            ),
+            scrolledUnderElevation: 0.0,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             title: Text("Kind hinzufügen",
-              style: TextStyle(color:Colors.black),
             ),
           ),
         body:

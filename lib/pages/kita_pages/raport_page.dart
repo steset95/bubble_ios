@@ -436,15 +436,9 @@ class _RaportPageState extends State<RaportPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-            child: Container(
-              color: Colors.black,
-              height: 1.0,
-            ),
-          ),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: Text("Tagesraport",
-            style: TextStyle(color:Colors.black),
           ),
         ),
           body: Column(
@@ -463,7 +457,7 @@ class _RaportPageState extends State<RaportPage> {
                           height: 140,
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
@@ -473,15 +467,20 @@ class _RaportPageState extends State<RaportPage> {
                               ),
                             ],
                           ),
-                          child: const Column(
+                          child:  Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.door_back_door_outlined ),
+                              Icon(Icons.door_back_door_outlined,
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Anmeldung"),
+                                  Text("Anmeldung",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.inversePrimary,),
+                                  ),
                                 ],
                               ),
                             ],
@@ -497,7 +496,7 @@ class _RaportPageState extends State<RaportPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
@@ -508,15 +507,20 @@ class _RaportPageState extends State<RaportPage> {
                             ],
                           ),
                           height: 140,
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.local_pizza_outlined),
+                              Icon(Icons.local_pizza_outlined,
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Essen"),
+                                  Text("Essen",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.inversePrimary,),
+                                  ),
                                 ],
                               ),
                             ],
@@ -539,7 +543,7 @@ class _RaportPageState extends State<RaportPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
@@ -550,15 +554,20 @@ class _RaportPageState extends State<RaportPage> {
                             ],
                           ),
                           height: 140,
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.bed_outlined),
+                              Icon(Icons.bed_outlined,
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Schlafen"),
+                                  Text("Schlaf",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.inversePrimary,),
+                                  ),
                                 ],
                               ),
                             ],
@@ -575,7 +584,7 @@ class _RaportPageState extends State<RaportPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
@@ -586,15 +595,20 @@ class _RaportPageState extends State<RaportPage> {
                             ],
                           ),
                           height: 140,
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.sports_soccer),
+                              Icon(Icons.sports_soccer,
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Aktivitäten"),
+                                  Text("Aktivitäten",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.inversePrimary,),
+                                  ),
                                 ],
                               ),
                             ],
@@ -616,7 +630,7 @@ class _RaportPageState extends State<RaportPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
@@ -627,15 +641,20 @@ class _RaportPageState extends State<RaportPage> {
                             ],
                           ),
                           height: 140,
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.note_add_outlined),
+                              Icon(Icons.note_add_outlined,
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Diverses"),
+                                  Text("Diverses",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.inversePrimary,),
+                                  ),
                                 ],
                               ),
                             ],
@@ -652,7 +671,7 @@ class _RaportPageState extends State<RaportPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
@@ -663,15 +682,20 @@ class _RaportPageState extends State<RaportPage> {
                             ],
                           ),
                           height: 140,
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.family_restroom),
+                              Icon(Icons.family_restroom_outlined,
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Abholung"),
+                                  Text("Abholung",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.inversePrimary,),
+                                  ),
                                 ],
                               ),
                             ],

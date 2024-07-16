@@ -181,6 +181,11 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
       },
       ),
       actions: [
+        TextButton(
+          child: const Text("Abbrechen",
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         // Speicher Button
         TextButton(
             onPressed: () {
@@ -197,7 +202,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
               //Box schliessen
               Navigator.pop(context);
             },
-            child: Text("Gruppe ändern"),
+            child: Text("Speichern"),
         )
         ],
         ),
@@ -276,15 +281,9 @@ var buttons = '1';
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
-          child: Container(
-            color: Colors.black,
-            height: 1.0,
-          ),
-        ),
+        scrolledUnderElevation: 0.0,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text("Kinder",
-          style: TextStyle(color:Colors.black),
         ),
       ),
 
@@ -298,159 +297,161 @@ var buttons = '1';
       /// Anzeige 3 Gruppen
 
       body:
-      StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("Users")
-              .doc(currentUser?.email)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              // Entsprechende Daten extrahieren
-              final userData = snapshot.data?.data() as Map<String, dynamic>;
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20,),
-                  child: Column(
-                    children: [
-                      if (buttons == '1')
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optiona();
-                                  });
-                                  buttons = '1';
-                                },
+      Container(
+        child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("Users")
+                .doc(currentUser?.email)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Entsprechende Daten extrahieren
+                final userData = snapshot.data?.data() as Map<String, dynamic>;
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20,),
+                    child: Column(
+                      children: [
+                        if (buttons == '1')
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optiona();
+                                    });
+                                    buttons = '1';
+                                  },
 
-                                child: optionCards(
-                                        userData["gruppe1"],
-                                        "assets/icons/recycle.png", context, "1",
-                                        Colors.blueAccent),
-                                ),
+                                  child: optionCards(
+                                          userData["gruppe1"],
+                                          "assets/icons/recycle.png", context, "1",
+                                    Theme.of(context).colorScheme.primary,),
+                                  ),
 
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optionb();
-                                  });
-                                  buttons = '2';
-                                },
-                                child: optionCards(
-                                    userData["gruppe2"], "assets/icons/tools.png",
-                                    context, "2", Colors.blueAccent.shade100)
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optionc();
-                                  });
-                                  buttons = '3';
-                                },
-                                child: optionCards(
-                                    userData["gruppe3"], "assets/icons/file.png",
-                                    context, "3", Colors.blueAccent.shade100)
-                            ),
-                          ],
-                        ),
-
-
-                      if (buttons == '2')
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optiona();
-                                  });
-                                  buttons = '1';
-                                },
-
-                                child: optionCards(
-                                    userData["gruppe1"], "assets/icons/recycle.png",
-                                    context, "1", Colors.blueAccent.shade100)
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optionb();
-                                  });
-                                  buttons = '2';
-                                },
-                                child: optionCards(
-                                    userData["gruppe2"], "assets/icons/tools.png",
-                                    context, "2", Colors.blueAccent)
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optionc();
-                                  });
-                                  buttons = '3';
-                                },
-                                child: optionCards(
-                                    userData["gruppe3"], "assets/icons/file.png",
-                                    context, "3", Colors.blueAccent.shade100)
-                            ),
-                          ],
-                        ),
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optionb();
+                                    });
+                                    buttons = '2';
+                                  },
+                                  child: optionCards(
+                                      userData["gruppe2"], "assets/icons/tools.png",
+                                      context, "2", Colors.indigo.shade100,)
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optionc();
+                                    });
+                                    buttons = '3';
+                                  },
+                                  child: optionCards(
+                                      userData["gruppe3"], "assets/icons/file.png",
+                                      context, "3", Colors.indigo.shade100,)
+                              ),
+                            ],
+                          ),
 
 
-                      if (buttons == '3')
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optiona();
-                                  });
-                                  buttons = '1';
-                                },
+                        if (buttons == '2')
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optiona();
+                                    });
+                                    buttons = '1';
+                                  },
 
-                                child: optionCards(
-                                    userData["gruppe1"], "assets/icons/recycle.png",
-                                    context, "1", Colors.blueAccent.shade100)
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optionb();
-                                  });
-                                  buttons = '2';
-                                },
-                                child: optionCards(
-                                    userData["gruppe2"], "assets/icons/tools.png",
-                                    context, "2", Colors.blueAccent.shade100)
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = optionc();
-                                  });
-                                  buttons = '3';
-                                },
-                                child: optionCards(
-                                    userData["gruppe3"], "assets/icons/file.png",
-                                    context, "3", Colors.blueAccent)
-                            ),
-                          ],
-                        ),
+                                  child: optionCards(
+                                      userData["gruppe1"], "assets/icons/recycle.png",
+                                      context, "1", Colors.indigo.shade200,)
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optionb();
+                                    });
+                                    buttons = '2';
+                                  },
+                                  child: optionCards(
+                                      userData["gruppe2"], "assets/icons/tools.png",
+                                      context, "2", Theme.of(context).colorScheme.primary,)
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optionc();
+                                    });
+                                    buttons = '3';
+                                  },
+                                  child: optionCards(
+                                      userData["gruppe3"], "assets/icons/file.png",
+                                      context, "3", Colors.indigo.shade200,)
+                              ),
+                            ],
+                          ),
 
 
-                      // options
-                      if(selectedOption != null) selectedOption!
-                      else
-                        optiona(),
-                    ],
+                        if (buttons == '3')
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optiona();
+                                    });
+                                    buttons = '1';
+                                  },
+
+                                  child: optionCards(
+                                      userData["gruppe1"], "assets/icons/recycle.png",
+                                      context, "1", Colors.indigo.shade200,)
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optionb();
+                                    });
+                                    buttons = '2';
+                                  },
+                                  child: optionCards(
+                                      userData["gruppe2"], "assets/icons/tools.png",
+                                      context, "2", Colors.indigo.shade200,)
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedOption = optionc();
+                                    });
+                                    buttons = '3';
+                                  },
+                                  child: optionCards(
+                                      userData["gruppe3"], "assets/icons/file.png",
+                                      context, "3", Theme.of(context).colorScheme.primary,)
+                              ),
+                            ],
+                          ),
+
+
+                        // options
+                        if(selectedOption != null) selectedOption!
+                        else
+                          optiona(),
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+              }
+              return Text("");
             }
-            return Text("");
-          }
+        ),
       ),
 
     );
@@ -467,7 +468,7 @@ var buttons = '1';
         height: 100,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: Colors.grey,
@@ -564,8 +565,8 @@ var buttons = '1';
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
 
-                          var color =
-                              istAngemeldet ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.primary;
+                          var color = istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
+                          var color2 = istAngemeldet ? Colors.black : Colors.white;
 
                           // als List Tile wiedergeben
                           return GestureDetector(
@@ -578,7 +579,7 @@ var buttons = '1';
                             child: Container(
                               decoration: BoxDecoration(
                                 color: color,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(5),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey,
@@ -593,9 +594,13 @@ var buttons = '1';
 
                               child: ListTile(
                                   title: Text(childText,
+                                    style: TextStyle(
+                                      color: color2),
                                   ),
                                   subtitle: Text(anmeldungText,
-                                    style: TextStyle(fontSize: 12,),
+                                    style: TextStyle(fontSize: 12,
+                                    color: color2,
+                                    ),
                                   ),
                                   // Button für Ändern
                                   trailing: Row(
@@ -613,20 +618,24 @@ var buttons = '1';
                                             )),
                                           );
                                         },
-                                        color: Theme.of(context).colorScheme.inversePrimary,
-                                        icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                        color: color2,
+                                        icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                        ),
                                       ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),
-                                        color: Theme.of(context).colorScheme.inversePrimary,
-                                        icon: const Icon(Icons.settings),
+                                        color: color2,
+                                        icon: const Icon(Icons.settings,
+                                        ),
                                       ),
                                       // Löschen button
                                       IconButton(
                                         onPressed: () => openChildBoxDelete(docID: docID),
-                                        color: Theme.of(context).colorScheme.inversePrimary,
-                                        icon: const Icon(Icons.delete),
+                                        color: color2,
+
+                                        icon: const Icon(Icons.delete,
+                                        ),
                                       ),
                                     ],
                                   )
@@ -687,7 +696,8 @@ var buttons = '1';
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
 
                           var color =
-                          istAngemeldet ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.primary;
+                          istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
+                          var color2 = istAngemeldet ? Colors.black : Colors.white;
 
                           // als List Tile wiedergeben
                           return GestureDetector(
@@ -700,7 +710,7 @@ var buttons = '1';
                             child: Container(
                               decoration: BoxDecoration(
                                 color: color,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(5),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey,
@@ -715,9 +725,13 @@ var buttons = '1';
 
                               child: ListTile(
                                   title: Text(childText,
+                                    style : TextStyle(
+                                        color: color2),
                                   ),
                                   subtitle: Text(anmeldungText,
-                                    style: TextStyle(fontSize: 12,),
+                                    style: TextStyle(fontSize: 12,
+                                    color: color2,
+                                    ),
                                   ),
                                   // Button für Ändern
                                   trailing: Row(
@@ -735,19 +749,19 @@ var buttons = '1';
                                               )),
                                             );
                                           },
-                                          color: Theme.of(context).colorScheme.inversePrimary,
+                                          color: color2,
                                           icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
                                         ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),
-                                        color: Theme.of(context).colorScheme.inversePrimary,
+                                        color: color2,
                                         icon: const Icon(Icons.settings),
                                       ),
                                       // Löschen button
                                       IconButton(
                                         onPressed: () => openChildBoxDelete(docID: docID),
-                                        color: Theme.of(context).colorScheme.inversePrimary,
+                                        color: color2,
                                         icon: const Icon(Icons.delete),
                                       ),
                                     ],
@@ -809,7 +823,8 @@ var buttons = '1';
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
 
                           var color =
-                          istAngemeldet ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.primary;
+                          istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
+                          var color2 = istAngemeldet ? Colors.black : Colors.white;
 
                           // als List Tile wiedergeben
                           return GestureDetector(
@@ -822,7 +837,7 @@ var buttons = '1';
                             child: Container(
                               decoration: BoxDecoration(
                                 color: color,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(5),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Colors.grey,
@@ -837,9 +852,13 @@ var buttons = '1';
 
                               child: ListTile(
                                   title: Text(childText,
+                                    style : TextStyle(
+                                      color: color2),
                                   ),
                                   subtitle: Text(anmeldungText,
-                                    style: TextStyle(fontSize: 12,),
+                                    style: TextStyle(fontSize: 12,
+                                    color: color2,
+                                    ),
                                   ),
                                   // Button für Ändern
                                   trailing: Row(
@@ -857,19 +876,19 @@ var buttons = '1';
                                               )),
                                             );
                                           },
-                                          color: Theme.of(context).colorScheme.inversePrimary,
+                                          color: color2,
                                           icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
                                         ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),
-                                        color: Theme.of(context).colorScheme.inversePrimary,
+                                        color: color2,
                                         icon: const Icon(Icons.settings),
                                       ),
                                       // Löschen button
                                       IconButton(
                                         onPressed: () => openChildBoxDelete(docID: docID),
-                                        color: Theme.of(context).colorScheme.inversePrimary,
+                                        color: color2,
                                         icon: const Icon(Icons.delete),
                                       ),
                                     ],

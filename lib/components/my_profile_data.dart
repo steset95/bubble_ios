@@ -19,8 +19,8 @@ class ProfileData extends StatelessWidget {
     return  Container(
       width: mediaQuery.size.width * 1,
         decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
-        borderRadius: BorderRadius.circular(12),
+        color: Theme.of(context).colorScheme.inversePrimary,
+        borderRadius: BorderRadius.circular(5),
           boxShadow: [
             BoxShadow(
             color: Colors.grey,
@@ -40,13 +40,14 @@ class ProfileData extends StatelessWidget {
             children: [
               Text(sectionName,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary,),
+                  color: Theme.of(context).colorScheme.primary,),
               ),
               IconButton(
                 onPressed: onPressed,
                 icon: Icon(
                   Icons.edit_outlined,
-                  color: Theme.of(context).colorScheme.inversePrimary,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 15,
                 ),
               ),
             ],

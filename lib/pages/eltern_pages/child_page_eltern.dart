@@ -373,18 +373,20 @@ class _ChildPageElternState extends State<ChildPageEltern> {
             IconButton(
               onPressed: () => openChildBoxAbholzeit(childcode: childcode),
               icon: const Icon(Icons.watch_later_outlined,
+                color: Colors.black,
               ),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 10),
 
             /// Absenzmeldung
 
             IconButton(
               onPressed: () => showRaportDialogAbsenz(childcode),
               icon: const Icon(Icons.beach_access_outlined,
+                color: Colors.black,
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: 15),
                       ],
         );
       }
@@ -410,15 +412,9 @@ class _ChildPageElternState extends State<ChildPageEltern> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-            child: Container(
-              color: Colors.black,
-              height: 1.0,
-            ),
-          ),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: Text("Tagesraport",
-            style: TextStyle(color:Colors.black),
           ),
           actions: [
             showButtons(),
@@ -499,6 +495,10 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                 const SizedBox(height: 10),
                 Column(
                   children: [
+
+
+                    buildGallery(childcode),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -525,9 +525,17 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                           child: Container(
                                           padding: EdgeInsets.only(top: 8, bottom: 8, left: 15,),
                                           decoration: BoxDecoration(
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          borderRadius: BorderRadius.circular(10),
-                                          ),
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                                borderRadius: BorderRadius.circular(5),
+                                boxShadow: [
+                                BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: Offset(2, 4),
+                                ),
+                                ],
+                                ),
                                             width: mediaQuery.size.width * 0.9,
                                             child: Column(
                                               children: [
@@ -537,12 +545,14 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                                         raport['Uhrzeit'],
                                                         style: TextStyle(fontWeight: FontWeight.bold,
                                                         fontSize: 12,
+                                                          color: Theme.of(context).colorScheme.primary,
                                                         )
                                                     ),
                                                     const SizedBox(width: 10),
                                                     Text(
                                                         raport['RaportTitle'],
                                                       style: TextStyle(fontWeight: FontWeight.bold,
+                                                        color: Theme.of(context).colorScheme.primary,
                                                       fontSize: 12,
                                                       ),
                                                     ),
@@ -598,14 +608,14 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
                 /// Galerie
 
-                const SizedBox(height: 10),
 
-                buildGallery(childcode),
 
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
+                  padding: const EdgeInsets.only(bottom: 10.0,),
                   child: Column(
                     children: [
+
+                      const SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -618,14 +628,17 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Icon(Icons.arrow_back_ios_rounded,
-                                //color: Theme.of(context).colorScheme.primary,
-                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
                               ),
                             ),
                           ),
                           Text(formattedDate,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Goli',),
+                            style: TextStyle( fontFamily: 'Goli',
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+
                           ),
                           GestureDetector(
                             onTap: _incrementCounterPlus,
@@ -636,8 +649,8 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Icon(Icons.arrow_forward_ios_rounded,
-                                //color: Theme.of(context).colorScheme.primary,
-                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
                               ),
                             ),
                           ),

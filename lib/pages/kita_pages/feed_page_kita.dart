@@ -79,21 +79,29 @@ bool externPost = false;
 
 
   Widget showButtons () {
-    return
-      GestureDetector(
-        onTap: () => setState(() => externPost = !externPost),
-        child: Container(
-          child: Row(
-            children: [
-              Text("Feed wechseln"),
-              const SizedBox(width: 10),
-              Icon(Icons.change_circle_outlined),
-              const SizedBox(width: 15),
-            ],
-          ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        /// Abholzeit
+        GestureDetector(
+            onTap: () => setState(() => externPost = !externPost),
+            child: Row(
+              children: [
+                Text("Feed wechseln",
+                  style: TextStyle(fontFamily: 'Goli'),
+                ),
+                const SizedBox(width: 5),
+                const Icon(Icons.change_circle_outlined,
+                  color: Colors.black,
+                ),
+              ],
+            )
         ),
-      );
-      }
+
+        const SizedBox(width: 20),
+      ],
+    );
+  }
 
 
 
@@ -102,17 +110,12 @@ bool externPost = false;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
-          child: Container(
-            color: Colors.black,
-            height: 1.0,
-          ),
-        ),
-        title: Text("Kita",
+        scrolledUnderElevation: 0.0,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        title: Text("Feed",
         ),
         actions: [
-          showButtons(),
+          showButtons ()
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -139,6 +142,7 @@ bool externPost = false;
       ),
         body:
         Container(
+
           child: Stack(
             children: [
 

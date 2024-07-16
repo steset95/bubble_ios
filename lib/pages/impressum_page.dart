@@ -22,15 +22,9 @@ class ImpressumPageState extends State<ImpressumPage> {
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
-    bottom: PreferredSize(
-    preferredSize: const Size.fromHeight(4.0),
-    child: Container(
-    color: Colors.black,
-    height: 1.0,
-    ),
-    ),
+      scrolledUnderElevation: 0.0,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
     title: Text("Impressum",
-    style: TextStyle(color:Colors.black),
     ),
     ),
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -46,10 +40,7 @@ class ImpressumPageState extends State<ImpressumPage> {
                 children: [
                   Column(
                     children: [
-                      Icon(
-                        Icons.book,
-                        size: 80,
-                      ),
+                      Image.asset("assets/images/Logo_1.png", width: 140, height:100),
                       const SizedBox(height: 10),
                       const Text(
                         "ABGs",
