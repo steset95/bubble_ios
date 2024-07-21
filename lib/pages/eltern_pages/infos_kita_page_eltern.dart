@@ -6,10 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import '../../components/my_profile_data_icon.dart';
+import '../../components/my_profile_data.dart';
 import '../../components/my_profile_data_read_only.dart';
 import '../../components/notification_controller.dart';
-
-
+import 'package:url_launcher/url_launcher.dart';
 
 
 
@@ -56,6 +58,8 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
   }
   /// Notification
 
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -80,6 +84,7 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
                 final username = snapshot.data!['username'];
                 final adress = snapshot.data!['adress'];
                 final adress2 = snapshot.data!['adress2'];
+                final beschreibung = snapshot.data!['beschreibung'];
                 final tel = snapshot.data!['tel'];
 
                 return
@@ -98,9 +103,15 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
                           text: adress2,
                           sectionName: "Ort",
                         ),
-                        ProfileDataReadOnly(
+                        MyProfileDataIcon(
                           text: tel,
                           sectionName: "Telefonnummer",
+                            onPressed: () => launchUrlString("tel://$tel"),
+                          icon:  Icons.call_outlined,
+                        ),
+                        ProfileDataReadOnly(
+                          text: beschreibung,
+                          sectionName: "Über die Kita",
                         ),
                       ],
                     ),

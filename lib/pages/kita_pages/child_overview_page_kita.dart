@@ -7,11 +7,14 @@ import 'package:socialmediaapp/pages/chat_page.dart';
 import 'package:socialmediaapp/pages/kita_pages/raport_page.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../components/my_profile_data_icon.dart';
 import '../../components/notification_controller.dart';
+import '../../database/firestore_child.dart';
 import 'einwilligungen_kind_page_kita.dart';
 import 'images_page_kita.dart';
 import 'infos_eltern_page_kita.dart';
 import 'infos_kind_page_kita.dart';
+import 'package:intl/intl.dart';
 
 
 
@@ -19,9 +22,11 @@ import 'infos_kind_page_kita.dart';
 class ChildOverviewPageKita extends StatefulWidget {
   final String docID;
 
+
   const ChildOverviewPageKita({
     super.key,
-    required this.docID
+    required this.docID,
+
   });
 
   @override
@@ -47,6 +52,61 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
   }
   /// Notification
 
+  final FirestoreDatabaseChild firestoreDatabaseChild = FirestoreDatabaseChild();
+
+  /// Absenz Meldung
+
+  void openChildBoxAbsenz({String? docID}) {
+    showDialog(
+
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.all(
+                      Radius.circular(10.0))),
+              title: Text("Absenz entfernen",
+                style: TextStyle(color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+              content: Text("Es ist eine Absenz eingetragen, wollen Sie diese entfernen?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    firestoreDatabaseChild.deleteAbsenz(docID!);
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RaportPage(docID: widget.docID,)),
+                    );
+                    setState(()  {});
+                  },
+                  child: Text("Absenz entfernen"),
+
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Abbrechen"),
+                )
+              ],
+            );
+          },
+        );
+      },
+
+    );
+  }
+
+
+
+
 
   /// Aktivierungsschlüssel
   void getDocumentID() {
@@ -60,7 +120,10 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
         return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.all(
+                    Radius.circular(10.0))),
             title: const Text(
               "Schlüssel",
               style: TextStyle(color: Colors.black,
@@ -123,13 +186,27 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
           ),
 
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RaportPage(docID: widget.docID,)),
-              );
+            onPressed: ()
+
+            {
+             FirebaseFirestore.instance
+                .collection("Kinder")
+                .doc(widget.docID,)
+                .get()
+                .then((DocumentSnapshot document) {
+               if (document["absenz"] == "ja") {
+                 openChildBoxAbsenz(docID: widget.docID);
+               }
+               else {
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                       builder: (context) => RaportPage(docID: widget.docID,)),
+                 );
+               }
+             });
             },
-            child: const Icon(Icons.add),
+            child: const Icon(Icons.calendar_today_outlined),
           ),
 
 
@@ -137,7 +214,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
             children: [
               const SizedBox(height: 10),
               Container(
-                height: mediaQuery.size.height * 0.08,
+                height: mediaQuery.size.height * 0.09,
                 child: Column(
                   children: [
                     Expanded(
@@ -172,18 +249,52 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final abholzeit = snapshot.data!['abholzeit'];
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                textAlign: TextAlign.center,
-                                'Abholzeit: $abholzeit',
-                                style: TextStyle(color:Colors.black,
+                          final absenz = snapshot.data!['absenz'];
+                          final absenzText = snapshot.data!['absenzText'];
+                          final absenzBis = snapshot.data!['anmeldung'];
+
+
+
+
+                          if (absenz == "ja"){
+
+                            return Column(
+
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  textAlign: TextAlign.center,
+                                  absenzBis,
+                                  style: TextStyle(color: Colors.black,
                                     fontFamily: 'Goli',
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
+                                Text(
+                                  textAlign: TextAlign.center,
+                                  absenzText,
+                                  style: TextStyle(color: Colors.black,
+                                    fontFamily: 'Goli',
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          else {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  textAlign: TextAlign.center,
+                                  'Abholzeit: $abholzeit',
+                                  style: TextStyle(color: Colors.black,
+                                    fontFamily: 'Goli',
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
                         };
                         return const Text("");
                       },
@@ -199,7 +310,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
 
               //const SizedBox(height: 10),
 
-
+              const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -309,6 +420,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                           builder: (context, snapshot)
                           {
                             if (snapshot.connectionState == ConnectionState.waiting) {
+
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.primary,
@@ -341,6 +453,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                                 ),
                               );
                             }
+
                             // ladekreis
                             if (snapshot.hasData) {
                               // Entsprechende Daten extrahieren
@@ -602,14 +715,16 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                       ),
                       ),
                     ),
+
                   ],
                 ),
               ),
+
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
+                                    Container(
                     height: mediaQuery.size.height * 0.45,
                     width: mediaQuery.size.width * 1,
                     child: StreamBuilder<QuerySnapshot>(

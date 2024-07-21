@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,14 +11,12 @@ import 'package:socialmediaapp/database/firestore_child.dart';
 import 'package:socialmediaapp/pages/eltern_pages/images_page_eltern.dart';
 import '../../components/my_progressindicator.dart';
 import '../../components/notification_controller.dart';
-import '../../old/my_image_upload_button_profile.dart';
-import '../../components/my_image_viewer_profile.dart';
+import 'package:intl/intl.dart';
 import '../../helper/helper_functions.dart';
-import '../chat_page.dart';
-import '../../old/einwilligungen_kind_page_eltern.dart';
+
 import 'addkind_page_eltern.dart';
 import 'bezahlung_page_eltern.dart';
-import 'infos_kind_page_eltern.dart';
+
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 
@@ -38,7 +36,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
   final FirestoreDatabaseChild firestoreDatabaseChild = FirestoreDatabaseChild();
 
- // Text Controller für Abfrage des Inhalts im Textfeld
+  // Text Controller für Abfrage des Inhalts im Textfeld
 
   final TextEditingController textController = TextEditingController();
   final currentUser = FirebaseAuth.instance.currentUser;
@@ -48,10 +46,12 @@ class _ChildPageElternState extends State<ChildPageEltern> {
 
   /// Notification
   Timer? timer;
+
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) =>
+        NotificationController().notificationCheck());
   }
 
   @override
@@ -59,10 +59,11 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     timer?.cancel();
     super.dispose();
   }
+
   /// Notification
 
 
- var optionsAbholzeit = [
+  var optionsAbholzeit = [
     '07:00',
     '07:30',
     '08:00',
@@ -99,9 +100,19 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   bool showProgress = false;
   bool visible = false;
 
-  final _raportTextController = TextEditingController();
+
+  final _bemerkungTextController = TextEditingController();
 
   void addRaport(String field, String value, String childcode) {
+    FirebaseFirestore.instance
+        .collection("Kinder")
+        .doc(childcode)
+        .update({
+      field: value,
+    });
+  }
+
+  void addRaportDate(String field, DateTime value, String childcode) {
     FirebaseFirestore.instance
         .collection("Kinder")
         .doc(childcode)
@@ -112,57 +123,126 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   }
 
 
+  DateTime date = DateTime.now();
+
+  DateTime dateAbsenz = DateTime.now().add(Duration(days:7));
+  late var formattedDateAbsenz = DateFormat('d-MMM-yy').format(dateAbsenz);
+  DateTime absenzBis = DateTime.now().add(const Duration(days:7));
+
+
+
   void showRaportDialogAbsenz(String childcode) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Absenz bis:",
-          style: TextStyle(color: Colors.black,
-            fontSize: 20,
-          ),
-        ),
-        content: TextFormField (
-          maxLength: 20,
-          //maxLength: 5,
-          autofocus: true,
-          //keyboardType: TextInputType.number,
-          controller: _raportTextController,
-          decoration: InputDecoration(hintText: "TT.MM",
-            counterText: "",
-          ),
-        ),
-        actions: [
-          // cancel Button
-          TextButton(
-            child: Text("Abbrechen"),
-            onPressed: () {
-              // Textfeld schliessen
-              Navigator.pop(context);
-              //Textfeld leeren
-              _raportTextController.clear();
-            },
-
-          ),
-
-          // save Button
-          TextButton(
-            child: Text("Speichern"),
-            onPressed: () {
-              final value = _raportTextController.text;
-              // Raport hinzufügen
-              addRaport("anmeldung", 'Absenz bis $value', childcode);
-              // Textfeld schliessen
-              Navigator.pop(context);
-              return displayMessageToUser("Absenz wurde eingetragen.", context);
-              //Textfeld leeren
-              _raportTextController.clear();
-            },
-
-          ),
-        ],
+  showDialog(
+  context: context,
+  builder: (context) {
+  return StatefulBuilder(
+  builder: (context, setState) {
+  return AlertDialog(
+    shape: RoundedRectangleBorder(
+        borderRadius:
+        BorderRadius.all(
+            Radius.circular(10.0))),
+    title: Text("Absenz",
+      style: TextStyle(color: Colors.black,
+        fontSize: 20,
       ),
-    );
-  }
+    ),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Bis: $formattedDateAbsenz',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+
+            IconButton(
+                icon: Icon(Icons.calendar_today,
+color: Theme.of(context).colorScheme.primary,
+                ),
+                onPressed: () async {
+                  DateTime? _newDate = await showDatePicker(
+                    context: context,
+                    initialDate: date,
+                    firstDate: DateTime(2022),
+                    lastDate: DateTime(2030),
+                  );
+                  if (_newDate == null) {
+                    return;
+                  } else {
+                    formattedDateAbsenz = DateFormat('d-MMM-yy').format(_newDate);
+                    absenzBis = _newDate;
+                    setState(()  {});
+                  };
+                }
+            ),
+
+          ],
+        ),
+
+        TextFormField (
+          maxLength: 50,
+          keyboardType: TextInputType.multiline,
+          minLines: 1,
+          maxLines: 3,
+          autofocus: true,
+          controller: _bemerkungTextController,
+          decoration: InputDecoration(hintText: "Bemerkung",
+          ),
+        ),
+      ],
+    ),
+
+    actions: [
+      // cancel Button
+      TextButton(
+        child: Text("Abbrechen"),
+        onPressed: () {
+          // Textfeld schliessen
+          Navigator.pop(context);
+          //Textfeld leeren
+          _bemerkungTextController.clear();
+        },
+
+      ),
+
+      // save Button
+      TextButton(
+        child: Text("Speichern"),
+        onPressed: () {
+          final value2 = _bemerkungTextController.text;
+          final absenzBis24 = absenzBis.copyWith(hour:23, minute: 59);
+
+
+          // Raport hinzufügen
+
+            addRaport("anmeldung", 'Absenz bis $formattedDateAbsenz', childcode);
+            addRaport("absenzText", value2, childcode);
+          addRaportDate("absenzBis", absenzBis24, childcode);
+            addRaport("absenz", "ja", childcode);
+            // Textfeld schliessen
+            Navigator.pop(context);
+          _bemerkungTextController.clear();
+
+            return displayMessageToUser(
+                "Absenz wurde eingetragen.", context);
+
+        },
+
+      ),
+    ],
+  );
+  },
+  );
+  },
+
+  );
+}
+
 
 
 
@@ -187,6 +267,10 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
         title: Text("Abholzeit",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
@@ -221,7 +305,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
               // Textfeld schliessen
               Navigator.pop(context);
               //Textfeld leeren
-              _raportTextController.clear();
+              _bemerkungTextController.clear();
             },
             child: Text("Abbrechen"),
           ),
@@ -266,8 +350,8 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   }
 
 
-  Future<List<String>> getImagePath(String childcode, ) async {
-    String currentDate = DateTime.now().subtract(Duration(days:_counter)).toString(); // Aktuelles Datum als String
+  Future<List<String>> getImagePath(String childcode, DateTime date) async {
+    String currentDate = date.toString(); // Aktuelles Datum als String
     String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
     ListResult result =
     await FirebaseStorage.instance.ref('/images/$formattedDate/$childcode').listAll();
@@ -276,12 +360,12 @@ class _ChildPageElternState extends State<ChildPageEltern> {
     );
   }
 
-  Widget buildGallery(String childcode) {
-    String currentDate = DateTime.now().subtract(Duration(days:_counter)).toString(); // Aktuelles Datum als String
+  Widget buildGallery(String childcode, DateTime date) {
+    String currentDate = date.toString();// Aktuelles Datum als String
     String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
     final mediaQuery = MediaQuery.of(context);
     return FutureBuilder(
-      future: getImagePath(childcode),
+      future: getImagePath(childcode, date),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             !snapshot.hasData) {
@@ -399,14 +483,32 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   }
 
 
+  Future<void> showRaportDialogDatum(BuildContext context, DateTime currentDate1) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: currentDate1,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != date) {
+      setState(() {
+        date = picked;
+        _counter = 0;
+      });
+    }
+  }
 
-/// Start Widget
+
+
+
+  /// Start Widget
 
 
   @override
   Widget build(BuildContext context)  {
-    final String currentDate = DateTime.now().subtract(Duration(days:_counter)).toString(); // Aktuelles Datum als String
-    final String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
+    final currentDate1 = date.subtract(Duration(days:_counter));
+    final String currentDate2 = currentDate1.toString(); // Aktuelles Datum als String
+    final String formattedDate = currentDate2.substring(0, 10);
+    final String showDatum = DateFormat('d-MMM-yy').format(currentDate1);
     final mediaQuery = MediaQuery.of(context);
     return SafeArea(
       child: Scaffold(
@@ -497,7 +599,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                   children: [
 
 
-                    buildGallery(childcode),
+                    buildGallery(childcode, currentDate1),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -633,12 +735,18 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                               ),
                             ),
                           ),
-                          Text(formattedDate,
-                            textAlign: TextAlign.center,
-                            style: TextStyle( fontFamily: 'Goli',
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                          GestureDetector(
+                            onTap:  ()  {
+                              showRaportDialogDatum(context, currentDate1);
 
+                            },
+                            child: Text(showDatum,
+                              textAlign: TextAlign.center,
+                              style: TextStyle( fontFamily: 'Goli',
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+
+                            ),
                           ),
                           GestureDetector(
                             onTap: _incrementCounterPlus,

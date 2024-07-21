@@ -56,11 +56,15 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
 
 
 // Bearbeitungsfeld
-  Future<void> editField(String field, String titel, String text) async {
+  Future<void> editField(String field, String titel, String text,) async {
     String newValue = "";
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
         title: Text(
           "$titel",
           style: TextStyle(color: Colors.black,
@@ -74,6 +78,60 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
           ),
           maxLength: 100,
           initialValue: text,
+          autofocus: true,
+          onChanged: (value){
+            newValue = value;
+          },
+        ),
+        actions: [
+          // Cancel Button
+          TextButton(
+            child: const Text("Abbrechen",
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          //Save Button
+          TextButton(
+            child: const Text("Speichern",
+            ),
+            onPressed: () => Navigator.of(context).pop(newValue),
+          ),
+        ],
+      ),
+    );
+
+    // prüfen ob etwas geschrieben
+    if (newValue.trim().length > 0) {
+      // In Firestore updaten
+      await usersCollection.doc(currentUser!.email).update({field: newValue});
+    }
+  }
+
+  // Bearbeitungsfeld
+  Future<void> editFieldBeschreibung(String field, String titel, String text,) async {
+    String newValue = "";
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
+        title: Text(
+          "$titel",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+          //"Edit $field",
+        ),
+        content: TextFormField(
+          decoration: InputDecoration(
+            counterText: "",
+          ),
+          maxLength: 300,
+          initialValue: text,
+          keyboardType: TextInputType.multiline,
+          maxLines: 4,
           autofocus: true,
           onChanged: (value){
             newValue = value;
@@ -204,7 +262,7 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
                       ProfileData(
                         text: userData["username"],
                         sectionName: "Name",
-                        onPressed: () => editField("username", "Name", userData["username"]),
+                        onPressed: () => editField("username", "Name", userData["username"], ),
                       ),
           
                       ProfileDataReadOnly(
@@ -214,25 +272,25 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
                       ProfileData(
                         text: userData["adress"],
                         sectionName: "Strasse und Hausnummer",
-                        onPressed: () => editField("adress", "Strasse und Hausnummer", userData["adress"]),
+                        onPressed: () => editField("adress", "Strasse und Hausnummer", userData["adress"],),
                       ),
           
                       ProfileData(
                         text: userData["adress2"],
                         sectionName: "PLZ und Ort",
-                        onPressed: () => editField("adress2", "PLZ und Ort", userData["adress2"]),
+                        onPressed: () => editField("adress2", "PLZ und Ort", userData["adress2"],),
                       ),
           
                       ProfileData(
                         text: userData["tel"],
                         sectionName: "Telefonnummer",
-                        onPressed: () => editField("tel", "Telefonnummer", userData["tel"]),
+                        onPressed: () => editField("tel", "Telefonnummer", userData["tel"],),
                       ),
 
                       ProfileData(
-                        text: userData["iban"],
-                        sectionName: "IBAN",
-                        onPressed: () => editField("iban", "IBAN", userData["iban"]),
+                        text: userData["beschreibung"],
+                        sectionName: "Über uns",
+                        onPressed: () => editFieldBeschreibung("beschreibung", "Über uns", userData["beschreibung"],),
                       ),
           
                       SizedBox(

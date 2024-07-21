@@ -95,6 +95,10 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
         title: Text("Geschlecht",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
@@ -167,6 +171,10 @@ class _InfosKindPageElternState extends State<InfosKindPageEltern> {
       context: context,
       builder: (context) =>
           AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.all(
+                    Radius.circular(10.0))),
             title: Text(
               "$title",
               style: TextStyle(color: Colors.black,

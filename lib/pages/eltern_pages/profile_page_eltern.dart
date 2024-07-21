@@ -6,15 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pay/pay.dart';
 import 'package:socialmediaapp/components/my_profile_data.dart';
 import 'package:socialmediaapp/components/my_profile_data_read_only.dart';
 import 'package:socialmediaapp/pages/eltern_pages/bezahlung_page_eltern.dart';
-
 import '../../components/notification_controller.dart';
-import '../../helper/payment_configurations.dart';
-import '../agb_page.dart';
+
 import '../impressum_page.dart';
+
 
 
 class ProfilePageEltern extends StatefulWidget {
@@ -67,6 +65,10 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
         title: Text(
           "$title",
           style: TextStyle(color: Colors.black,
@@ -253,9 +255,9 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
                         },
                         child: Column(
                           children: [
-                            Text("Abonnement:",
+                            Text("Abonnement",
                         style: TextStyle(color: Colors.black,
-                          fontSize: 20,
+                          fontSize: 15,
                         ),
                             ),
                             SizedBox(
@@ -272,13 +274,15 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
                                     ),
                                     Icon(
                                         Icons.payment_outlined,
+                                      color: Theme.of(context).colorScheme.primary,
 
                                     ),
                                     SizedBox(
-                                      width: 5,
+                                      width: 2,
                                     ),
                                     Icon(
                                         Icons.arrow_forward,
+                                        color: Theme.of(context).colorScheme.primary,
 
                                         size: 15
                                     ),

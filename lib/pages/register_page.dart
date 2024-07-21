@@ -8,6 +8,7 @@ import 'package:socialmediaapp/components/my_textfield.dart';
 import 'package:socialmediaapp/pages/agb_page.dart';
 
 import '../helper/helper_functions.dart';
+import 'datenschutzrichtlinien_page.dart';
 
 
 class RegisterPage extends StatefulWidget {
@@ -51,6 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String shownotification = "0";
   String abo = "Probewochen";
   DateTime aboBis = DateTime.now().add(const Duration(days:14));
+  String beschreibung = "";
 
 
   bool showProgress = false;
@@ -159,6 +161,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'gruppe2': gruppe2,
         'gruppe3': gruppe3,
         "shownotification": shownotification,
+        'beschreibung':  beschreibung,
       });
     }
   }
@@ -309,23 +312,51 @@ class _RegisterPageState extends State<RegisterPage> {
 
               //Register in button
               CheckboxListTile(
-                title: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>
-                            AGBPage()),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Text("AGBs Akzeptieren"),
-                        const SizedBox(width: 5,),
-                        Icon(
-                          Icons.read_more,
+                title: Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                AGBPage()),
+                          );
+                        },
+                      child: Text("ABGs",
+                        style: TextStyle(color: Colors.lightBlue,
+                          fontSize: 12,
                         ),
-                      ],
-                    )),
+                      ),
+                        ),
+                    const SizedBox(width: 3),
+                    Text("und",
+                      style: TextStyle(
+                        fontSize: 8,
+                      ),
+                    ),
+                    const SizedBox(width: 3),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              DatenschutzrichtlinienPage()),
+                        );
+                      },
+                      child: Text("Datenschutzrichtlinien",
+                        style: TextStyle(color: Colors.lightBlue,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 3),
+                    Text("akzeptieren.",
+                      style: TextStyle(
+                        fontSize: 8,
+                      ),
+                    ),
+                  ],
+                ),
                 value: checkedValue,
                 onChanged: (newValue) {
                   setState(() {

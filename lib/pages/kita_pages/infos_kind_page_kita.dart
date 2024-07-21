@@ -98,7 +98,19 @@ class _InfosKindPageKitaState extends State<InfosKindPageKita> {
 
               if (userData["eltern"] == "")
               {
-              return Text("Kind wurde noch nicht zugeordnet.");
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Kind wurde noch nicht zugeordnet."),
+                    ],
+                  ),
+                ],
+              );
               }
 
               else {

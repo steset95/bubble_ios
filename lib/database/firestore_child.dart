@@ -13,6 +13,7 @@ class FirestoreDatabaseChild {
   final currentUser = FirebaseAuth.instance.currentUser;
 
 
+  DateTime absenzBis = DateTime.now().subtract(const Duration(days:1));
 
   /// Kita Seite
 
@@ -24,6 +25,9 @@ class FirestoreDatabaseChild {
       'child': child,
       'group': '1',
       'anmeldung': "Abgemeldet",
+      'absenzText': "",
+      'absenz': "nein",
+      "absenzBis": absenzBis,
       'timeStamp': Timestamp.now(),
       'kita': currentUser?.email,
       'abholzeit': "",
@@ -107,6 +111,20 @@ class FirestoreDatabaseChild {
         .delete();
   }
 
+  //Absenz entfernen
+  void deleteAbsenz(String docID) {
+    FirebaseFirestore.instance
+        .collection("Kinder")
+        .doc(docID)
+        .update({
+      'absenz': "nein",
+      'anmeldung': "Abgemeldet",
+      'absenzText': "",
+      'absenzBis': DateTime.now(),
+    });
+  }
+
+
 
   /// Eltern Seite
 
@@ -119,13 +137,16 @@ class FirestoreDatabaseChild {
     });
 
 
+    Stream<QuerySnapshot> getChildrenStreamEltern() {
+      final postStream = FirebaseFirestore.instance
+          .collection("Kinder")
+          .where("eltern", isEqualTo: currentUser?.email)
+          .snapshots();
+      return postStream;
+    }
 
 
   }
-
-
-
-
 }
 
 

@@ -7,8 +7,9 @@ import 'package:socialmediaapp/database/firestore_child.dart';
 import 'package:socialmediaapp/old/change_group_page_kita.dart';
 import 'package:socialmediaapp/pages/chat_page.dart';
 import 'package:socialmediaapp/pages/kita_pages/child_overview_page_kita.dart';
+import 'package:socialmediaapp/pages/kita_pages/raport_group_page.dart';
 import 'package:socialmediaapp/pages/kita_pages/raport_page.dart';
-
+import 'package:intl/intl.dart';
 import '../../components/notification_controller.dart';
 
 
@@ -74,6 +75,10 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
         title: Text("Kind hinzufügen",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
@@ -115,6 +120,10 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
           title: Text("Löschen bestätigen?",
             style: TextStyle(color: Colors.black,
               fontSize: 20,
@@ -148,6 +157,10 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.all(
+                  Radius.circular(10.0))),
           title: Text("Gruppe ändern",
             style: TextStyle(color: Colors.black,
               fontSize: 20,
@@ -223,6 +236,10 @@ var buttons = '1';
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
         title: Text(
           "$titel",
           style: TextStyle(color: Colors.black,
@@ -273,8 +290,37 @@ var buttons = '1';
   }
 
 
+/// ShowButtons
 
-/// Start Widget
+  Widget showButtons () {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        /// Abholzeit
+        GestureDetector(
+            onTap: openChildBoxNew,
+            child: Row(
+              children: [
+                Text("Kind hinzufügen",
+                  style: TextStyle(fontFamily: 'Goli'),
+                ),
+                const SizedBox(width: 5),
+                const Icon(Icons.add_reaction_outlined,
+                  color: Colors.black,
+                ),
+              ],
+            )
+        ),
+
+        const SizedBox(width: 20),
+      ],
+    );
+  }
+
+
+
+
+  /// Start Widget
 
 
   @override
@@ -285,14 +331,21 @@ var buttons = '1';
         backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text("Kinder",
         ),
+        actions: [
+          showButtons (),
+        ],
       ),
 
 
-      /// Neus Kind Button
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
-      onPressed: openChildBoxNew,
-        child: const Icon(Icons.add_reaction_outlined),
+      onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RaportGroupPage(group: buttons)),
+      ),
+        child: const Icon(Icons.calendar_today_outlined),
       ),
       /// Anzeige 3 Gruppen
 
@@ -562,22 +615,41 @@ var buttons = '1';
                           String anmeldungText = data['anmeldung'];
                           String elternmail = data['eltern'];
                           String shownotification = data['shownotification'];
+                          String absenz = data['absenz'];
+
+                          if (absenz == "ja" && data["absenzBis"].toDate().isBefore(DateTime.now()))
+                          {
+                          FirebaseFirestore.instance
+                              .collection("Kinder")
+                              .doc(document.id)
+                              .update({
+                            'absenz': "nein",
+                            'anmeldung': "Abgemeldet",
+                          });
+                          }
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
+                          bool hatAbsenz = absenz == "nein";
 
                           var color = istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
                           var color2 = istAngemeldet ? Colors.black : Colors.white;
+                          var color3 = hatAbsenz ? Colors.transparent : Theme.of(context).colorScheme.secondary;
 
                           // als List Tile wiedergeben
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ChildOverviewPageKita(docID: docID,)),
+                                MaterialPageRoute(builder: (context) => ChildOverviewPageKita(docID: docID,
+                                )),
                               );
                             },
                             child: Container(
                               decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 3,
+                                  color: color3,
+                                ),
                                 color: color,
                                 borderRadius: BorderRadius.circular(5),
                                 boxShadow: [
@@ -597,6 +669,7 @@ var buttons = '1';
                                     style: TextStyle(
                                       color: color2),
                                   ),
+
                                   subtitle: Text(anmeldungText,
                                     style: TextStyle(fontSize: 12,
                                     color: color2,
@@ -692,23 +765,41 @@ var buttons = '1';
                           String anmeldungText = data['anmeldung'];
                           String elternmail = data['eltern'];
                           String shownotification = data['shownotification'];
+                          String absenz = data['absenz'];
+
+                          if (absenz == "ja" && data["absenzBis"].toDate().isBefore(DateTime.now()))
+                          {
+                            FirebaseFirestore.instance
+                                .collection("Kinder")
+                                .doc(document.id)
+                                .update({
+                              'absenz': "nein",
+                              'anmeldung': "Abgemeldet",
+                            });
+                          }
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
+                          bool hatAbsenz = absenz == "nein";
 
-                          var color =
-                          istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
+                          var color = istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
                           var color2 = istAngemeldet ? Colors.black : Colors.white;
+                          var color3 = hatAbsenz ? Colors.transparent : Theme.of(context).colorScheme.secondary;
 
                           // als List Tile wiedergeben
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ChildOverviewPageKita(docID: docID,)),
+                                MaterialPageRoute(builder: (context) => ChildOverviewPageKita(docID: docID,
+                                )),
                               );
                             },
                             child: Container(
                               decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 3,
+                                  color: color3,
+                                ),
                                 color: color,
                                 borderRadius: BorderRadius.circular(5),
                                 boxShadow: [
@@ -725,12 +816,13 @@ var buttons = '1';
 
                               child: ListTile(
                                   title: Text(childText,
-                                    style : TextStyle(
+                                    style: TextStyle(
                                         color: color2),
                                   ),
+
                                   subtitle: Text(anmeldungText,
                                     style: TextStyle(fontSize: 12,
-                                    color: color2,
+                                      color: color2,
                                     ),
                                   ),
                                   // Button für Ändern
@@ -750,19 +842,23 @@ var buttons = '1';
                                             );
                                           },
                                           color: color2,
-                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                          ),
                                         ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),
                                         color: color2,
-                                        icon: const Icon(Icons.settings),
+                                        icon: const Icon(Icons.settings,
+                                        ),
                                       ),
                                       // Löschen button
                                       IconButton(
                                         onPressed: () => openChildBoxDelete(docID: docID),
                                         color: color2,
-                                        icon: const Icon(Icons.delete),
+
+                                        icon: const Icon(Icons.delete,
+                                        ),
                                       ),
                                     ],
                                   )
@@ -819,12 +915,25 @@ var buttons = '1';
                           String anmeldungText = data['anmeldung'];
                           String elternmail = data['eltern'];
                           String shownotification = data['shownotification'];
+                          String absenz = data['absenz'];
+
+                          if (absenz == "ja" && data["absenzBis"].toDate().isBefore(DateTime.now()))
+                          {
+                            FirebaseFirestore.instance
+                                .collection("Kinder")
+                                .doc(document.id)
+                                .update({
+                              'absenz': "nein",
+                              'anmeldung': "Abgemeldet",
+                            });
+                          }
 
                           bool istAngemeldet = anmeldungText == "Abgemeldet";
+                          bool hatAbsenz = absenz == "nein";
 
-                          var color =
-                          istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
+                          var color = istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
                           var color2 = istAngemeldet ? Colors.black : Colors.white;
+                          var color3 = hatAbsenz ? Colors.transparent : Theme.of(context).colorScheme.secondary;
 
                           // als List Tile wiedergeben
                           return GestureDetector(
@@ -836,9 +945,13 @@ var buttons = '1';
                             },
                             child: Container(
                               decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 3,
+                                  color: color3,
+                                ),
                                 color: color,
                                 borderRadius: BorderRadius.circular(5),
-                                boxShadow: const [
+                                boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey,
                                     spreadRadius: 1,
@@ -852,12 +965,13 @@ var buttons = '1';
 
                               child: ListTile(
                                   title: Text(childText,
-                                    style : TextStyle(
-                                      color: color2),
+                                    style: TextStyle(
+                                        color: color2),
                                   ),
+
                                   subtitle: Text(anmeldungText,
                                     style: TextStyle(fontSize: 12,
-                                    color: color2,
+                                      color: color2,
                                     ),
                                   ),
                                   // Button für Ändern
@@ -877,19 +991,23 @@ var buttons = '1';
                                             );
                                           },
                                           color: color2,
-                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,),
+                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                          ),
                                         ),
                                       // ändern Button
                                       IconButton(
                                         onPressed: () => openChildBoxGroup(docID: docID),
                                         color: color2,
-                                        icon: const Icon(Icons.settings),
+                                        icon: const Icon(Icons.settings,
+                                        ),
                                       ),
                                       // Löschen button
                                       IconButton(
                                         onPressed: () => openChildBoxDelete(docID: docID),
                                         color: color2,
-                                        icon: const Icon(Icons.delete),
+
+                                        icon: const Icon(Icons.delete,
+                                        ),
                                       ),
                                     ],
                                   )

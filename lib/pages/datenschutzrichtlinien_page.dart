@@ -6,16 +6,16 @@ import 'package:socialmediaapp/components/my_textfield.dart';
 import 'package:socialmediaapp/helper/helper_functions.dart';
 
 
-class AGBPage extends StatefulWidget {
+class DatenschutzrichtlinienPage extends StatefulWidget {
 
 
-  const AGBPage({super.key});
+  const DatenschutzrichtlinienPage({super.key});
 
   @override
-  State<AGBPage> createState() => AGBPageState();
+  State<DatenschutzrichtlinienPage> createState() => DatenschutzrichtlinienPageState();
 }
 
-class AGBPageState extends State<AGBPage> {
+class DatenschutzrichtlinienPageState extends State<DatenschutzrichtlinienPage> {
 
 
 
@@ -46,7 +46,7 @@ class AGBPageState extends State<AGBPage> {
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        "ABGs",
+                        "Datenschutzrichtlinien",
                         style: TextStyle(fontSize: 20),
 
                       ),

@@ -31,6 +31,25 @@ String docID,
   }
 }
 
+
+  Future<void> uploadFileMultiple(
+
+      String filePath,
+      String fileName,
+      String docID,
+      ) async {
+    File file = File(filePath);
+    String currentDate = DateTime.now().toString(); // Aktuelles Datum als String
+    String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
+    try {
+
+      await storage.ref('images/$formattedDate/$docID/$fileName').putFile(file);
+    } on firebase_core.FirebaseException catch (e) {
+      print(e);
+    }
+  }
+
+
   // Files Anzeige Funktion (nicht als Bild, einfach Liste des Files) - not in use
 
   Future<firebase_storage.ListResult> listFiles() async {

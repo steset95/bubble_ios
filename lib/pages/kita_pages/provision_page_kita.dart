@@ -43,7 +43,63 @@ class _ProvisionPageKitaState extends State<ProvisionPageKita> {
   /// Notification
 
 
+  // Referenz zu "Users" Datenbank
+  final usersCollection = FirebaseFirestore
+      .instance
+      .collection("Users"
+  );
 
+
+  Future<void> editField(String field, String titel, String text) async {
+    String newValue = "";
+    await showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.all(
+                    Radius.circular(10.0))),
+            title: Text(
+              "$titel",
+              style: TextStyle(color: Colors.black,
+                fontSize: 20,
+              ),
+              //"Edit $field",
+            ),
+            content: TextFormField(
+              decoration: InputDecoration(
+                counterText: "",
+              ),
+              maxLength: 100,
+              initialValue: text,
+              autofocus: true,
+              onChanged: (value) {
+                newValue = value;
+              },
+            ),
+            actions: [
+              // Cancel Button
+              TextButton(
+                child: const Text("Abbrechen",
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+              //Save Button
+              TextButton(
+                child: const Text("Speichern",
+                ),
+                onPressed: () => Navigator.of(context).pop(newValue),
+              ),
+            ],
+          ),
+    );
+    // prüfen ob etwas geschrieben
+    if (newValue.trim().length > 0) {
+      // In Firestore updaten
+      await usersCollection.doc(currentUser!.email).update({field: newValue});
+    }
+  }
 
 
   @override
@@ -59,8 +115,58 @@ class _ProvisionPageKitaState extends State<ProvisionPageKita> {
         ),
         // Abfrage der entsprechenden Daten - Sammlung = Users
         body: SingleChildScrollView(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("Users")
+                .doc(currentUser?.email)
+                .snapshots(),
+            builder: (context, snapshot)
+            {
+              // ladekreis
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              // Fehlermeldung
+              else if (snapshot.hasError) {
+                return Text("Error ${snapshot.error}");
+              }
+              // Daten abfragen funktioniert
+              else if (snapshot.hasData) {
+                // Entsprechende Daten extrahieren
+                final userData = snapshot.data?.data() as Map<String, dynamic>;
 
-    )
+                // Inhalt Daten
+
+                return
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 15,
+                      ),
+
+                      ProfileData(
+                        text: userData["iban"],
+                        sectionName: "IBAN",
+                        onPressed: () => editField("iban", "IBAN", userData["iban"]),
+                      ),
+
+
+
+                      SizedBox(
+                        height: 20,
+                      ),
+
+                    ],
+                  );
+                // Fehlermeldung wenn nichts vorhanden ist
+              } else {
+                return const Text("Keine Daten vorhanden");
+              }
+            },
+          ),
+        ),
       ),
     );
   }

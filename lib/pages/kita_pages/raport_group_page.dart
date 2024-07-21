@@ -1,35 +1,38 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../components/my_image_upload_button.dart';
+import '../../components/my_image_upload_button_multiple.dart';
 import '../../components/notification_controller.dart';
 
 
 
 
-class RaportPage extends StatefulWidget {
-  final String docID;
+class RaportGroupPage extends StatefulWidget {
+  final String group;
 
 
-  RaportPage({
+  RaportGroupPage({
     super.key,
-    required this.docID,
+    required this.group,
 
 
   });
 
   @override
-  State<RaportPage> createState() => _RaportPageState();
+  State<RaportGroupPage> createState() => _RaportGroupPageState();
 }
 
-class _RaportPageState extends State<RaportPage> {
+class _RaportGroupPageState extends State<RaportGroupPage> {
 
   // Text Controller für Abfrage des Inhalts im Textfeld "Raport hinzufügen"
   final _raportTextController = TextEditingController();
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   /// Notification
   Timer? timer;
@@ -56,15 +59,23 @@ class _RaportPageState extends State<RaportPage> {
     // in Firestore speichern und "Raports" unter "Kinder" erstellen
     FirebaseFirestore.instance
         .collection("Kinder")
-        .doc(widget.docID)
-        .collection(formattedDate)
-        .add({
-      "RaportTitle" : raportTitle,
-      "RaportText" : raportText,
-      'TimeStamp': Timestamp.now(),
-      "Uhrzeit": uhrzeit,
+        .where('group', isEqualTo: widget.group)
+        .where("kita", isEqualTo: currentUser?.email)
+        .where("absenz", isEqualTo: "nein")
+        .get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.collection(formattedDate)
+            .add({
+          "RaportTitle" : raportTitle,
+          "RaportText" : raportText,
+          'TimeStamp': Timestamp.now(),
+          "Uhrzeit": uhrzeit,
+        });
+      });
     });
-   }
+    }
+
+
 
 
 
@@ -75,12 +86,20 @@ class _RaportPageState extends State<RaportPage> {
   void anmeldungChild(String field, String value) {
     FirebaseFirestore.instance
         .collection("Kinder")
-        .doc(widget.docID)
-        .update({
-      field: value,
-      'timestamp': Timestamp.now(),
+        .where('group', isEqualTo: widget.group)
+        .where("kita", isEqualTo: currentUser?.email)
+        .where("absenz", isEqualTo: "nein")
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((doc){
+        doc.reference
+          .update({
+        field: value,
     });
-  }
+    });
+        });
+        }
+
 
 
 
@@ -98,7 +117,7 @@ class _RaportPageState extends State<RaportPage> {
             borderRadius:
             BorderRadius.all(
                 Radius.circular(10.0))),
-        title: Text("Kind Anmelden?",
+        title: Text("Kinder Anmelden?",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
           ),
@@ -414,7 +433,7 @@ class _RaportPageState extends State<RaportPage> {
             borderRadius:
             BorderRadius.all(
                 Radius.circular(10.0))),
-        title: Text("Kind Abmelden?",
+        title: Text("Kinder Abmelden?",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
           ),
@@ -458,13 +477,14 @@ class _RaportPageState extends State<RaportPage> {
 
   @override
   Widget build(BuildContext context) {
+    final group = widget.group;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
           backgroundColor: Theme.of(context).colorScheme.secondary,
-          title: Text("Raport",
+          title: Text('Raport Gruppe $group',
           ),
         ),
           body: Column(
@@ -738,7 +758,7 @@ class _RaportPageState extends State<RaportPage> {
         child: Row(
           children: [
               const SizedBox(height: 20),
-              ImageUpload(docID: widget.docID),
+            ImageUploadMultiple(group: widget.group),
             ],
         ),
       ),

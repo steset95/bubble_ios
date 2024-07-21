@@ -44,6 +44,8 @@ dependencies:
   share_plus: ^9.0.0
   cached_network_image: ^3.3.1
   awesome_notifications: ^0.9.3+1
+  url_launcher: ^6.3.0
+
 
 
 

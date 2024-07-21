@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import '../../components/my_profile_data_icon.dart';
 import '../../components/my_profile_data_read_only.dart';
 import '../../components/notification_controller.dart';
 
@@ -93,7 +95,19 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
 
               if (userData["eltern"] == "")
               {
-              return Text("Kind wurde noch nicht zugeordnet.");
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Kind wurde noch nicht zugeordnet."),
+                    ],
+                  ),
+                ],
+              );
               }
 
             else {
@@ -132,10 +146,12 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
               text: adress2,
               sectionName: "Ort",
               ),
-              ProfileDataReadOnly(
-              text: tel,
-              sectionName: "Telefonnummer",
-              ),
+                MyProfileDataIcon(
+                  text: tel,
+                  sectionName: "Telefonnummer",
+                  onPressed: () => launchUrlString("tel://$tel"),
+                  icon: Icons.call_outlined,
+                ),
               ],
               ),
               );
