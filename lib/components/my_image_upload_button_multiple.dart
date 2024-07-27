@@ -42,6 +42,7 @@ class _ImageUploadMultipleState extends State<ImageUploadMultiple> {
     return Expanded(
       child:
         GestureDetector(
+
             onTap: () async {
 
               final results = await FilePicker.platform.pickFiles(
