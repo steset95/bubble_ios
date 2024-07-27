@@ -1,7 +1,7 @@
-import UIKit
 import Flutter
+import UIKit
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
@@ -10,11 +10,4 @@ import Flutter
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-
-- (BOOL)application:(UIApplication *)application
-didFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions {
-  if (@available(iOS 10.0, *)) {
-    [UNUserNotificationCenter currentNotificationCenter].delegate = (id<UNUserNotificationCenterDelegate>) self;
-  }
-}
 }

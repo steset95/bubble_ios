@@ -279,7 +279,7 @@
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.12.0",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.15.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -435,9 +435,9 @@
     },
     {
       "name": "string_scanner",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.2.0",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.3.0",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.1"
     },
     {
       "name": "synchronized",
@@ -453,9 +453,9 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.0",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.3",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.4"
     },
     {
       "name": "typed_data",
@@ -525,7 +525,7 @@
     },
     {
       "name": "vm_service",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.1",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.4",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -560,10 +560,10 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-07-22T15:30:23.946253Z",
+  "generated": "2024-07-27T13:00:28.682774Z",
   "generator": "pub",
-  "generatorVersion": "3.5.0-70.0.dev",
+  "generatorVersion": "3.6.0-76.0.dev",
   "flutterRoot": "file:///C:/Users/Stefan/Documents/flutter",
-  "flutterVersion": "3.22.0-12.0.pre.44",
+  "flutterVersion": "3.24.0-1.0.pre.249",
   "pubCache": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache"
 }

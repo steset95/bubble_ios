@@ -45,8 +45,8 @@ class _ImageUploadState extends State<ImageUpload> {
 
               final results = await FilePicker.platform.pickFiles(
                 allowMultiple: true,
-                type: FileType.custom,
-                allowedExtensions: ['png', 'jpg'],
+                type: FileType.media,
+                //allowedExtensions: ['png', 'jpg'],
               );
               if (results == null) {
                 ScaffoldMessenger.of(context).showSnackBar(

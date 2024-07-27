@@ -50,8 +50,8 @@ class _ImageViewerProfileState extends State<ImageViewerProfile> {
                         onTap: () async {
                           final results = await FilePicker.platform.pickFiles(
                             allowMultiple: false,
-                            type: FileType.custom,
-                            allowedExtensions: ['png', 'jpg'],
+                            type: FileType.media,
+                            //allowedExtensions: ['png', 'jpg'],
                           );
                           if (results == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -101,8 +101,8 @@ class _ImageViewerProfileState extends State<ImageViewerProfile> {
                       onTap: () async {
                         final results = await FilePicker.platform.pickFiles(
                           allowMultiple: false,
-                          type: FileType.custom,
-                          allowedExtensions: ['png', 'jpg'],
+                          type: FileType.media,
+                          //allowedExtensions: ['png', 'jpg'],
                         );
                         if (results == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
