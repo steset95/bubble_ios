@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../components/my_child_select_switch.dart';
 import '../../components/my_image_upload_button.dart';
 import '../../components/my_image_upload_button_multiple.dart';
 import '../../components/notification_controller.dart';
@@ -62,6 +63,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
         .where('group', isEqualTo: widget.group)
         .where("kita", isEqualTo: currentUser?.email)
         .where("absenz", isEqualTo: "nein")
+        .where("switch", isEqualTo: true)
         .get().then((querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         doc.reference.collection(formattedDate)
@@ -89,6 +91,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
         .where('group', isEqualTo: widget.group)
         .where("kita", isEqualTo: currentUser?.email)
         .where("absenz", isEqualTo: "nein")
+        .where("switch", isEqualTo: true)
         .get()
         .then((snapshot) {
       snapshot.docs.forEach((doc){
@@ -102,14 +105,127 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
 
 
+  /// Dialog Kinder Auswahl
+  //
+  //
+  void showRaportSelect(void function, String fieldText)  {
+    final mediaQuery = MediaQuery.of(context);
+    Navigator.pop(context);
+     showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
+        title: Text("Kinder",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Container(
+            width: mediaQuery.size.width * 1,
+            height: mediaQuery.size.height * 0.65,
+            child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("Kinder")
+                    .where("kita", isEqualTo: currentUser?.email)
+                    .where("group", isEqualTo: widget.group)
+                    .where("absenz", isEqualTo: "nein")
+                    .snapshots(),
+                builder: (context, snapshot){
+                  // wenn Daten vorhanden _> gib alle Daten aus
+                  if (snapshot.hasData) {
+                    List childrenList = snapshot.data!.docs;
+                    //als Liste wiedergeben
+                    return ListView.builder(
+                      padding: EdgeInsets.only(bottom:15),
+                      itemCount: childrenList.length,
+                      itemBuilder: (context, index) {
+                        // individuelle Einträge abholen
+                        DocumentSnapshot document = childrenList[index];
+                        String docID = document.id;
+
+                        // Eintrag von jedem Dokument abholen
+                        Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
+                        String childText = data['child'];
+                        String anmeldungText = data['anmeldung'];
+                        bool active = data['switch'];
+
+                        bool istAngemeldet = anmeldungText == "Abgemeldet";
+
+                        var color = istAngemeldet ? Colors.grey : Colors.black;
+
+                        // als List Tile wiedergeben
+                        return Container(
+                          margin: EdgeInsets.only( right: 10, top: 10),
+
+                          child:
+                            ChildSelectSwitch(
+                              sectionName: childText,
+                              color: color,
+                              childcode: docID,
+                                active: active,
+                            ),
+
+
+                        );
+                      },
+                    );
+                  }
+                  else {
+                    return const Text("");
+                  }
+                }
+            ),
+          ),
+
+          ),
+
+        actions: [
+          // cancel Button
+          TextButton(
+            onPressed: () {
+              // Textfeld schliessen
+              Navigator.pop(context);
+              function;
+            },
+            child: Text("Zurück"),
+          ),
+
+          // save Button
+          TextButton(
+            onPressed: () {
+              // Raport hinzufügen
+              addRaport(fieldText, _raportTextController.text);
+              // Textfeld schliessen
+              Navigator.pop(context);
+              //Textfeld leeren
+              _raportTextController.clear();
+            },
+            child: Text("Speichern"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Dialog Kinder Auswahl
+  //
+  //
+
+
 
 
   /// Dialog für Anmeldung Hinzufügen anzeiegn
   //
   //
-  void showRaportDialogAnmeldung() {
+  void showRaportDialogAnmeldung()  {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('kk:mm').format(now);
+    final mediaQuery = MediaQuery.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -117,10 +233,70 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
             borderRadius:
             BorderRadius.all(
                 Radius.circular(10.0))),
-        title: Text("Kinder Anmelden?",
+        title: Text("Kinder",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
           ),
+        ),
+        content: SingleChildScrollView(
+          child: Container(
+            width: mediaQuery.size.width * 1,
+            height: mediaQuery.size.height * 0.65,
+            child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("Kinder")
+                    .where("kita", isEqualTo: currentUser?.email)
+                    .where("group", isEqualTo: widget.group)
+                    .where("absenz", isEqualTo: "nein")
+                    .snapshots(),
+                builder: (context, snapshot){
+                  // wenn Daten vorhanden _> gib alle Daten aus
+                  if (snapshot.hasData) {
+                    List childrenList = snapshot.data!.docs;
+                    //als Liste wiedergeben
+                    return ListView.builder(
+                      padding: EdgeInsets.only(bottom:15),
+                      itemCount: childrenList.length,
+                      itemBuilder: (context, index) {
+                        // individuelle Einträge abholen
+                        DocumentSnapshot document = childrenList[index];
+                        String docID = document.id;
+
+                        // Eintrag von jedem Dokument abholen
+                        Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
+                        String childText = data['child'];
+                        String anmeldungText = data['anmeldung'];
+                        bool active = data['switch'];
+
+                        bool istAngemeldet = anmeldungText == "Abgemeldet";
+
+                        var color = istAngemeldet ? Colors.grey : Colors.black;
+
+                        // als List Tile wiedergeben
+                        return Container(
+                          margin: EdgeInsets.only( right: 10, top: 10),
+
+                          child:
+                          ChildSelectSwitch(
+                            sectionName: childText,
+                            color: color,
+                            childcode: docID,
+                            active: active,
+                          ),
+
+
+                        );
+                      },
+                    );
+                  }
+                  else {
+                    return const Text("");
+                  }
+                }
+            ),
+          ),
+
         ),
 
         actions: [
@@ -129,8 +305,6 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
             onPressed: () {
               // Textfeld schliessen
               Navigator.pop(context);
-              //Textfeld leeren
-              _raportTextController.clear();
             },
             child: Text("Abbrechen"),
           ),
@@ -138,7 +312,6 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
           // save Button
           TextButton(
             onPressed: () {
-              // Raport hinzufügen
               anmeldungChild('anmeldung', 'Anwesend (Seit: $formattedDate)');
               addRaport('Angemeldet', '');
               // Textfeld schliessen
@@ -146,12 +319,13 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
               //Textfeld leeren
               _raportTextController.clear();
             },
-            child: Text("Bestätigen"),
+            child: Text("Anmelden"),
           ),
         ],
       ),
     );
   }
+
 
   // Dialog für Anmeldung Hinzufügen anzeiegn
   //
@@ -162,7 +336,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
   /// Dialog für Essen Hinzufügen anzeiegn
   //
   //
-  void showRaportDialogEssen() {
+  void showRaportDialogEssen()  {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -186,7 +360,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
               counterText: "",
           ),
         ),
-        actions: [
+         actions: [
           // cancel Button
           TextButton(
             onPressed: () {
@@ -200,15 +374,12 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
           // save Button
           TextButton(
-              onPressed: () {
-                // Raport hinzufügen
-                addRaport('Essen: ', _raportTextController.text);
-                // Textfeld schliessen
+              onPressed:  ()  {
                 Navigator.pop(context);
+                 showRaportSelect(showRaportDialogEssen(), 'Essen: ');
               //Textfeld leeren
-                _raportTextController.clear();
               },
-              child: Text("Speichern"),
+              child: Text("Weiter"),
           ),
         ],
       ),
@@ -265,15 +436,12 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
           // save Button
           TextButton(
-            onPressed: () {
-              // Raport hinzufügen
-              addRaport('Schlaf: ', _raportTextController.text);
-              // Textfeld schliessen
+            onPressed:  ()  {
               Navigator.pop(context);
+              showRaportSelect(showRaportDialogSchlaf(), 'Schlaf: ');
               //Textfeld leeren
-              _raportTextController.clear();
             },
-            child: Text("Speichern"),
+            child: Text("Weiter"),
           ),
         ],
       ),
@@ -332,15 +500,12 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
           // save Button
           TextButton(
-            onPressed: () {
-              // Raport hinzufügen
-              addRaport('Aktivität: ', _raportTextController.text);
-              // Textfeld schliessen
+            onPressed:  ()  {
               Navigator.pop(context);
+              showRaportSelect(showRaportDialogActivity(), 'Aktivität: ');
               //Textfeld leeren
-              _raportTextController.clear();
             },
-            child: Text("Speichern"),
+            child: Text("Weiter"),
           ),
         ],
       ),
@@ -397,15 +562,12 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
           // save Button
           TextButton(
-            onPressed: () {
-              // Raport hinzufügen
-              addRaport('Diverses: ', _raportTextController.text);
-              // Textfeld schliessen
+            onPressed:  ()  {
               Navigator.pop(context);
+              showRaportSelect(showRaportDialogDiverses(), 'Diverses: ');
               //Textfeld leeren
-              _raportTextController.clear();
             },
-            child: Text("Speichern"),
+            child: Text("Weiter"),
           ),
         ],
       ),
@@ -423,9 +585,11 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
   /// Dialog für Abholung Hinzufügen anzeiegn
   //
   //
-  void showRaportDialogAbmeldung() {
+
+  void showRaportDialogAbmeldung()  {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('kk:mm').format(now);
+    final mediaQuery = MediaQuery.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -433,19 +597,78 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
             borderRadius:
             BorderRadius.all(
                 Radius.circular(10.0))),
-        title: Text("Kinder Abmelden?",
+        title: Text("Kinder",
           style: TextStyle(color: Colors.black,
             fontSize: 20,
           ),
         ),
+        content: SingleChildScrollView(
+          child: Container(
+            width: mediaQuery.size.width * 1,
+            height: mediaQuery.size.height * 0.65,
+            child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("Kinder")
+                    .where("kita", isEqualTo: currentUser?.email)
+                    .where("group", isEqualTo: widget.group)
+                    .where("absenz", isEqualTo: "nein")
+                    .snapshots(),
+                builder: (context, snapshot){
+                  // wenn Daten vorhanden _> gib alle Daten aus
+                  if (snapshot.hasData) {
+                    List childrenList = snapshot.data!.docs;
+                    //als Liste wiedergeben
+                    return ListView.builder(
+                      padding: EdgeInsets.only(bottom:15),
+                      itemCount: childrenList.length,
+                      itemBuilder: (context, index) {
+                        // individuelle Einträge abholen
+                        DocumentSnapshot document = childrenList[index];
+                        String docID = document.id;
+
+                        // Eintrag von jedem Dokument abholen
+                        Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
+                        String childText = data['child'];
+                        String anmeldungText = data['anmeldung'];
+                        bool active = data['switch'];
+
+                        bool istAngemeldet = anmeldungText == "Abgemeldet";
+
+                        var color = istAngemeldet ? Colors.grey : Colors.black;
+
+                        // als List Tile wiedergeben
+                        return Container(
+                          margin: EdgeInsets.only( right: 10, top: 10),
+
+                          child:
+                          ChildSelectSwitch(
+                            sectionName: childText,
+                            color: color,
+                            childcode: docID,
+                            active: active,
+                          ),
+
+
+                        );
+                      },
+                    );
+                  }
+                  else {
+                    return const Text("");
+                  }
+                }
+            ),
+          ),
+
+        ),
+
         actions: [
           // cancel Button
           TextButton(
             onPressed: () {
               // Textfeld schliessen
               Navigator.pop(context);
-              //Textfeld leeren
-              _raportTextController.clear();
             },
             child: Text("Abbrechen"),
           ),
@@ -453,7 +676,6 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
           // save Button
           TextButton(
             onPressed: () {
-              // Raport hinzufügen
               anmeldungChild('anmeldung', "Abgemeldet");
               anmeldungChild('abholzeit', "");
               addRaport('Abgemeldet', '');
@@ -463,7 +685,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
               //Textfeld leeren
               _raportTextController.clear();
             },
-            child: Text("Speichern"),
+            child: Text("Abmelden"),
           ),
         ],
       ),

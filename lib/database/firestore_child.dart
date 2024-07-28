@@ -52,6 +52,7 @@ class FirestoreDatabaseChild {
       'homoeopathie': "nicht erlaubt",
       'shownotification': "0",
       'registrierungen': 0,
+      'switch': true,
     });
 
 
@@ -101,6 +102,18 @@ class FirestoreDatabaseChild {
     });
   }
 
+  void updateSwitch(String docID, bool active) {
+    FirebaseFirestore.instance
+        .collection("Kinder")
+        .doc(docID)
+        .update({
+      'switch': active,
+    });
+  }
+
+
+
+
 
 
 // Daten löschen
@@ -123,6 +136,7 @@ class FirestoreDatabaseChild {
       'absenzBis': DateTime.now(),
     });
   }
+
 
 
 

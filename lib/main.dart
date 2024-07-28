@@ -67,19 +67,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+
+    return Scaffold(
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
         statusBarColor: Colors.orange.shade300,
         systemNavigationBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarIconBrightness: Brightness.dark,
     ),
+
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: AuthPage(),
         theme: lightMode,
         //darkTheme: darkMode,
       ),
+    ),
     );
   }
 }
