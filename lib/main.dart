@@ -68,8 +68,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
         statusBarColor: Colors.orange.shade300,
         systemNavigationBarColor: Colors.white,
@@ -83,7 +82,6 @@ class MyApp extends StatelessWidget {
         theme: lightMode,
         //darkTheme: darkMode,
       ),
-    ),
     );
   }
 }
