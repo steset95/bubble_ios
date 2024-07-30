@@ -16,11 +16,13 @@ import '../../components/notification_controller.dart';
 
 class RaportGroupPage extends StatefulWidget {
   final String group;
+  final String name;
 
 
   RaportGroupPage({
     super.key,
     required this.group,
+    required this.name,
 
 
   });
@@ -108,7 +110,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
   /// Dialog Kinder Auswahl
   //
   //
-  void showRaportSelect(void function, String fieldText)  {
+  void showRaportSelect(String fieldText) async {
     final mediaQuery = MediaQuery.of(context);
     Navigator.pop(context);
      showDialog(
@@ -187,12 +189,13 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
         actions: [
           // cancel Button
           TextButton(
-            onPressed: () {
-              // Textfeld schliessen
-              Navigator.pop(context);
-              function;
+            onPressed: () => {
+     _raportTextController.clear(),
+              // Raport hinzufügen
+         Navigator.pop(context),
             },
-            child: Text("Zurück"),
+
+            child: Text("Abbrechen"),
           ),
 
           // save Button
@@ -223,6 +226,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
   //
   //
   void showRaportDialogAnmeldung()  {
+    Navigator.pop(context);
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('kk:mm').format(now);
     final mediaQuery = MediaQuery.of(context);
@@ -315,9 +319,11 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
               anmeldungChild('anmeldung', 'Anwesend (Seit: $formattedDate)');
               addRaport('Angemeldet', '');
               // Textfeld schliessen
+              _raportTextController.clear();
+
               Navigator.pop(context);
               //Textfeld leeren
-              _raportTextController.clear();
+
             },
             child: Text("Anmelden"),
           ),
@@ -374,11 +380,12 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
           // save Button
           TextButton(
-              onPressed:  ()  {
-                Navigator.pop(context);
-                 showRaportSelect(showRaportDialogEssen(), 'Essen: ');
+            onPressed:  () {
+    Navigator.pop(context);
+    showRaportSelect('Schlaf: ');
+
+            },
               //Textfeld leeren
-              },
               child: Text("Weiter"),
           ),
         ],
@@ -438,7 +445,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
           TextButton(
             onPressed:  ()  {
               Navigator.pop(context);
-              showRaportSelect(showRaportDialogSchlaf(), 'Schlaf: ');
+              showRaportSelect('Schlaf: ');
               //Textfeld leeren
             },
             child: Text("Weiter"),
@@ -502,7 +509,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
           TextButton(
             onPressed:  ()  {
               Navigator.pop(context);
-              showRaportSelect(showRaportDialogActivity(), 'Aktivität: ');
+              showRaportSelect('Aktivität: ');
               //Textfeld leeren
             },
             child: Text("Weiter"),
@@ -564,7 +571,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
           TextButton(
             onPressed:  ()  {
               Navigator.pop(context);
-              showRaportSelect(showRaportDialogDiverses(), 'Diverses: ');
+              showRaportSelect('Diverses: ');
               //Textfeld leeren
             },
             child: Text("Weiter"),
@@ -587,6 +594,7 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
   //
 
   void showRaportDialogAbmeldung()  {
+    Navigator.pop(context);
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('kk:mm').format(now);
     final mediaQuery = MediaQuery.of(context);
@@ -682,7 +690,6 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
 
               // Textfeld schliessen
               Navigator.pop(context);
-              //Textfeld leeren
               _raportTextController.clear();
             },
             child: Text("Abmelden"),
@@ -697,16 +704,17 @@ class _RaportGroupPageState extends State<RaportGroupPage> {
   //
 
 
+
   @override
   Widget build(BuildContext context) {
-    final group = widget.group;
+    final titel = widget.name;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
           backgroundColor: Theme.of(context).colorScheme.secondary,
-          title: Text('Raport Gruppe $group',
+          title: Text('Raport  $titel',
           ),
         ),
           body: Column(

@@ -175,6 +175,10 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
   Widget build(BuildContext context) {
     String currentDate = DateTime.now().toString(); // Aktuelles Datum als String
     String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    var heightList = isIOS ? 0.38 : 0.42;
+
+
     final mediaQuery = MediaQuery.of(context);
     return SafeArea(
         child: Scaffold(
@@ -724,88 +728,91 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                                    Container(
-                    height: mediaQuery.size.height * 0.45,
-                    width: mediaQuery.size.width * 1,
-                    child: StreamBuilder<QuerySnapshot>(
+                                    SafeArea(
+                                      child: Container(
 
-                    stream:  FirebaseFirestore.instance
-                        .collection("Kinder")
-                        .doc(widget.docID)
-                        .collection(formattedDate)
-                        .orderBy('TimeStamp', descending: true)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      List<Row> raportWidgets = [];
-                      if (snapshot.hasData) {
-                        final raports = snapshot.data?.docs.reversed.toList();
-                        for (var raport in raports!) {
-                          final raportWidget = Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Container(
-                                  padding: EdgeInsets.only(top: 6, bottom: 6, left: 15,),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.inversePrimary,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: Offset(2, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  width: mediaQuery.size.width * 0.9,
-
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                              raport['Uhrzeit'],
-                                  style: TextStyle(fontWeight: FontWeight.bold)
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Text(
-                                              raport['RaportTitle'],
-                                              style: TextStyle(fontWeight: FontWeight.bold)
-                                              ),
-                                        ],
-                                      ),
-                                    const SizedBox(height: 5),
-                                      Row(
-                                        children: [
-                                          Container(
-                                              width: mediaQuery.size.width * 0.85,
-                                              child: Text(
-                                                  textAlign: TextAlign.left,
-                                                  raport['RaportText'])),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                              ),
-                            ],
-                          );
-                          raportWidgets.add(raportWidget);
-                          Text(raport['RaportText']);
-                        }
-
-                      }
-                      return
-                        ListView(
-                          padding: EdgeInsets.only(bottom: 30),
-                          children: raportWidgets,
-                        );
-                    }
-                    ),
-                  ),
+                                                          height: mediaQuery.size.height * heightList,
+                                                          width: mediaQuery.size.width * 1,
+                                                          child: StreamBuilder<QuerySnapshot>(
+                                      
+                                                          stream:  FirebaseFirestore.instance
+                                                              .collection("Kinder")
+                                                              .doc(widget.docID)
+                                                              .collection(formattedDate)
+                                                              .orderBy('TimeStamp', descending: true)
+                                                              .snapshots(),
+                                                          builder: (context, snapshot) {
+                                                            List<Row> raportWidgets = [];
+                                                            if (snapshot.hasData) {
+                                                              final raports = snapshot.data?.docs.reversed.toList();
+                                                              for (var raport in raports!) {
+                                                                final raportWidget = Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.all(3.0),
+                                                                      child: Container(
+                                                                        padding: EdgeInsets.only(top: 6, bottom: 6, left: 15,),
+                                                                        decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.inversePrimary,
+                                      borderRadius: BorderRadius.circular(5),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: Offset(2, 4),
+                                        ),
+                                      ],
+                                                                        ),
+                                                                        width: mediaQuery.size.width * 0.9,
+                                      
+                                                                        child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                                raport['Uhrzeit'],
+                                                                        style: TextStyle(fontWeight: FontWeight.bold)
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                                raport['RaportTitle'],
+                                                style: TextStyle(fontWeight: FontWeight.bold)
+                                                ),
+                                          ],
+                                        ),
+                                      const SizedBox(height: 5),
+                                        Row(
+                                          children: [
+                                            Container(
+                                                width: mediaQuery.size.width * 0.85,
+                                                child: Text(
+                                                    textAlign: TextAlign.left,
+                                                    raport['RaportText'])),
+                                          ],
+                                        ),
+                                      ],
+                                                                        ),
+                                                                      ),
+                                      
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                                raportWidgets.add(raportWidget);
+                                                                Text(raport['RaportText']);
+                                                              }
+                                      
+                                                            }
+                                                            return
+                                                              ListView(
+                                                                //padding: EdgeInsets.only(bottom: 30),
+                                                                children: raportWidgets,
+                                                              );
+                                                          }
+                                                          ),
+                                                        ),
+                                    ),
                 ],
               ),
                           ],

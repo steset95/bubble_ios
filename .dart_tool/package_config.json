@@ -189,9 +189,9 @@
     },
     {
       "name": "flutter_cache_manager",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.3.2",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.3.3",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.0"
     },
     {
       "name": "flutter_lints",
@@ -207,9 +207,9 @@
     },
     {
       "name": "flutter_plugin_android_lifecycle",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.19",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.21",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "flutter_test",
@@ -309,9 +309,9 @@
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.4",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.9",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "path_provider_foundation",
@@ -375,7 +375,7 @@
     },
     {
       "name": "rxdart",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/rxdart-0.27.7",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/rxdart-0.28.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -471,9 +471,9 @@
     },
     {
       "name": "url_launcher_android",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_android-6.3.2",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_android-6.3.7",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "url_launcher_ios",
@@ -507,9 +507,9 @@
     },
     {
       "name": "url_launcher_windows",
-      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_windows-3.1.1",
+      "rootUri": "file:///C:/Users/Stefan/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_windows-3.1.2",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.2"
     },
     {
       "name": "uuid",
@@ -560,7 +560,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-07-28T11:43:13.025383Z",
+  "generated": "2024-07-30T07:42:14.960449Z",
   "generator": "pub",
   "generatorVersion": "3.6.0-76.0.dev",
   "flutterRoot": "file:///C:/Users/Stefan/Documents/flutter",

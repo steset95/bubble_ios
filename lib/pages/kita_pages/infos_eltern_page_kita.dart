@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../components/my_profile_data_icon.dart';
 import '../../components/my_profile_data_read_only.dart';
 import '../../components/notification_controller.dart';
@@ -57,6 +57,19 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
     super.dispose();
   }
   /// Notification
+
+
+
+
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +162,9 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
                 MyProfileDataIcon(
                   text: tel,
                   sectionName: "Telefonnummer",
-                  onPressed: () => launchUrlString("tel://$tel"),
+                  onPressed: () => setState(() {
+                    _makePhoneCall(tel);
+                  }),
                   icon: Icons.call_outlined,
                 ),
               ],

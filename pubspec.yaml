@@ -89,13 +89,18 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: AllenSans
-       fonts:
-         - asset: fonts/AllenSans-Regular.ttf
-     - family: Goli
+     - family: Goli-Bold
        fonts:
           - asset: fonts/Goli-Bold.ttf
+     - family: Goli-Medium
+       fonts:
           - asset: fonts/Goli-Medium.ttf
+     - family: Goli-Regular
+       fonts:
+          - asset: fonts/Goli-Regular.ttf
+     - family: Goli-SemiBold
+       fonts:
+          - asset: fonts/Goli-SemiBold.ttf
 
   #   - family: Schyler
   #     fonts:

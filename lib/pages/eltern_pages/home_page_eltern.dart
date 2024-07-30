@@ -33,6 +33,7 @@ class _HomePageElternState extends State<HomePageEltern> {
           child: body[_currentIndex],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          elevation: 0.0,
           type: BottomNavigationBarType.fixed,
           currentIndex: _currentIndex,
             onTap: (int newIndex)

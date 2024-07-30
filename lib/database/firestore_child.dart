@@ -82,6 +82,7 @@ class FirestoreDatabaseChild {
   Stream<QuerySnapshot> getChildrenStream3() {
     final postStream = FirebaseFirestore.instance
         .collection("Kinder")
+
         .where("kita", isEqualTo: currentUser?.email)
         .where("group", isEqualTo: '3' )
         .snapshots();

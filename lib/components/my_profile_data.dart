@@ -35,6 +35,7 @@ class ProfileData extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 5,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -42,12 +43,17 @@ class ProfileData extends StatelessWidget {
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,),
               ),
-              IconButton(
-                onPressed: onPressed,
-                icon: Icon(
-                  Icons.edit_outlined,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 15,
+              Container(
+                width: 30,
+                height: 30,
+                //padding: const EdgeInsets.only(left: 15, bottom: 15, right: 10),
+                child: IconButton(
+                  onPressed: onPressed,
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 15,
+                  ),
                 ),
               ),
             ],

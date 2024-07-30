@@ -27,7 +27,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
 
   final FirestoreDatabaseChild firestoreDatabaseChild = FirestoreDatabaseChild();
 
- // Text Controller für Abfrage des Inhalts im Textfeld
+  // Text Controller für Abfrage des Inhalts im Textfeld
 
   final TextEditingController textController = TextEditingController();
 
@@ -103,7 +103,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
           // Speicher Button
           TextButton(
             onPressed: () {
-                firestoreDatabaseChild.addChild(textController.text, "1");
+              firestoreDatabaseChild.addChild(textController.text, "1");
               // Textfeld leeren nach Eingabe
               textController.clear();
               //Box schliessen
@@ -124,11 +124,11 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
             borderRadius:
             BorderRadius.all(
                 Radius.circular(10.0))),
-          title: Text("Löschen bestätigen?",
-            style: TextStyle(color: Colors.black,
-              fontSize: 20,
-            ),
+        title: Text("Löschen bestätigen?",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
           ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -151,56 +151,56 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
 
 
 
-/// Gruppe ändern Altert Dialog
+  /// Gruppe ändern Altert Dialog
 
   void openChildBoxGroup({String? docID}) {
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.all(
-                  Radius.circular(10.0))),
-          title: Text("Gruppe ändern",
-            style: TextStyle(color: Colors.black,
-              fontSize: 20,
-            ),
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(
+                Radius.circular(10.0))),
+        title: Text("Gruppe ändern",
+          style: TextStyle(color: Colors.black,
+            fontSize: 20,
           ),
-      // Text Eingabe
-      content: DropdownButtonFormField<String>(
-        //dropdownColor: Colors.blue[900],
-        isDense: true,
-        isExpanded: false,
-        //iconEnabledColor: Colors.black,
-        //focusColor: Colors.black,
-
-        items: options.map((String dropDownStringItem) {
-          return DropdownMenuItem<String>(
-            value: dropDownStringItem,
-            child: Text(
-              dropDownStringItem,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          );
-        }).toList(),
-        value: _currentItemSelected, onChanged: (newValueSelected) {
-        setState(() {
-          _currentItemSelected = newValueSelected!;
-          group = newValueSelected;
-        });
-      },
-      ),
-      actions: [
-        TextButton(
-          child: const Text("Abbrechen",
-          ),
-          onPressed: () => Navigator.pop(context),
         ),
-        // Speicher Button
-        TextButton(
+        // Text Eingabe
+        content: DropdownButtonFormField<String>(
+          //dropdownColor: Colors.blue[900],
+          isDense: true,
+          isExpanded: false,
+          //iconEnabledColor: Colors.black,
+          //focusColor: Colors.black,
+
+          items: options.map((String dropDownStringItem) {
+            return DropdownMenuItem<String>(
+              value: dropDownStringItem,
+              child: Text(
+                dropDownStringItem,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            );
+          }).toList(),
+          value: _currentItemSelected, onChanged: (newValueSelected) {
+          setState(() {
+            _currentItemSelected = newValueSelected!;
+            group = newValueSelected;
+          });
+        },
+        ),
+        actions: [
+          TextButton(
+            child: const Text("Abbrechen",
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          // Speicher Button
+          TextButton(
             onPressed: () {
 
               // Button wird für hinzufügen(unten) und anpassen (neben Kind) genutzt, daher wird zuerst geprüft ob
@@ -216,19 +216,17 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
               Navigator.pop(context);
             },
             child: Text("Speichern"),
-        )
+          )
         ],
-        ),
+      ),
     );
   }
 
-bool isVisible = false;
+  bool isVisible = false;
   Widget? selectedOption;
 
 
-var buttons = '1';
-
-
+  var buttons = '1';
 
 
   Future<void> editField(String field, String titel, String text) async {
@@ -290,7 +288,7 @@ var buttons = '1';
   }
 
 
-/// ShowButtons
+  /// ShowButtons
 
   Widget showButtons () {
     return Row(
@@ -320,11 +318,15 @@ var buttons = '1';
 
 
 
+
+
   /// Start Widget
 
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0.0,
@@ -340,11 +342,26 @@ var buttons = '1';
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RaportGroupPage(group: buttons)),
-      ),
+        onPressed: () =>
+
+
+            FirebaseFirestore.instance
+                .collection("Users")
+                .doc(currentUser?.email)
+                .get()
+                .then((DocumentSnapshot document) {
+              final  buttonstogroup = 'gruppe$buttons';
+              final String titel = document[buttonstogroup];
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => RaportGroupPage(group: buttons, name: titel)),
+              );
+
+            }),
+
+
+
         child: const Icon(Icons.calendar_today_outlined),
       ),
       /// Anzeige 3 Gruppen
@@ -370,18 +387,18 @@ var buttons = '1';
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedOption = optiona();
-                                    });
-                                    buttons = '1';
-                                  },
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = optiona();
+                                  });
+                                  buttons = '1';
+                                },
 
-                                  child: optionCards(
-                                          userData["gruppe1"],
-                                          "assets/icons/recycle.png", context, "1",
-                                    Theme.of(context).colorScheme.primary,),
-                                  ),
+                                child: optionCards(
+                                  userData["gruppe1"],
+                                  "assets/icons/recycle.png", context, "1",
+                                  Theme.of(context).colorScheme.primary,),
+                              ),
 
                               InkWell(
                                   onTap: () {
@@ -391,8 +408,8 @@ var buttons = '1';
                                     buttons = '2';
                                   },
                                   child: optionCards(
-                                      userData["gruppe2"], "assets/icons/tools.png",
-                                      context, "2", Colors.indigo.shade100,)
+                                    userData["gruppe2"], "assets/icons/tools.png",
+                                    context, "2", Colors.indigo.shade100,)
                               ),
                               InkWell(
                                   onTap: () {
@@ -402,8 +419,8 @@ var buttons = '1';
                                     buttons = '3';
                                   },
                                   child: optionCards(
-                                      userData["gruppe3"], "assets/icons/file.png",
-                                      context, "3", Colors.indigo.shade100,)
+                                    userData["gruppe3"], "assets/icons/file.png",
+                                    context, "3", Colors.indigo.shade100,)
                               ),
                             ],
                           ),
@@ -422,8 +439,8 @@ var buttons = '1';
                                   },
 
                                   child: optionCards(
-                                      userData["gruppe1"], "assets/icons/recycle.png",
-                                      context, "1", Colors.indigo.shade200,)
+                                    userData["gruppe1"], "assets/icons/recycle.png",
+                                    context, "1", Colors.indigo.shade200,)
                               ),
                               InkWell(
                                   onTap: () {
@@ -433,8 +450,8 @@ var buttons = '1';
                                     buttons = '2';
                                   },
                                   child: optionCards(
-                                      userData["gruppe2"], "assets/icons/tools.png",
-                                      context, "2", Theme.of(context).colorScheme.primary,)
+                                    userData["gruppe2"], "assets/icons/tools.png",
+                                    context, "2", Theme.of(context).colorScheme.primary,)
                               ),
                               InkWell(
                                   onTap: () {
@@ -444,8 +461,8 @@ var buttons = '1';
                                     buttons = '3';
                                   },
                                   child: optionCards(
-                                      userData["gruppe3"], "assets/icons/file.png",
-                                      context, "3", Colors.indigo.shade200,)
+                                    userData["gruppe3"], "assets/icons/file.png",
+                                    context, "3", Colors.indigo.shade200,)
                               ),
                             ],
                           ),
@@ -464,8 +481,8 @@ var buttons = '1';
                                   },
 
                                   child: optionCards(
-                                      userData["gruppe1"], "assets/icons/recycle.png",
-                                      context, "1", Colors.indigo.shade200,)
+                                    userData["gruppe1"], "assets/icons/recycle.png",
+                                    context, "1", Colors.indigo.shade200,)
                               ),
                               InkWell(
                                   onTap: () {
@@ -475,8 +492,8 @@ var buttons = '1';
                                     buttons = '2';
                                   },
                                   child: optionCards(
-                                      userData["gruppe2"], "assets/icons/tools.png",
-                                      context, "2", Colors.indigo.shade200,)
+                                    userData["gruppe2"], "assets/icons/tools.png",
+                                    context, "2", Colors.indigo.shade200,)
                               ),
                               InkWell(
                                   onTap: () {
@@ -486,8 +503,8 @@ var buttons = '1';
                                     buttons = '3';
                                   },
                                   child: optionCards(
-                                      userData["gruppe3"], "assets/icons/file.png",
-                                      context, "3", Theme.of(context).colorScheme.primary,)
+                                    userData["gruppe3"], "assets/icons/file.png",
+                                    context, "3", Theme.of(context).colorScheme.primary,)
                               ),
                             ],
                           ),
@@ -560,7 +577,7 @@ var buttons = '1';
                       Text(
                         text,
                         style: TextStyle(color: Colors.white,
-                        fontSize: 10
+                            fontSize: 10
                         ),
                       ),
                     ],
@@ -593,137 +610,157 @@ var buttons = '1';
                 width: mediaQuery.size.width * 1,
                 height: mediaQuery.size.height * 0.65,
                 child: StreamBuilder<QuerySnapshot>(
-                // Abfrage des definierten Streams in firestoreDatabaseChild, Stream = getChildrenStream
-                  stream: firestoreDatabaseChild.getChildrenStream1(),
-                  builder: (context, snapshot){
-                    // wenn Daten vorhanden _> gib alle Daten aus
-                    if (snapshot.hasData) {
-                      List childrenList = snapshot.data!.docs;
-                      //als Liste wiedergeben
-                      return ListView.builder(
-                        padding: EdgeInsets.only(bottom: 30),
-                        itemCount: childrenList.length,
-                        itemBuilder: (context, index) {
-                          // individuelle Einträge abholen
-                          DocumentSnapshot document = childrenList[index];
-                          String docID = document.id;
+                  // Abfrage des definierten Streams in firestoreDatabaseChild, Stream = getChildrenStream
+                    stream: firestoreDatabaseChild.getChildrenStream1(),
+                    builder: (context, snapshot){
+                      // wenn Daten vorhanden _> gib alle Daten aus
+                      if (snapshot.hasData) {
+                        List childrenList = snapshot.data!.docs;
+                        childrenList.sort((a, b) => a['child'].compareTo(b['child']));
+                        //als Liste wiedergeben
+                        return ListView.builder(
+                          padding: EdgeInsets.only(bottom: 30),
+                          itemCount: childrenList.length,
+                          itemBuilder: (context, index) {
+                            // individuelle Einträge abholen
+                            DocumentSnapshot document = childrenList[index];
+                            String docID = document.id;
 
-                          // Eintrag von jedem Dokument abholen
-                          Map<String, dynamic> data =
-                          document.data() as Map<String, dynamic>;
-                          String childText = data['child'];
-                          String anmeldungText = data['anmeldung'];
-                          String elternmail = data['eltern'];
-                          String shownotification = data['shownotification'];
-                          String absenz = data['absenz'];
+                            // Eintrag von jedem Dokument abholen
+                            Map<String, dynamic> data =
+                            document.data() as Map<String, dynamic>;
+                            String childText = data['child'];
+                            String anmeldungText = data['anmeldung'];
+                            String elternmail = data['eltern'];
+                            String shownotification = data['shownotification'];
+                            String absenz = data['absenz'];
 
-                          if (absenz == "ja" && data["absenzBis"].toDate().isBefore(DateTime.now()))
-                          {
-                          FirebaseFirestore.instance
-                              .collection("Kinder")
-                              .doc(document.id)
-                              .update({
-                            'absenz': "nein",
-                            'anmeldung': "Abgemeldet",
-                          });
-                          }
+                            if (absenz == "ja" && data["absenzBis"].toDate().isBefore(DateTime.now()))
+                            {
+                              FirebaseFirestore.instance
+                                  .collection("Kinder")
+                                  .doc(document.id)
+                                  .update({
+                                'absenz': "nein",
+                                'anmeldung': "Abgemeldet",
+                              });
+                            }
 
-                          bool istAngemeldet = anmeldungText == "Abgemeldet";
-                          bool hatAbsenz = absenz == "nein";
+                            bool istAngemeldet = anmeldungText == "Abgemeldet";
+                            bool hatAbsenz = absenz == "nein";
 
-                          var color = istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
-                          var color2 = istAngemeldet ? Colors.black : Colors.white;
-                          var color3 = hatAbsenz ? Colors.transparent : Theme.of(context).colorScheme.secondary;
+                            var color = istAngemeldet ? Colors.white : Theme.of(context).colorScheme.primary;
+                            var color2 = istAngemeldet ? Colors.black : Colors.white;
+                            var color3 = hatAbsenz ? Colors.transparent : Theme.of(context).colorScheme.secondary;
 
-                          // als List Tile wiedergeben
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ChildOverviewPageKita(docID: docID,
-                                )),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 3,
-                                  color: color3,
-                                ),
-                                color: color,
-                                borderRadius: BorderRadius.circular(5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    spreadRadius: 1,
-                                    blurRadius: 3,
-                                    offset: Offset(2, 4),
+                            // als List Tile wiedergeben
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ChildOverviewPageKita(docID: docID,
+                                  )),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 3,
+                                    color: color3,
                                   ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.only(left: 10,),
-                              margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-
-                              child: ListTile(
-                                  title: Text(childText,
-                                    style: TextStyle(
-                                      color: color2),
-                                  ),
-
-                                  subtitle: Text(anmeldungText,
-                                    style: TextStyle(fontSize: 12,
-                                    color: color2,
+                                  color: color,
+                                  borderRadius: BorderRadius.circular(5),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: Offset(2, 4),
                                     ),
-                                  ),
-                                  // Button für Ändern
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                  ],
+                                ),
+                                padding: const EdgeInsets.only(left: 10, bottom: 10, right: 5, top: 5),
+                                margin: EdgeInsets.only(left: 20, right: 20, top: 10),
 
-                                    if(shownotification == "1")
-                                      IconButton(
-                                        onPressed: () {
-                                          notificationNullKind(docID);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => ChatPage(
-                                              receiverID: elternmail, childcode: docID,
-                                            )),
-                                          );
-                                        },
-                                        color: color2,
-                                        icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 5,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(childText,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                              color: color2),
                                         ),
-                                      ),
-                                      // ändern Button
-                                      IconButton(
-                                        onPressed: () => openChildBoxGroup(docID: docID),
-                                        color: color2,
-                                        icon: const Icon(Icons.settings,
-                                        ),
-                                      ),
-                                      // Löschen button
-                                      IconButton(
-                                        onPressed: () => openChildBoxDelete(docID: docID),
-                                        color: color2,
+                                        Row(
+                                          children: [
+                                            if(shownotification == "1")
+                                              Container(
+                                                width: 45,
+                                                height: 20,
+                                                child: IconButton(
+                                                  onPressed: () {
+                                                    notificationNullKind(docID);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => ChatPage(
+                                                        receiverID: elternmail, childcode: docID,
+                                                      )),
+                                                    );
+                                                  },
+                                                  color: color2,
+                                                  icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                                  ),
+                                                ),
+                                              ),
+                                            // ändern Button
+                                            Container(
+                                              width: 45,
+                                              height: 20,
+                                              child: IconButton(
+                                                onPressed: () => openChildBoxGroup(docID: docID),
+                                                color: color2,
+                                                icon: const Icon(Icons.group_rounded,
+                                                ),
+                                              ),
+                                            ),
+                                            // Löschen button
+                                            Container(
+                                              width: 45,
+                                              height: 20,
+                                              child: IconButton(
+                                                onPressed: () => openChildBoxDelete(docID: docID),
+                                                color: color2,
 
-                                        icon: const Icon(Icons.delete,
+                                                icon: const Icon(Icons.delete,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5,),
+                                    Text(anmeldungText,
+                                      style: TextStyle(color: color2,
+                                        fontSize: 12,
                                       ),
-                                    ],
-                                  )
-
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
+                            );
+                          },
+                        );
+                      }
+                      else {
+                        return const Text("");
+                      }
                     }
-                    else {
-                      return const Text("");
-                    }
-                  }
-                    ),
+                ),
               ),
             ],
           ),
@@ -749,6 +786,7 @@ var buttons = '1';
                     // wenn Daten vorhanden _> gib alle Daten aus
                     if (snapshot.hasData) {
                       List childrenList = snapshot.data!.docs;
+                      childrenList.sort((a, b) => a['child'].compareTo(b['child']));
                       //als Liste wiedergeben
                       return ListView.builder(
                         padding: EdgeInsets.only(bottom: 30),
@@ -811,59 +849,78 @@ var buttons = '1';
                                   ),
                                 ],
                               ),
-                              padding: const EdgeInsets.only(left: 10,),
+                              padding: const EdgeInsets.only(left: 10, bottom: 10, right: 5, top: 5),
                               margin: EdgeInsets.only(left: 20, right: 20, top: 10),
 
-                              child: ListTile(
-                                  title: Text(childText,
-                                    style: TextStyle(
-                                        color: color2),
-                                  ),
-
-                                  subtitle: Text(anmeldungText,
-                                    style: TextStyle(fontSize: 12,
-                                      color: color2,
+                              child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 5,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(childText,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: color2),
                                     ),
-                                  ),
-                                  // Button für Ändern
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-
-                                      if(shownotification == "1")
-                                        IconButton(
-                                          onPressed: () {
-                                            notificationNullKind(docID);
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => ChatPage(
-                                                receiverID: elternmail, childcode: docID,
-                                              )),
-                                            );
-                                          },
-                                          color: color2,
-                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                    Row(
+                                      children: [
+                                        if(shownotification == "1")
+                                          Container(
+                                            width: 45,
+                                            height: 20,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                notificationNullKind(docID);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => ChatPage(
+                                                    receiverID: elternmail, childcode: docID,
+                                                  )),
+                                                );
+                                              },
+                                              color: color2,
+                                              icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                              ),
+                                            ),
+                                          ),
+                                        // ändern Button
+                                        Container(
+                                          width: 45,
+                                          height: 20,
+                                          child: IconButton(
+                                            onPressed: () => openChildBoxGroup(docID: docID),
+                                            color: color2,
+                                            icon: const Icon(Icons.group_rounded,
+                                            ),
                                           ),
                                         ),
-                                      // ändern Button
-                                      IconButton(
-                                        onPressed: () => openChildBoxGroup(docID: docID),
-                                        color: color2,
-                                        icon: const Icon(Icons.settings,
-                                        ),
-                                      ),
-                                      // Löschen button
-                                      IconButton(
-                                        onPressed: () => openChildBoxDelete(docID: docID),
-                                        color: color2,
+                                        // Löschen button
+                                        Container(
+                                          width: 45,
+                                          height: 20,
+                                          child: IconButton(
+                                            onPressed: () => openChildBoxDelete(docID: docID),
+                                            color: color2,
 
-                                        icon: const Icon(Icons.delete,
+                                            icon: const Icon(Icons.delete,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  )
-
-                              ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5,),
+                                Text(anmeldungText,
+                                  style: TextStyle(color: color2,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
                             ),
                           );
                         },
@@ -899,6 +956,7 @@ var buttons = '1';
                     // wenn Daten vorhanden _> gib alle Daten aus
                     if (snapshot.hasData) {
                       List childrenList = snapshot.data!.docs;
+                      childrenList.sort((a, b) => a['child'].compareTo(b['child']));
                       //als Liste wiedergeben
                       return ListView.builder(
                         padding: EdgeInsets.only(bottom: 30),
@@ -960,58 +1018,77 @@ var buttons = '1';
                                   ),
                                 ],
                               ),
-                              padding: const EdgeInsets.only(left: 10,),
+                              padding: const EdgeInsets.only(left: 10, bottom: 10, right: 5, top: 5),
                               margin: EdgeInsets.only(left: 20, right: 20, top: 10),
 
-                              child: ListTile(
-                                  title: Text(childText,
-                                    style: TextStyle(
-                                        color: color2),
-                                  ),
-
-                                  subtitle: Text(anmeldungText,
-                                    style: TextStyle(fontSize: 12,
-                                      color: color2,
-                                    ),
-                                  ),
-                                  // Button für Ändern
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 5,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-
-                                      if(shownotification == "1")
-                                        IconButton(
-                                          onPressed: () {
-                                            notificationNullKind(docID);
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => ChatPage(
-                                                receiverID: elternmail, childcode: docID,
-                                              )),
-                                            );
-                                          },
-                                          color: color2,
-                                          icon: const Icon(Icons.mark_unread_chat_alt_outlined,
-                                          ),
-                                        ),
-                                      // ändern Button
-                                      IconButton(
-                                        onPressed: () => openChildBoxGroup(docID: docID),
-                                        color: color2,
-                                        icon: const Icon(Icons.settings,
-                                        ),
+                                      Text(childText,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                            color: color2),
                                       ),
-                                      // Löschen button
-                                      IconButton(
-                                        onPressed: () => openChildBoxDelete(docID: docID),
-                                        color: color2,
+                                      Row(
+                                        children: [
+                                          if(shownotification == "1")
+                                            Container(
+                                              width: 45,
+                                              height: 20,
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  notificationNullKind(docID);
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => ChatPage(
+                                                      receiverID: elternmail, childcode: docID,
+                                                    )),
+                                                  );
+                                                },
+                                                color: color2,
+                                                icon: const Icon(Icons.mark_unread_chat_alt_outlined,
+                                                ),
+                                              ),
+                                            ),
+                                          // ändern Button
+                                          Container(
+                                            width: 45,
+                                            height: 20,
+                                            child: IconButton(
+                                              onPressed: () => openChildBoxGroup(docID: docID),
+                                              color: color2,
+                                              icon: const Icon(Icons.group_rounded,
+                                              ),
+                                            ),
+                                          ),
+                                          // Löschen button
+                                          Container(
+                                            width: 45,
+                                            height: 20,
+                                            child: IconButton(
+                                              onPressed: () => openChildBoxDelete(docID: docID),
+                                              color: color2,
 
-                                        icon: const Icon(Icons.delete,
-                                        ),
+                                              icon: const Icon(Icons.delete,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
-                                  )
-
+                                  ),
+                                  const SizedBox(height: 5,),
+                                  Text(anmeldungText,
+                                    style: TextStyle(color: color2,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );

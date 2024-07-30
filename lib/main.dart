@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:socialmediaapp/auth/auth.dart';
 import 'package:socialmediaapp/firebase_options.dart';
+import 'package:socialmediaapp/theme/dark_mode.dart';
 import 'package:socialmediaapp/theme/light_mode.dart';
 
 import 'components/notification_controller.dart';
@@ -67,7 +68,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
         statusBarColor: Colors.orange.shade300,

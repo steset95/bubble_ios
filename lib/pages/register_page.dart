@@ -329,7 +329,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                         ),
                     const SizedBox(width: 3),
-                    Text("und",
+                    Text("& ",
                       style: TextStyle(
                         fontSize: 8,
                       ),
@@ -350,7 +350,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(width: 3),
-                    Text("akzeptieren.",
+                    Text("akzeptieren",
                       style: TextStyle(
                         fontSize: 8,
                       ),
@@ -378,7 +378,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Sie haben bereits einen Account? ",
+                  Text("Account vorhanden? ",
                   ),
                   GestureDetector(
                     onTap: widget.onTap,

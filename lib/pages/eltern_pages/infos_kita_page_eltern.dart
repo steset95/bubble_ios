@@ -58,6 +58,13 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
   }
   /// Notification
 
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
 
 
   @override
@@ -106,7 +113,9 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
                         MyProfileDataIcon(
                           text: tel,
                           sectionName: "Telefonnummer",
-                            onPressed: () => launchUrlString("tel://$tel"),
+                          onPressed: () => setState(() {
+                            _makePhoneCall(tel);
+                          }),
                           icon:  Icons.call_outlined,
                         ),
                         ProfileDataReadOnly(
