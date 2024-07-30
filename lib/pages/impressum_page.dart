@@ -42,10 +42,27 @@ class ImpressumPageState extends State<ImpressumPage> {
                     children: [
                       Image.asset("assets/images/Logo_1.png", width: 140, height:100),
                       const SizedBox(height: 10),
-                      const Text(
-                        "ABGs",
-                        style: TextStyle(fontSize: 20),
+                      Column(
+                        children: [
+                          const Text(
+                            "Kontakt",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          const SizedBox(height: 5),
+                          const Text(
+                            "Tanzschule Dance More GmbH",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          const Text(
+                            "Gewerbestrasse 3",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          const Text(
+                            "8500 Frauenfeld",
+                            style: TextStyle(fontSize: 12),
 
+                          ),
+                        ],
                       ),
                     ],
                   ),
