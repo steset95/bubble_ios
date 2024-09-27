@@ -28,7 +28,7 @@ primaryColor: Colors.blueAccent.shade200,
     ),
   appBarTheme: AppBarTheme(
     centerTitle: false,
-  titleTextStyle: TextStyle(fontFamily: 'Goli-Bold', color: Colors.white, fontSize: 25,),
+    titleTextStyle: TextStyle(fontFamily: 'Goli-Bold', color: Colors.white, fontSize: 25,),
     iconTheme: IconThemeData(
       color: Colors.white, //change your color here
     ),

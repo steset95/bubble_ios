@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../components/my_profile_data_icon.dart';
 import '../../components/my_profile_data.dart';
@@ -34,8 +35,6 @@ class InfosKitaPageEltern extends StatefulWidget {
 
 class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
 
-
-  final currentUser = FirebaseAuth.instance.currentUser;
 
 
   final kinderCollection = FirebaseFirestore
@@ -77,12 +76,15 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
               final adress = snapshot.data!['adress'];
               final adress2 = snapshot.data!['adress2'];
               final beschreibung = snapshot.data!['beschreibung'];
+              final email = snapshot.data!['email'];
               final tel = snapshot.data!['tel'];
 
               return
                 SingleChildScrollView(
                   child: Column(
                     children: [
+                      const SizedBox(height: 20,),
+                      HugeIcon(icon: HugeIcons.strokeRoundedHouse04, color: Theme.of(context).colorScheme.primary, size: 80),
                       ProfileDataReadOnly(
                         text: username,
                         sectionName: "Názov",
@@ -104,9 +106,14 @@ class _InfosKitaPageElternState extends State<InfosKitaPageEltern> {
                         icon:  Icons.call_outlined,
                       ),
                       ProfileDataReadOnly(
+                        text: email,
+                        sectionName: "Email",
+                      ),
+                      ProfileDataReadOnly(
                         text: beschreibung,
                         sectionName: "Ďalšie informácie",
                       ),
+
                     ],
                   ),
                 );

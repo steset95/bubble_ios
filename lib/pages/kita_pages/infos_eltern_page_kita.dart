@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../components/my_profile_data_icon.dart';
 import '../../components/my_profile_data_read_only.dart';
@@ -96,6 +97,7 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
                 SizedBox(
                   height: 50,
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -122,18 +124,22 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
             final adress = snapshot.data!['adress'];
             final adress2 = snapshot.data!['adress2'];
             final tel = snapshot.data!['tel'];
+            final email = snapshot.data!['email'];
 
             return
             SingleChildScrollView(
             child: Column(
             children: [
-              SizedBox(
-                height: 15,
+              const SizedBox(height: 30,),
+              HugeIcon(icon: HugeIcons.strokeRoundedNote, color: Colors.black, size: 30),
+              const SizedBox(height: 10,),
+              Container(
+                child: Text(username,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
-            ProfileDataReadOnly(
-            text: username,
-            sectionName: "Meno a Priezvisko",
-            ),
+              const SizedBox(height: 10,),
             ProfileDataReadOnly(
             text: adress,
             sectionName: "Ulica / Číslo",
@@ -149,6 +155,10 @@ class _InfosElternPageKitaState extends State<InfosElternPageKita> {
                   _makePhoneCall(tel);
                 }),
                 icon: Icons.call_outlined,
+              ),
+              ProfileDataReadOnly(
+                text: email,
+                sectionName: "Email",
               ),
             ],
             ),

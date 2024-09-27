@@ -89,6 +89,7 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
           },
           decoration: InputDecoration(
             counterText: "",
+            hintText: titel,
           ),
           maxLength: 100,
           initialValue: text,
@@ -135,6 +136,19 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
           //"Edit $field",
         ),
         content: TextFormField(
+          contextMenuBuilder: (BuildContext context, EditableTextState editableTextState) {
+            // If supported, show the system context menu.
+            if (SystemContextMenu.isSupported(context)) {
+              return SystemContextMenu.editableText(
+                editableTextState: editableTextState,
+              );
+            }
+            // Otherwise, show the flutter-rendered context menu for the current
+            // platform.
+            return AdaptiveTextSelectionToolbar.editableText(
+              editableTextState: editableTextState,
+            );
+          },
           decoration: InputDecoration(
             counterText: "",
           ),
@@ -166,7 +180,6 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
       ),
     );
   }
-
 
   Future logOut()  async {
     await _firebaseAuth.signOut();
@@ -233,153 +246,158 @@ class _ProfilePageKitaState extends State<ProfilePageKita> {
       ),
 
       // Abfrage der entsprechenden Daten - Sammlung = Users
-      body: SingleChildScrollView(
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("Users")
-              .doc(currentUser?.email)
-              .snapshots(),
-          builder: (context, snapshot)
-          {
-            // ladekreis
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            // Fehlermeldung
-            else if (snapshot.hasError) {
-              return Text("Error ${snapshot.error}");
-            }
-            // Daten abfragen funktioniert
-            else if (snapshot.hasData) {
-              // Entsprechende Daten extrahieren
-              final userData = snapshot.data?.data() as Map<String, dynamic>;
+      body: Stack(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(child: Image.asset("assets/images/bubbles_login.png", width: 350, height:350)),
+                ],
+              ),
+            ],
+          ),
+          SingleChildScrollView(
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("Users")
+                  .doc(currentUser?.email)
+                  .snapshots(),
+              builder: (context, snapshot)
+              {
+                // ladekreis
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                // Fehlermeldung
+                else if (snapshot.hasError) {
+                  return Text("Error ${snapshot.error}");
+                }
+                // Daten abfragen funktioniert
+                else if (snapshot.hasData) {
+                  // Entsprechende Daten extrahieren
+                  final userData = snapshot.data?.data() as Map<String, dynamic>;
 
-              // Inhalt Daten
+                  // Inhalt Daten
 
-              return
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ProfileData(
-                      text: userData["username"],
-                      sectionName: "Meno",
-                      onPressed: () => editField("username", "Meno", userData["username"], ),
-                    ),
+                  return
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ProfileData(
+                          text: userData["username"],
+                          sectionName: "Meno",
+                          onPressed: () => editField("username", "Meno", userData["username"], ),
+                        ),
 
-                    ProfileDataReadOnly(
-                      text: userData["email"],
-                      sectionName: "Email",
-                    ),
-                    ProfileData(
-                      text: userData["adress"],
-                      sectionName: "Ulica / Číslo",
-                      onPressed: () => editField("adress", "Ulica / Číslo", userData["adress"],),
-                    ),
+                        ProfileDataReadOnly(
+                          text: userData["email"],
+                          sectionName: "Email",
+                        ),
+                        ProfileData(
+                          text: userData["adress"],
+                          sectionName: "Ulica / Číslo",
+                          onPressed: () => editField("adress", "Ulica / Číslo", userData["adress"],),
+                        ),
 
-                    ProfileData(
-                      text: userData["adress2"],
-                      sectionName: "PSČ / Mesto",
-                      onPressed: () => editField("adress2", "PSČ / Mesto", userData["adress2"],),
-                    ),
+                        ProfileData(
+                          text: userData["adress2"],
+                          sectionName: "PSČ / Mesto",
+                          onPressed: () => editField("adress2", "PSČ / Mesto", userData["adress2"],),
+                        ),
 
-                    ProfileData(
-                      text: userData["tel"],
-                      sectionName: "Mobilné číslo",
-                      onPressed: () => editField("tel", "Mobilné číslo", userData["tel"],),
-                    ),
+                        ProfileData(
+                          text: userData["tel"],
+                          sectionName: "Mobilné číslo",
+                          onPressed: () => editField("tel", "Mobilné číslo", userData["tel"],),
+                        ),
 
-                    ProfileData(
-                      text: userData["beschreibung"],
-                      sectionName: "O nás",
-                      onPressed: () => editFieldBeschreibung("beschreibung", "O nás", userData["beschreibung"],),
-                    ),
-
-                    SizedBox(
-                      height: 30,
-                    ),
-                    GestureDetector(
-                      onTap:  () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              ProvisionPageKita()),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        ProfileData(
+                          text: userData["beschreibung"],
+                          sectionName: "O nás",
+                          onPressed: () => editFieldBeschreibung("beschreibung", "O nás", userData["beschreibung"],),
+                        ),
+            /*
+                        SizedBox(
+                          height: 30,
+                        ),
+                        GestureDetector(
+                          onTap:  createUserDocument,
+                          child: Column(
                             children: [
-                              Text("Provízia ",
-                              style: TextStyle(
-                                fontSize: 15,
-                              color: Theme.of(context).colorScheme.primary,),
-                              ),
-                              HugeIcon(
-                                icon: HugeIcons.strokeRoundedInformationCircle,
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 15,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Stack(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                      decoration: BoxDecoration(
+                                  Text("Provízia ",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  color: Theme.of(context).colorScheme.primary,),
+                                  ),
+                                  HugeIcon(
+                                    icon: HugeIcons.strokeRoundedInformationCircle,
+                                    color: Theme.of(context).colorScheme.primary,
+                                    size: 15,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                          decoration: BoxDecoration(
 
-                                          borderRadius: BorderRadius.all(Radius.circular(100))
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Column(
+                                              borderRadius: BorderRadius.all(Radius.circular(100))
+                                          ),
+                                          child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Text (userData["guthaben"].toString(),
-                                                  style: TextStyle(
-                                                  fontSize: 30,
-                                                ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text (userData["guthaben"].toString(),
+                                                      style: TextStyle(
+                                                      fontSize: 30,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
-                                          ),
-                                        ],
-                                      )
+                                          )
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
 
-
-                    SizedBox(
-                      height: 20,
-                    ),
-
-                  ],
-                );
-              // Fehlermeldung wenn nichts vorhanden ist
-            } else {
-              return const Text("No Data");
-            }
-          },
-        ),
+            */
+                      ],
+                    );
+                  // Fehlermeldung wenn nichts vorhanden ist
+                } else {
+                  return const Text("No Data");
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
 
 

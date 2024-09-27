@@ -124,7 +124,9 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                 IconButton(
                   onPressed: () async {
                     await Share.share('Na aktiváciu musíte zadať nasledujúci aktivačný kľúč do svojej aplikácie: $documentID',
-                    subject: 'Activationkey');
+                    subject: 'Activationkey',
+                        sharePositionOrigin: Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2)
+                    );
                     },
                     icon: Icon(Icons.share),
                 ),
@@ -293,7 +295,7 @@ class _ChildOverviewPageKitaState extends State<ChildOverviewPageKita> {
                             Text(
 
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold,),
+                                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold,),
                                 snapshot.data!['child']),
                           ],
                         );

@@ -120,7 +120,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
   DateTime absenzBis = DateTime.now().subtract(const Duration(days:1));
 
   void addChild(String child) async {
-    DocumentReference docRef = await
+     DocumentReference docRef = await
     FirebaseFirestore.instance
         .collection("Kinder")
         .add({
@@ -136,29 +136,82 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
       'geschlecht': "Nechcem uviesť",
       'geburtstag': "",
       'personen': "",
-      'alergien': "",
-      'krankheiten': "",
-      'medikamente': "",
-      'impfungen': "",
-      'kinderarzt': "",
-      'krankenkasse': "",
-      'bemerkungen': "",
       'eltern': "",
-      'fotosSocialMedia': "nicht erlaubt",
-      'fotosApp': "nicht erlaubt",
-      'nagellack': "nicht erlaubt",
-      'schminken': "nicht erlaubt",
-      'fieber': "nicht erlaubt",
-      'sonnencreme': "nicht erlaubt",
-      'fremdkoerper': "nicht erlaubt",
-      'homoeopathie': "nicht erlaubt",
       'shownotification': "0",
       'registrierungen': 0,
+      'active': true,
       'switch': true,
-
-
     });
-    await FirebaseFirestore.instance
+
+     FirebaseFirestore.instance
+         .collection("Users")
+         .doc(currentUser?.email)
+         .collection("Info_Felder")
+         .get()
+         .then((snapshot) {
+       snapshot.docs.forEach((doc) {
+
+         FirebaseFirestore.instance
+             .collection("Users")
+             .doc(currentUser?.email)
+             .collection("Info_Felder")
+             .doc(doc.reference.id)
+             .get()
+             .then((DocumentSnapshot document) {
+
+           String field = document['titel'];
+
+           FirebaseFirestore.instance
+               .collection("Kinder")
+               .doc(docRef.id)
+               .collection("Info_Felder")
+               .doc(field)
+               .set({
+             'titel': field,
+             'value': "",
+           });
+
+         });
+
+       });
+       });
+
+     FirebaseFirestore.instance
+         .collection("Users")
+         .doc(currentUser?.email)
+         .collection("Einwilligungen_Felder")
+         .get()
+         .then((snapshot) {
+       snapshot.docs.forEach((doc) {
+
+         FirebaseFirestore.instance
+             .collection("Users")
+             .doc(currentUser?.email)
+             .collection("Einwilligungen_Felder")
+             .doc(doc.reference.id)
+             .get()
+             .then((DocumentSnapshot document) {
+
+           String field = document['titel'];
+
+           FirebaseFirestore.instance
+               .collection("Kinder")
+               .doc(docRef.id)
+               .collection("Einwilligungen_Felder")
+               .doc(field)
+               .set({
+             'titel': field,
+             'value': "nicht erlaubt",
+           });
+
+         });
+
+       });
+     });
+
+
+
+     await FirebaseFirestore.instance
     .collection("Users")
     .doc(currentUser?.email)
         .get()
@@ -204,9 +257,12 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
           TextButton(
             child: const Text("Odoslať",
             ),
+
             onPressed: () async {
               await Share.share('Na aktiváciu musíte zadať nasledujúci aktivačný kľúč do svojej aplikácie: ${docRef.id}',
-                  subject: 'Activationkey');
+                  subject: 'Activationkey',
+                  sharePositionOrigin: Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2)
+              );
             },
           ),
         ],
@@ -356,12 +412,15 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
           TextButton(
             child: const Text("Uložiť",
             ),
-            onPressed: () => Navigator.of(context).pop(newValue),
+            onPressed: () {
+              Navigator.of(context).pop(newValue);
+              usersCollection.doc(currentUser!.email).update({field: newValue});
+            }
           ),
         ],
       ),
     );
-      await usersCollection.doc(currentUser!.email).update({field: newValue});
+
   }
 
 
@@ -646,7 +705,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                             height: 15,
                             width: 30,
                             child: IconButton(
-                                onPressed: () => editField('gruppe$cardId', "Zmeniť meno skupiny", text),
+                                onPressed: () => editField('gruppe$cardId', "Zmeniť meno skupiny", 'Skupina$cardId'),
                                 icon: HugeIcon(
                                   icon: HugeIcons.strokeRoundedPencilEdit01,
                                   color: Colors.white,
@@ -676,7 +735,7 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                                   text,
                                   style: TextStyle(color: Colors.white,
                                       overflow: TextOverflow.ellipsis,
-                                      fontSize: 12
+                                      fontSize: 13,
                                   ),
                                 ),
                               ),
@@ -828,7 +887,6 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                                               )),
                                             );
                                           },
-                                          color: color2,
                                           icon: HugeIcon(
                                             icon: HugeIcons.strokeRoundedMessage01,
                                             color: color2,
@@ -861,7 +919,6 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                                 width: 45,
                                 child: IconButton(
                                   onPressed: () => openChildBoxGroup(docID, "1"),
-                                  color: color2,
                                   icon: HugeIcon(
                                     icon: HugeIcons.strokeRoundedUserMultiple02,
                                     color: color2,
@@ -983,10 +1040,9 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                                             )),
                                           );
                                         },
-                                        color: color2,
-                                        icon: const HugeIcon(
+                                        icon: HugeIcon(
                                           icon: HugeIcons.strokeRoundedMessage01,
-                                          color: Colors.black,
+                                          color: color2,
                                           size: 20,
                                         ),
                                       ),
@@ -1016,10 +1072,9 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                               width: 45,
                               child: IconButton(
                                 onPressed: () => openChildBoxGroup(docID, "2"),
-                                color: color2,
-                                icon: const HugeIcon(
+                                icon: HugeIcon(
                                   icon: HugeIcons.strokeRoundedUserMultiple02,
-                                  color: Colors.black,
+                                  color: color2,
                                   size: 20,
                                 ),
                               ),
@@ -1140,10 +1195,9 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                                             )),
                                           );
                                         },
-                                        color: color2,
-                                        icon: const HugeIcon(
+                                        icon:  HugeIcon(
                                           icon: HugeIcons.strokeRoundedMessage01,
-                                          color: Colors.black,
+                                          color: color2,
                                           size: 20,
                                         ),
                                       ),
@@ -1173,10 +1227,9 @@ class _ChildrenPageKitaState extends State<ChildrenPageKita> {
                               width: 45,
                               child: IconButton(
                                 onPressed: () => openChildBoxGroup(docID, "3"),
-                                color: color2,
-                                icon: const HugeIcon(
+                                icon: HugeIcon(
                                   icon: HugeIcons.strokeRoundedUserMultiple02,
-                                  color: Colors.black,
+                                  color: color2,
                                   size: 20,
                                 ),
                               ),

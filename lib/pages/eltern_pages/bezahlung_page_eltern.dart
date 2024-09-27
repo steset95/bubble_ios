@@ -209,7 +209,7 @@ class BezahlungPageState extends State<BezahlungPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(child: Image.asset("assets/images/bubbles.png", width: 300, height:300)),
+                  Container(child: Image.asset("assets/images/bubbles.png", width: 350, height:350)),
                 ],
               ),
             ],
@@ -365,7 +365,7 @@ class BezahlungPageState extends State<BezahlungPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('9,90 EURO / mesiac'),
+                        Text('3 Euro / mesiac'),
                       ],
                     ),
                   ],

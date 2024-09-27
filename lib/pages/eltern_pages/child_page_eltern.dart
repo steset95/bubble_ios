@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:bubble/database/firestore_child.dart';
 import 'package:bubble/pages/eltern_pages/images_page_eltern.dart';
 import 'package:hugeicons/hugeicons.dart';
+import '../../database/firestore_images.dart';
+import '../../database/firestore_images_profile.dart';
 import '../../helper/abo_controller.dart';
 import '../../components/my_progressindicator.dart';
 import '../../helper/notification_controller.dart';
@@ -43,8 +45,8 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   final TextEditingController textController = TextEditingController();
   final currentUser = FirebaseAuth.instance.currentUser;
 
-  final firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
+  final firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
+  final Storage storage2 = Storage();
 
   /// Notification
   Timer? timer;
@@ -283,28 +285,40 @@ class _ChildPageElternState extends State<ChildPageEltern> {
             fontSize: 20,
           ),
         ),
-        content: DropdownButtonFormField<String>(
-          isDense: true,
-          isExpanded: false,
+        content: InputDecorator(
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(
+                horizontal: 20.0, vertical: 15.0),
+            labelText: 'Čas',
+            border:
+            OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
 
-          items: optionsAbholzeit.map((String dropDownStringItem) {
-            return DropdownMenuItem<String>(
-              value: dropDownStringItem,
-              child: Text(
-                dropDownStringItem,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            );
-          }).toList(),
-          value: _currentItemSelectedAbholzeit, onChanged: (newValueSelected) {
-          setState(() {
-            _currentItemSelectedAbholzeit = newValueSelected!;
-            abholzeit = newValueSelected;
-          });
-        },
+              isDense: true,
+              isExpanded: false,
+
+              items: optionsAbholzeit.map((String dropDownStringItem) {
+                return DropdownMenuItem<String>(
+                  value: dropDownStringItem,
+                  child: Text(
+                    dropDownStringItem,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                );
+              }).toList(),
+              value: _currentItemSelectedAbholzeit, onChanged: (newValueSelected) {
+              setState(() {
+                _currentItemSelectedAbholzeit = newValueSelected!;
+                abholzeit = newValueSelected;
+              });
+            },
+            ),
+          ),
         ),
         actions: [
           TextButton(
@@ -357,87 +371,215 @@ class _ChildPageElternState extends State<ChildPageEltern> {
   }
 
 
-  Future<List<String>> getImagePath(String childcode, DateTime date) async {
-    String currentDate = date.toString(); // Aktuelles Datum als String
-    String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
-    ListResult result =
-    await FirebaseStorage.instance.ref('/images/$formattedDate/$childcode').listAll();
-    return await Future.wait(
-      result.items.map((e) async => await e.getDownloadURL()),
-    );
-  }
-
-  Widget buildGallery(String childcode, DateTime date) {
+  Widget buildGallery(String childcode, DateTime date, String kitamail) {
     String currentDate = date.toString();// Aktuelles Datum als String
     String formattedDate = currentDate.substring(0, 10); // Nur das Datum extrahieren
-    return FutureBuilder(
-      future: getImagePath(childcode, date),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("");
-        }
-        if (snapshot!.data!.isEmpty) {
-          return
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300,),
-                ),
+    return
+      StreamBuilder(
+          stream: storage2.getImagesPath(childcode, kitamail, formattedDate),
+          builder: (context, snapshot){
 
-                child: Stack(
+            final images = snapshot.data?.docs;
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("");
+            }
+            if (snapshot.data!.docs.isEmpty && snapshot.connectionState != ConnectionState.waiting) {
+              return
+                Stack(
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300,),
+                        ),
+
+                        child: Stack(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    HugeIcon(
+                                      icon: HugeIcons.strokeRoundedImage01,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+            }
+            else if (snapshot.data!.docs.length > 6)
+            {
+              final int imagesCount = snapshot.data!.docs.length - 6;
+              return
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          ImagesPageEltern(
+                            childcode: childcode, date: formattedDate, kitamail: kitamail
+                          )),
+                    );
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            ImagesPageEltern(
+                              childcode: childcode, date: formattedDate, kitamail: kitamail
+                            )),
+                      );
+                    },
+                    child: Stack(
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Container(
+
+                            child: GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                //reverse: true,
+                                //scrollDirection: Axis.horizontal,
+                                //physics: const PageScrollPhysics(),
+                                itemCount: images?.length,
+                                shrinkWrap: false,
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 6,
+                                  childAspectRatio: 1.0,
+                                  mainAxisSpacing: 4.0,
+                                  crossAxisSpacing: 4.0,
+                                ),
+                                itemBuilder: (context, index) {
+
+                                  final path = images?[index];
+                                  String image = path?['path'];
+
+                                  return FutureBuilder(future: storage2.downloadURL(image),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<String> snapshot) {
+                                         if (snapshot.data != null)
+                                           return
+                                            CachedNetworkImage(
+                                              imageUrl: snapshot.data!,
+                                              fit: BoxFit.fitHeight,
+                                              placeholder: (context, url) => ProgressWithIcon(),
+                                              errorWidget: (context, url, error) =>
+                                                  Icon(Icons.error),
+                                            );
+                                        else
+                                          return Text("");
+                                      }
+                                  );
+
+
+                                }
+                            ),
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            HugeIcon(
-                              icon: HugeIcons.strokeRoundedImage01,
-                              color: Colors.grey.shade300,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Stack(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.primary,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+
+                                      child: Text('+ $imagesCount',
+                                        style: TextStyle(color: Colors.white,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ],
                     ),
+                  ),
+                );
+            }
+            else {
+              return GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  //reverse: true,
+                  //scrollDirection: Axis.horizontal,
+                  //physics: const PageScrollPhysics(),
+                  itemCount: images?.length,
+                  shrinkWrap: false,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 6,
+                    childAspectRatio: 1.0,
+                    mainAxisSpacing: 4.0,
+                    crossAxisSpacing: 4.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    // Individuelle Posts abholen
+                    final path = images?[index];
+                    // Daten von jedem Post abholen
+                    String image = path?['path'];
 
-                  ],
-                ),
-              ),
-            );
-        }
-        return GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: snapshot.data!.length,
-          shrinkWrap: false,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 6,
-            childAspectRatio: 1.0,
-            mainAxisSpacing: 4.0,
-            crossAxisSpacing: 4.0,
-          ),
-          itemBuilder: (context, index) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ImagesPageEltern(
-                  childcode: childcode, date: formattedDate,
-                )),
+
+                    // Liste als Tile wiedergeben
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              ImagesPageEltern(
+                                childcode: childcode, date: formattedDate, kitamail: kitamail
+                              )),
+                        );
+                      },
+                      child: FutureBuilder(future: storage2.downloadURL(image),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String> snapshot) {
+                            if (snapshot.data != null)
+                            return
+                              CachedNetworkImage(
+                              imageUrl: snapshot.data!,
+                                fit: BoxFit.fitHeight,
+                                placeholder: (context, url) => ProgressWithIcon(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                            );
+                            else
+                              return Text("");
+                          }
+                      ),
+                    );
+
+
+                  }
               );
-            },
-            child: CachedNetworkImage(
-              imageUrl: snapshot.data![index],
-              fit: BoxFit.fitHeight,
-              placeholder: (context, url) => ProgressWithIcon(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-          ),
-        );
-      },
-    );
+            }
+            return Text("");
+          }
+      );
   }
 
 
@@ -566,6 +708,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
       if (snapshot.hasData) {
         final userData = snapshot.data?.data() as Map<String, dynamic>;
         final childcode = userData["childcode"];
+        final kitamail = userData["kitamail"];
 
         /// PaymentCheck
 
@@ -584,7 +727,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) =>
-                            BezahlungPage(isActive: false, text: "Zur Vollversion"),
+                            BezahlungPage(isActive: false, text: "Na plnú verziu"),
                         ),
                       );
                     },
@@ -632,7 +775,9 @@ class _ChildPageElternState extends State<ChildPageEltern> {
               const SizedBox(height: 10),
               Flexible(
                 flex: 1,
-                  child: buildGallery(childcode, currentDate1)),
+                  child:
+              buildGallery(childcode, currentDate1, kitamail)),
+
               const SizedBox(height: 10),
               Flexible(
                 flex: 9,
@@ -748,9 +893,10 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                                         textAlign: TextAlign.center,
                                                         raport['RaportText'],
                                                         style: TextStyle(
-                                                          fontSize: 11,
+                                                          fontSize: 12,
                                                         ),
                                                       )),
+                                                  const SizedBox(width: 10),
                                                 ],
                                               ),
 
@@ -766,31 +912,31 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                                               if (raport['RaportTitle'] == "Angemeldet")
                                               HugeIcon(
                                               icon: HugeIcons.strokeRoundedSun03,
-                                              color: Colors.amber,
+                                              color: Colors.amber.shade600,
                                                   size: 20
                                               )
                                               else if (raport['RaportTitle'] == "Essen: ")
                                                 HugeIcon(
                                                   icon: HugeIcons.strokeRoundedPizza01,
-                                                  color: Colors.orange,
+                                                  color: Colors.orange.shade600,
                                                     size: 20
                                                 )
                                               else if (raport['RaportTitle'] == "Schlaf: ")
                                                 HugeIcon(
                                                 icon: HugeIcons.strokeRoundedSleeping,
-                                                color: Colors.teal,
+                                                color: Colors.teal.shade600,
                                                     size: 20
                                                 )
                                               else if (raport['RaportTitle'] == "Aktivität: ")
                                                 HugeIcon(
                                                 icon: HugeIcons.strokeRoundedHockey,
-                                                color: Colors.purple.shade900,
+                                                color: Colors.purple.shade600,
                                                     size: 20
                                                 )
                                               else if (raport['RaportTitle'] == "Diverses: ")
                                                       HugeIcon(
                                                         icon: HugeIcons.strokeRoundedChartBubble02,
-                                                        color: Colors.lightBlueAccent,
+                                                        color: Colors.lightBlue.shade600,
                                                           size: 20
                                                       )
                                               else if (raport['RaportTitle'] == "Abgemeldet")
@@ -819,6 +965,7 @@ class _ChildPageElternState extends State<ChildPageEltern> {
                           children: raportWidgets,
                         );
                       }
+
                       else if (snapshot.connectionState != ConnectionState.waiting)
                       {
                         return

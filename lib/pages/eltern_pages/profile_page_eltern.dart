@@ -15,10 +15,12 @@ import 'package:bubble/components/my_profile_data_read_only.dart';
 import 'package:bubble/pages/eltern_pages/bezahlung_page_eltern.dart';
 import '../../helper/abo_controller.dart';
 import '../../helper/constant.dart';
+import '../../helper/helper_functions.dart';
 import '../../helper/notification_controller.dart';
-
+import 'package:intl/intl.dart';
 import '../../helper/store_helper.dart';
 import '../impressum_page.dart';
+
 
 
 
@@ -33,26 +35,6 @@ class ProfilePageEltern extends StatefulWidget {
 
 class _ProfilePageElternState extends State<ProfilePageEltern> {
 
-
-  void setProvision() async {
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .doc(currentUser?.email)
-        .get()
-        .then((DocumentSnapshot document) {
-      if (document.exists) {
-        if (document["kitamail"] != "") {
-
-          final String? name = currentUser!.email;
-
-          FirebaseFirestore.instance
-              .collection("Abonnements")
-              .doc(document["kitamail"])
-              .set({'$name': DateTime.now()});
-        }
-      }
-    });
-  }
 
 
   /// Notification
@@ -70,6 +52,7 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
     super.initState();
     timer = Timer.periodic(Duration(seconds: 10), (Timer t) => NotificationController().notificationCheck());
     _configureSDK();
+    addSubscriptionKita();
   }
 
 
@@ -126,6 +109,7 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
           },
           decoration: InputDecoration(
             counterText: "",
+            hintText: title,
           ),
           maxLength: 100,
           initialValue: text,
@@ -153,6 +137,53 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
       ),
     );
   }
+
+
+  void addSubscriptionKita() async {
+    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+if (customerInfo.entitlements.all[entitlementID] != null) {
+  final date = customerInfo.entitlements.all[entitlementID]?.latestPurchaseDate;
+  DateTime tempDate = new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(
+      date!);
+
+  int month = tempDate.month;
+  int year = tempDate.year;
+  String yearMonth = ('${year}_${month}');
+
+   FirebaseFirestore.instance
+      .collection("Users")
+      .doc(currentUser?.email)
+      .get()
+      .then((DocumentSnapshot document) {
+    if (document.exists) {
+      if (document["kitamail"] != "") {
+        final String? name = currentUser!.email;
+
+        FirebaseFirestore.instance
+            .collection("Abonnements")
+            .doc(document["kitamail"])
+            .collection(yearMonth)
+            .doc(name)
+            .get()
+            .then((DocumentSnapshot document2) {
+          if (document2.exists) {}
+
+          else {
+            FirebaseFirestore.instance
+                .collection("Abonnements")
+                .doc(document["kitamail"])
+                .collection(yearMonth)
+                .doc(name)
+                .set({'Gelöst am': date});
+          }
+        });
+      }
+    }
+  });
+}
+  }
+
+
 
 
   Future<void> _configureSDK() async {
@@ -330,130 +361,118 @@ class _ProfilePageElternState extends State<ProfilePageEltern> {
       // Abfrage der entsprechenden Daten - Sammlung = Users
       body: Stack(
         children: [
-          StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("Users")
-                .doc(currentUser?.email)
-                .snapshots(),
-            builder: (context, snapshot)
-            {
-              // ladekreis
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              // Fehlermeldung
-              else if (snapshot.hasError) {
-                return Text("Error ${snapshot.error}");
-              }
-              // Daten abfragen funktioniert
-              else if (snapshot.hasData) {
-                // Entsprechende Daten extrahieren
-                final userData = snapshot.data?.data() as Map<String, dynamic>;
-
-
-                return
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 15,
-                      ),
-                      ProfileData(
-                        text: userData["username"],
-                        sectionName: "Meno a Priezvisko",
-                        onPressed: () => editField("username", "Meno a Priezvisko", userData["username"]),
-                      ),
-
-                      ProfileDataReadOnly(
-                        text: userData["email"],
-                        sectionName: "Email",
-
-                      ),
-                      ProfileData(
-                        text: userData["adress"],
-                        sectionName: "Ulica / Číslo",
-                        onPressed: () => editField("adress", "Ulica / Číslo", userData["adress"]),
-                      ),
-
-                      ProfileData(
-                        text: userData["adress2"],
-                        sectionName: "PSČ / Mesto",
-                        onPressed: () => editField("adress2", "PSČ / Mesto", userData["adress2"]),
-                      ),
-
-                      ProfileData(
-                        text: userData["tel"],
-                        sectionName: "Mobilné číslo",
-                        onPressed: () => editField("tel", "Mobilné číslo", userData["tel"]),
-                      ),
-
-                      SizedBox(
-                        height: 30,
-                      ),
-
-
-                      /// Payment
-
-
-                      GestureDetector(
-                        onTap: () => goToPage(),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text("Predplatné",
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary,
-                                fontSize: 12,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 2,
-                            ),
-                            Icon(
-                                Icons.arrow_forward,
-                                color: Theme.of(context).colorScheme.primary,
-
-                                size: 10
-                            ),
-                          ],
-                        ),
-                      ),
-                    /*  GestureDetector(
-                        onTap: () => PurchasesAreCompletedByMyApp(storeKitVersion: StoreKitVersion.defaultVersion,),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text("Test",
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary,
-                                fontSize: 12,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 2,
-                            ),
-                            Icon(
-                                Icons.arrow_forward,
-                                color: Theme.of(context).colorScheme.primary,
-
-                                size: 10
-                            ),
-                          ],
-                        ),
-                      ),*/
-
-                    ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(child: Image.asset("assets/images/bubbles_login.png", width: 350, height:350)),
+                ],
+              ),
+            ],
+          ),
+          SingleChildScrollView(
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("Users")
+                  .doc(currentUser?.email)
+                  .snapshots(),
+              builder: (context, snapshot)
+              {
+                // ladekreis
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                // Fehlermeldung wenn nichts vorhanden ist
-              } else {
-                return const Text("No  Data");
-              }
-            },
+                }
+                // Fehlermeldung
+                else if (snapshot.hasError) {
+                  return Text("Error ${snapshot.error}");
+                }
+                // Daten abfragen funktioniert
+                else if (snapshot.hasData) {
+                  // Entsprechende Daten extrahieren
+                  final userData = snapshot.data?.data() as Map<String, dynamic>;
+
+
+                  return
+                    Column(
+                      children: [
+
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ProfileData(
+                          text: userData["username"],
+                          sectionName: "Meno a Priezvisko",
+                          onPressed: () => editField("username", "Meno a Priezvisko", userData["username"]),
+                        ),
+
+                        ProfileDataReadOnly(
+                          text: userData["email"],
+                          sectionName: "Email",
+
+                        ),
+                        ProfileData(
+                          text: userData["adress"],
+                          sectionName: "Ulica / Číslo",
+                          onPressed: () => editField("adress", "Ulica / Číslo", userData["adress"]),
+                        ),
+
+                        ProfileData(
+                          text: userData["adress2"],
+                          sectionName: "PSČ / Mesto",
+                          onPressed: () => editField("adress2", "PSČ / Mesto", userData["adress2"]),
+                        ),
+
+                        ProfileData(
+                          text: userData["tel"],
+                          sectionName: "Mobilné číslo",
+                          onPressed: () => editField("tel", "Mobilné číslo", userData["tel"]),
+                        ),
+
+                        SizedBox(
+                          height: 30,
+                        ),
+
+
+                        /// Payment
+
+
+                        GestureDetector(
+                          onTap: () => goToPage(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text("Predplatné",
+                                style: TextStyle(color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 2,
+                              ),
+                              Icon(
+                                  Icons.arrow_forward,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 10
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  // Fehlermeldung wenn nichts vorhanden ist
+                } else {
+                  return const Text("No  Data");
+                }
+              },
+            ),
           ),
         ],
       ),

@@ -14,15 +14,14 @@ import 'helper/notification_controller.dart';
 
 
 
-
 void main() async {
 
-    intl.Intl.defaultLocale = 'sk';
+  intl.Intl.defaultLocale = 'sk';
 
 
 
   /// AwesomeNotifications
-  await AwesomeNotifications().initialize(null, [
+  AwesomeNotifications().initialize(null, [
     NotificationChannel(
       channelGroupKey: "basic_channel_group",
       channelKey: "basic_channel",
@@ -46,7 +45,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+
+
   runApp(const MyApp());
+
 }
 
 
@@ -78,16 +80,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
+      value: SystemUiOverlayStyle(
         statusBarColor: Colors.orange.shade300,
         systemNavigationBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarIconBrightness: Brightness.dark,
-    ),
+      ),
 
       child: MaterialApp(
         localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
           const Locale('sk'),

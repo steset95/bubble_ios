@@ -38,7 +38,8 @@ class ImpressumPageState extends State<ImpressumPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(child: Image.asset("assets/images/bubbles_login.png", width: 350, height:350)),
+                  Container(
+                      child: Image.asset("assets/images/bubbles_login.png", width: 350, height:350)),
                 ],
               ),
             ],
